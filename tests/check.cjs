@@ -1,0 +1,68 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const { Game, BOUNDS, OBSTACLES, WAVES, circleRect, move, segmentCircle, segmentRect } = require('../core.js');
+const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
+const playing = () => { const g = new Game(seeded(7)); g.start(); return g; };
+const a = playing(), b = playing();
+for (const g of [a, b]) { g.player.x = 500; g.player.y = 380; }
+for (let i = 0; i < 60; i++) a.update(1 / 60, { dx: 1, dy: 1 });
+for (let i = 0; i < 120; i++) b.update(1 / 120, { dx: 1, dy: 1 });
+assert(Math.abs(a.player.x - b.player.x) < .001 && Math.abs(a.player.y - b.player.y) < .001, 'Movement depends on frame rate');
+assert(Math.abs(Math.hypot(a.player.x - 500, a.player.y - 380) - 218) < .01, 'Diagonal movement is faster');
+const mover = { x: 240, y: 295, r: 13 }; move(mover, 600, 0);
+assert(mover.x + mover.r <= OBSTACLES[0].x + .01, 'Movement tunnels through cover');
+move(mover, -9999, -9999); assert(mover.x >= BOUNDS.x + mover.r && mover.y >= BOUNDS.y + mover.r, 'Movement leaves arena');
+assert.equal(segmentCircle({ x: 0, y: 0 }, { x: 300, y: 0 }, { x: 120, y: 0, r: 10 }), 110 / 300);
+assert.equal(segmentRect({ x: 0, y: 0 }, { x: 300, y: 0 }, { x: 80, y: -5, w: 20, h: 10 }), 80 / 300);
+const dash = playing(); assert(dash.dash({ dx: 1 })); assert(!dash.dash({ dx: 1 }), 'Dash ignores cooldown');
+dash.update(.2); assert(dash.player.x > 740); assert(dash.player.dashCooldown > 1.4);
+dash.pause(); const pausedTime = dash.time, pausedX = dash.player.x; dash.update(.2, { dx: 1 });
+assert.equal(dash.time, pausedTime); assert.equal(dash.player.x, pausedX); dash.resume();
+const damage = playing(); damage.hurt(12); damage.hurt(12); assert.equal(damage.player.hp, 88, 'No contact grace period');
+damage.player.invincible = 0; damage.hurt(200); assert.equal(damage.mode, 'gameover'); damage.start(); assert.equal(damage.player.hp, 100); assert.equal(damage.kills, 0);
+const upgrade = playing(); upgrade.gems.push({ x: 600, y: 430, value: 25, age: 0 }); upgrade.update(1 / 60);
+assert.equal(upgrade.mode, 'upgrade'); assert.equal(upgrade.level, 2); assert.equal(new Set(upgrade.choices.map(c => c.id)).size, 3);
+const beforeTime = upgrade.time; upgrade.update(.2, { shooting: true }); assert.equal(upgrade.time, beforeTime); assert(!upgrade.choose(5));
+const choice = upgrade.choices[0].id; const before = { ...upgrade.player }; assert(upgrade.choose(0));
+assert.equal(upgrade.mode, 'playing'); assert.equal(upgrade.upgrades[0], choice);
+assert(choice === 'damage' ? upgrade.player.damage > before.damage : choice === 'rate' ? upgrade.player.interval < before.interval : choice === 'speed' ? upgrade.player.speed > before.speed : upgrade.player.maxHp > before.maxHp);
+for (const type of ['crab', 'jaguar', 'shadow', 'duende', 'jaguarBoss']) { const g = playing(); g.spawn(type); assert(g.enemies.length === 1); const e = g.enemies[0]; assert(Math.hypot(e.x - g.player.x, e.y - g.player.y) > 230); assert(!OBSTACLES.some(o => circleRect(e.x, e.y, e.r, o))); }
+const wall = playing(); wall.queue = ['crab']; wall.enemies.push({ type: 'crab', x: 470, y: 300, r: 18, hp: 100, maxHp: 100, warmup: 0, speed: 0, hit: 0, routeTimer: 99, shotTimer: 99 });
+wall.shot(230, 300, 0, false, 50); for (let i = 0; i < 30; i++) wall.update(1 / 60);
+assert.equal(wall.enemies[0].hp, 100, 'Shots penetrate ruins');
+const hit = playing(); hit.queue = ['crab']; hit.enemies.push({ type: 'crab', x: 730, y: 430, r: 18, hp: 19, maxHp: 19, warmup: 0, speed: 0, hit: 0, routeTimer: 99, shotTimer: 99, xp: 5 });
+hit.shot(600, 430, 0, false, 19); for (let i = 0; i < 15; i++) hit.update(1 / 60);
+assert.equal(hit.kills, 1); assert.equal(hit.gems.length, 1); assert.equal(hit.gems[0].value, 5);
+const staff = playing(); assert.equal(staff.player.weapon, 'slingshot');
+staff.update(1 / 60, { shooting: true }); assert.equal(staff.bullets[0].kind, 'stone');
+staff.wave = 5; staff.queue = []; staff.spawn('duende'); const duende = staff.enemies[0]; staff.defeat(duende);
+assert(staff.staffPickup); assert.equal(staff.player.weapon, 'slingshot'); assert(!staff.collectStaff(), 'Staff collected from across arena');
+staff.update(1 / 60); assert.equal(staff.mode, 'playing'); assert.equal(staff.finishedWave, true);
+for (let i = 0; i < 30; i++) { if (staff.mode === 'upgrade') staff.choose(0); staff.update(.25); }
+assert.equal(staff.wave, 5, 'Wave six began before collecting the staff');
+staff.player.damage *= 1.25; const perkDamage = staff.player.damage, perkRate = staff.player.interval;
+Object.assign(staff.player, staff.staffPickup); assert(staff.collectStaff()); assert.equal(staff.player.weapon, 'staff'); assert.equal(staff.staffPickup, null);
+assert.equal(staff.player.damage, perkDamage * 1.6); assert.equal(staff.player.interval, perkRate / 1.15);
+assert(!staff.collectStaff(), 'Staff bonus applied twice'); staff.defeat(duende); assert.equal(staff.player.damage, perkDamage * 1.6);
+staff.update(1 / 60, { shooting: true }); assert(staff.bullets.some(b => b.kind === 'magic'));
+for (let i = 0; i < 20 && staff.wave < 6; i++) staff.update(.25);
+assert.equal(staff.wave, 6); assert.equal(staff.mode, 'playing'); assert.equal(staff.player.weapon, 'staff');
+staff.start(); assert.equal(staff.player.weapon, 'slingshot'); assert.equal(staff.staffPickup, null); assert.equal(staff.player.damage, 19);
+const jaguar = playing(); jaguar.wave = 10; jaguar.queue = ['crab']; jaguar.spawn('jaguarBoss');
+const boss = jaguar.enemies[0]; assert.equal(boss.hp, 2400); assert(boss.boss); boss.warmup = 0; boss.rushTimer = 0;
+jaguar.update(1 / 120); assert(boss.rushWindup > 0 && boss.casting, 'Jaguar charge has no warning');
+boss.shotTimer = 0; jaguar.update(1 / 120); assert(jaguar.bullets.some(b => b.hostile));
+for (let i = 0; i < 80 && boss.rushTime <= 0; i++) jaguar.update(1 / 120);
+assert(boss.rushTime > 0, 'Jaguar did not charge after warning');
+const finale = playing(); finale.wave = WAVES.length; finale.queue = []; finale.enemies = []; finale.update(1 / 60); assert.equal(finale.mode, 'victory'); finale.start(); assert.equal(finale.wave, 1);
+assert(WAVES.slice(0, 4).every((w, i) => i === 0 || w.length > WAVES[i - 1].length)); assert(WAVES[4].includes('duende'));
+assert.equal(WAVES.length, 10); assert(WAVES[9].includes('jaguarBoss')); assert(WAVES.slice(5).every((w, i) => i === 0 || w.length > WAVES[i + 4].length));
+const window = {}; vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../assets/sprites.js'), 'utf8'), { window });
+for (const asset of Object.values(window.ARENA_SPRITES)) {
+  const png = fs.readFileSync(path.join(__dirname, '../assets', asset.file)), w = png.readUInt32BE(16), h = png.readUInt32BE(20);
+  for (const [x, y, fw, fh] of asset.frames) assert(x >= 0 && y >= 0 && x + fw <= w && y + fh <= h, `Invalid crop: ${asset.file}`);
+}
+assert.equal(window.ARENA_SPRITES.joe.frames.length, 20); assert.equal(window.ARENA_SPRITES.joe.file, 'teenage-joe.png');
+console.log('PASS: physics, combat, XP/perks, ten waves, slingshot, dropped staff/pickup/perk preservation, Jaguar charge/volleys, victory/restart, and sprite crops.');
