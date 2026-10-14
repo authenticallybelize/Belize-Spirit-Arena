@@ -13,7 +13,8 @@
   let view = { x: 0, y: 0, w: W, h: H }, mouse = null, mousePointer = null;
   function sizeCanvas() {
     const rect = canvas.getBoundingClientRect(), width = rect.width || W, height = rect.height || H;
-    const density = Math.min(window.devicePixelRatio || 1, 2400 / width, 2400 / height);
+    const mobile = matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
+    const density = Math.min(window.devicePixelRatio || 1, mobile ? 2 : Infinity, 2400 / width, 2400 / height);
     canvas.width = Math.round(width * density); canvas.height = Math.round(height * density);
   }
   new ResizeObserver(() => { sizeCanvas(); render(game.time); }).observe(canvas);
@@ -223,9 +224,25 @@
     $('pauseButton').textContent = game.mode === 'paused' ? '▷' : 'Ⅱ';
     $('pauseButton').setAttribute('aria-label', game.mode === 'paused' ? 'Resume game' : 'Pause game');
   }
-  function start() { if (!ready) return; if (story) { StoryUI.restart(); return; } clearInput(); particles.length = 0; game.start(extended ? SurvivalUI.options() : undefined); previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus(); }
+  let starting = false;
+  async function start() {
+    if (!ready || starting) return;
+    touch?.enterGameplay();
+    if (story) { StoryUI.restart(); return; }
+    const options = extended ? SurvivalUI.options() : undefined;
+    starting = true; clearInput();
+    const button = content.querySelector('#restartButton') || startButton, label = button.textContent;
+    button.disabled = true; button.textContent = 'Loading arena…';
+    try {
+      if (extended) await loadImage(SurvivalCore.ARENAS[options.arena].image);
+      particles.length = 0; game.start(options);
+      if (extended) for (const arena of Object.values(SurvivalCore.ARENAS)) if (arena.image !== game.arena.image) { delete images[arena.image]; loads.delete(arena.image); }
+      previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus();
+    } catch (error) { content.querySelector('p').textContent = error.message + '. Try again when artwork is available.'; console.error(error); }
+    finally { starting = false; button.disabled = false; button.textContent = label; }
+  }
   function startStory(store, resume) {
-    clearInput(); particles.length = 0; game.startStory(store, resume); previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus();
+    touch?.enterGameplay(); clearInput(); particles.length = 0; game.startStory(store, resume); previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus();
   }
   function togglePause() { clearInput(); if (story && StoryUI.active) { StoryUI.key({ key: 'Escape', preventDefault() {} }); return; } if (game.mode === 'playing') game.pause(); else game.resume(); syncOverlay(); }
   function choose(index) { if (game.choose(index)) { clearInput(); previousMode = ''; syncOverlay(); if (game.mode === 'playing') canvas.focus(); } }
@@ -326,19 +343,25 @@
   const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
   const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
-  const files = [...new Set([...spriteFiles, ...holdingFiles, 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
-    ...(extended ? ['open-survival-arena.png', 'canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
-  Promise.all(files.map(file => new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => {
-      try { images[file] = ArenaArt.sourceGrid(image, file); resolve(); }
-      catch (error) { reject(error); }
-    };
-    image.onerror = () => reject(new Error(`Missing artwork: assets/${file}`)); image.src = `assets/${file}`; images[file] = image;
-  }))).then(() => {
+  const files = [...new Set([...spriteFiles, ...holdingFiles, extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+    ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
+  const loads = new Map();
+  function loadImage(file) {
+    if (!loads.has(file)) loads.set(file, new Promise((resolve, reject) => {
+      const image = new Image(), timeout = setTimeout(() => fail(), 20000);
+      function fail() { clearTimeout(timeout); reject(new Error(`Artwork failed to load/decode: assets/${file}`)); }
+      image.onload = async () => {
+        try { if (image.decode) await image.decode(); images[file] = ArenaArt.sourceGrid(image, file); clearTimeout(timeout); resolve(); }
+        catch { fail(); }
+      };
+      image.onerror = fail; image.src = `assets/${file}`;
+    }).catch(error => { loads.delete(file); throw error; }));
+    return loads.get(file);
+  }
+  Promise.all(files.map(loadImage)).then(() => {
     ready = true; startButton.disabled = false; startButton.textContent = 'Enter the arena';
     if (window.TouchControls) touch = TouchControls.attach({ game, input, canvas, togglePause });
-    if (story) StoryUI.init({ game, clearInput, startStory, tone, whisper, images });
+    if (story) StoryUI.init({ game, clearInput, startStory, tone, whisper, images, touch });
     updateHud(); paintPortraits();
   })
     .catch(error => { startButton.textContent = 'Artwork could not load'; content.querySelector('p').textContent = `${error.message}. Keep the assets folder beside index.html.`; console.error(error); });

@@ -65,8 +65,8 @@
     $('optionsMenu').onclick = () => {
       view = 'info';
       show('<h2 id="overlayTitle">Options</h2><p>Sound is optional and starts muted.<br>Reduced motion follows your device preference.<br>Touch controls appear automatically on phones and tablets.</p>' +
-        button('optionSound', 'Toggle sound') + button('backMenu', 'Back'));
-      $('optionSound').onclick = () => $('soundButton').click(); $('backMenu').onclick = home;
+        button('optionSound', 'Toggle sound') + button('optionTouch', 'Touch controls') + button('backMenu', 'Back'));
+      $('optionSound').onclick = () => $('soundButton').click(); $('optionTouch').onclick = () => bridge.touch?.openSettings(); $('backMenu').onclick = home;
     };
   }
   function storyMenu() {
@@ -81,6 +81,7 @@
     $('replayPrologue').onclick = () => begin(true); $('backMenu').onclick = home;
   }
   function begin(replay) {
+    bridge.touch?.enterGameplay();
     play(StoryCore.SCENES, skipped => {
       store.recordPrologue(skipped);
       if (replay) { bridge.game.mode = 'menu'; storyMenu(); } else bridge.startStory(store, false);

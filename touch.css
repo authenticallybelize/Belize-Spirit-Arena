@@ -1,28 +1,56 @@
 .touch-controls{display:none;align-items:center;justify-content:space-between;gap:16px;padding:12px 22px;background:#091d16;border-top:1px solid #69764e;user-select:none;-webkit-user-select:none}.touch-enabled .touch-controls{display:flex}.stick{width:112px;height:112px;border:1px solid #b99a63;border-radius:50%;background:radial-gradient(circle,#2a503799,#0c211b);position:relative;touch-action:none;flex-shrink:0}.stick i{position:absolute;width:42px;height:42px;border:1px solid #dfbf82;background:#7aa37d77;border-radius:50%;left:calc(50% - 21px);top:calc(50% - 21px);pointer-events:none}.stick span{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:1px;color:#dacb9d;pointer-events:none}.touch-actions{display:flex;flex-direction:column;gap:10px}.touch-actions button{min-width:75px;min-height:44px;border:1px solid #a89058;background:#203e2b;border-radius:6px;color:#f1ddb2;font-size:11px;touch-action:none}.touch-enabled #arena{touch-action:none}.touch-enabled .mobile-note{display:none}.touch-enabled .controls{display:none}.touch-enabled .game-frame{min-width:0}.cinematic-open .touch-controls{display:none!important}
 @media(max-width:500px){.touch-controls{padding:12px;gap:10px}.stick{width:104px;height:104px}.touch-actions button{min-width:70px}}
 
-@media(pointer:coarse) and (orientation:landscape){
+@media(orientation:landscape){
  .touch-enabled.in-game{overflow:hidden;overscroll-behavior:none}
- .in-game .shell{padding:0!important;max-width:none}.in-game .intro,.in-game footer,.in-game .expedition{display:none!important}
- .in-game .survival-layout{display:block;max-width:none;margin:0}
- .in-game .game-frame{position:fixed;inset:0;width:100vw!important;height:100dvh!important;margin:0;border:0;border-radius:0;box-shadow:none}
- .in-game .arena-wrap{position:absolute;inset:0;aspect-ratio:auto!important}
- .in-game #arena{width:100%;height:100%}
- .in-game .masthead{height:0;border:0}.in-game .masthead .brand,.in-game #helpButton{display:none}
- .in-game .masthead nav{position:fixed;top:max(8px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:8;gap:6px}
- .in-game .icon-button{width:40px;height:40px;background:#071b18aa;border-color:#6fb8a0}
- .in-game .hud{position:absolute;z-index:3;top:max(8px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));right:calc(max(12px,env(safe-area-inset-right)) + 98px);width:auto;height:50px;background:#081a15b8;border:1px solid #739a7077;border-radius:8px;padding:5px 10px;gap:12px;pointer-events:none;display:flex}
- .in-game .hero{display:flex;gap:7px}.in-game canvas.joe-portrait{width:33px;height:33px}.in-game .hero strong{display:none}.in-game .hero span{font-size:10px;color:#ebd391}
- .in-game .meter{flex:1;min-width:70px}.in-game .experience{display:block}.in-game .meter-label{font-size:8px}.in-game .meter-label b{font-size:10px}.in-game .track{height:6px}.in-game .wave{padding:0}.in-game .wave strong{font-size:10px}.in-game .wave>div{display:none}
- .in-game .touch-controls{position:fixed;z-index:6;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));padding:0;background:transparent;border:0;pointer-events:none;align-items:flex-end;gap:8px}
- .in-game .stick{width:clamp(92px,17vw,136px);height:clamp(92px,17vw,136px);border:3px solid #63c6ad99;background:#0a302528;box-shadow:inset 0 0 30px #69e6c414;pointer-events:auto}
- .in-game .stick i{background:#6ee2c333;border-color:#8fefd4}.in-game .stick span{font-size:8px;bottom:10px}
- .in-game .touch-actions{display:flex;flex-direction:row;gap:7px;pointer-events:auto;padding:6px;background:#081e17a8;border:1px solid #72ba9477;border-radius:10px;max-width:55vw}
- .in-game .touch-actions button{min-width:55px;min-height:44px;padding:6px 9px;background:#18472f80;border-color:#74bb9b;font-size:10px}
- .in-game .arena-status{left:30%;right:30%;bottom:82px;justify-content:center;flex-wrap:wrap;gap:4px}.in-game .arena-status span{font-size:8px;padding:3px 6px;letter-spacing:.3px}
- .in-game .wave-banner{top:70px;font-size:14px;padding:7px 13px;max-width:75%}
- .in-game .boss-hud{top:66px;left:30%;width:40%;padding:5px 10px}
- .in-game .dialog{max-height:92dvh;max-width:580px;width:min(78vw,580px);overflow:auto}.in-game .dialog h2{font-size:25px;margin:7px 0}.in-game .dialog p{font-size:12px;margin-bottom:9px}
- .in-game .choice{padding:7px}.in-game .choice strong{font-size:13px}.in-game .choice small{font-size:10px}.in-game .small-note{font-size:10px;margin-top:8px}
+ .touch-enabled.in-game .shell{padding:0!important;max-width:none}.touch-enabled.in-game .intro,.touch-enabled.in-game footer,.touch-enabled.in-game .expedition{display:none!important}
+ .touch-enabled.in-game .survival-layout{display:block;max-width:none;margin:0}
+ .touch-enabled.in-game .game-frame{position:fixed;inset:0;width:100vw!important;height:100dvh!important;margin:0;border:0;border-radius:0;box-shadow:none}
+ .touch-enabled.in-game .arena-wrap{position:absolute;inset:0;aspect-ratio:auto!important}
+ .touch-enabled.in-game #arena{width:100%;height:100%}
+ .touch-enabled.in-game .masthead{height:0;border:0}.touch-enabled.in-game .masthead .brand,.touch-enabled.in-game #helpButton{display:none}
+ .touch-enabled.in-game .masthead nav{position:fixed;top:max(8px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:8;gap:6px}
+ .touch-enabled.in-game .icon-button{width:40px;height:40px;background:#071b18aa;border-color:#6fb8a0}
+ .touch-enabled.in-game .hud{position:absolute;z-index:3;top:max(8px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));right:calc(max(12px,env(safe-area-inset-right)) + 98px);width:auto;height:50px;background:#081a15b8;border:1px solid #739a7077;border-radius:8px;padding:5px 10px;gap:12px;pointer-events:none;display:flex}
+ .touch-enabled.in-game .hero{display:flex;gap:7px}.touch-enabled.in-game canvas.joe-portrait{width:33px;height:33px}.touch-enabled.in-game .hero strong{display:none}.touch-enabled.in-game .hero span{font-size:10px;color:#ebd391}
+ .touch-enabled.in-game .meter{flex:1;min-width:70px}.touch-enabled.in-game .experience{display:block}.touch-enabled.in-game .meter-label{font-size:8px}.touch-enabled.in-game .meter-label b{font-size:10px}.touch-enabled.in-game .track{height:6px}.touch-enabled.in-game .wave{padding:0}.touch-enabled.in-game .wave strong{font-size:10px}.touch-enabled.in-game .wave>div{display:none}
+ .touch-enabled.in-game .touch-controls{position:fixed;z-index:6;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));padding:0;background:transparent;border:0;pointer-events:none;align-items:flex-end;gap:8px}
+ .touch-enabled.in-game .stick{width:clamp(92px,17vw,136px);height:clamp(92px,17vw,136px);border:3px solid #63c6ad99;background:#0a302528;box-shadow:inset 0 0 30px #69e6c414;pointer-events:auto}
+ .touch-enabled.in-game .stick i{background:#6ee2c333;border-color:#8fefd4}.touch-enabled.in-game .stick span{font-size:8px;bottom:10px}
+ .touch-enabled.in-game .touch-actions{display:flex;flex-direction:row;gap:7px;pointer-events:auto;padding:6px;background:#081e17a8;border:1px solid #72ba9477;border-radius:10px;max-width:55vw}
+ .touch-enabled.in-game .touch-actions button{min-width:55px;min-height:44px;padding:6px 9px;background:#18472f80;border-color:#74bb9b;font-size:10px}
+ .touch-enabled.in-game .arena-status{left:30%;right:30%;bottom:82px;justify-content:center;flex-wrap:wrap;gap:4px}.touch-enabled.in-game .arena-status span{font-size:8px;padding:3px 6px;letter-spacing:.3px}
+ .touch-enabled.in-game .wave-banner{top:70px;font-size:14px;padding:7px 13px;max-width:75%}
+ .touch-enabled.in-game .boss-hud{top:66px;left:30%;width:40%;padding:5px 10px}
+ .touch-enabled.in-game .dialog{max-height:92dvh;max-width:580px;width:min(78vw,580px);overflow:auto}.touch-enabled.in-game .dialog h2{font-size:25px;margin:7px 0}.touch-enabled.in-game .dialog p{font-size:12px;margin-bottom:9px}
+ .touch-enabled.in-game .choice{padding:7px}.touch-enabled.in-game .choice strong{font-size:13px}.touch-enabled.in-game .choice small{font-size:10px}.touch-enabled.in-game .small-note{font-size:10px;margin-top:8px}
 }
 .view-option{display:flex!important;align-items:center;gap:8px;grid-column:1/-1!important;font-size:11px!important;letter-spacing:0!important;text-transform:none!important}.view-option input{width:18px;height:18px;accent-color:#63dfae}
+/* Mobile presentation only; world/camera coordinates remain in viewport.js. */
+#touchSettings,#touchWeapon,.rotate-prompt{display:none}
+.touch-enabled #touchSettings{display:block}
+.touch-settings{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#06160ce8;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));overscroll-behavior:contain}
+.touch-settings .dialog{width:min(510px,96vw);max-height:95dvh;overflow:auto}
+.touch-settings label{display:block;text-align:left;font-size:12px;margin:12px 0;color:#d6dfc8}.touch-settings output{float:right;color:#ebcf91}.touch-settings input[type=range]{display:block;width:100%;margin-top:7px;accent-color:#7fe2b8}.touch-settings select{display:block;width:100%;margin-top:6px;min-height:36px;background:#102e21;color:#f1e4c5;border:1px solid #749268}.touch-settings .handed-option{display:flex;align-items:center;gap:8px}.touch-settings p{margin:10px 0;font-size:11px;line-height:1.4}.touch-settings h2{font-size:26px;margin:6px 0}.touch-settings .secondary{margin-top:4px;padding:8px 12px}
+.touch-enabled .stick{width:var(--stick-size,112px);height:var(--stick-size,112px);opacity:var(--stick-opacity,.7)}
+.touch-controls.left-handed{flex-direction:row-reverse}
+#touchDash{background:linear-gradient(90deg,#386b50 var(--dash-ready,100%),#0b241be0 var(--dash-ready,100%));cursor:pointer}#touchDash:disabled{opacity:.7;cursor:default}
+.touch-enabled.in-game{overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+@media(orientation:landscape){
+ .touch-enabled.in-game .masthead nav{right:max(8px,env(safe-area-inset-right))}
+ .touch-enabled.in-game .hud{left:calc(max(12px,env(safe-area-inset-left)) + 55px);right:calc(max(12px,env(safe-area-inset-right)) + 140px);gap:8px}
+ .touch-enabled.in-game .hero .joe-portrait{display:none}.touch-enabled.in-game .hero{gap:0}.touch-enabled.in-game .hero span{font-size:9px}.touch-enabled.in-game .meter{min-width:45px}
+ .touch-enabled.in-game #touchWeapon{display:block;position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));width:44px;height:44px;object-fit:contain;background:#0b221a99;border:1px solid #9eaf7788;border-radius:6px;z-index:4;pointer-events:none}
+ .touch-enabled.in-game .stick{width:min(var(--stick-size,112px),36dvh);height:min(var(--stick-size,112px),36dvh)}
+ .touch-enabled.in-game .touch-actions{max-width:52vw}
+ .touch-enabled.in-game .dash-near #touchDash{position:absolute;bottom:calc(min(var(--stick-size,112px),36dvh) + 12px);right:12px;min-width:68px;min-height:44px}
+ .touch-enabled.in-game .dash-near.left-handed #touchDash{right:auto;left:12px}
+ .touch-enabled.in-game .overlay{z-index:10}.touch-enabled.in-game .touch-controls[hidden]{display:none}
+ .touch-enabled.in-game .touch-controls{z-index:6}
+}
+@media(orientation:portrait){
+ .touch-enabled.in-game .rotate-prompt{display:grid;align-content:center;justify-items:center;position:fixed;inset:0;padding:30px;z-index:40;background:#071d16ef;text-align:center}
+ .rotate-prompt strong{font:28px Georgia,serif;color:#ecd19b}.rotate-prompt p{font-size:15px;line-height:1.7;color:#b9cfbf}
+ .touch-enabled.in-game .touch-controls{visibility:hidden;pointer-events:none}
+ .touch-enabled .touch-controls{gap:6px;padding:8px}.touch-enabled .stick{width:min(var(--stick-size,112px),28vw);height:min(var(--stick-size,112px),28vw)}
+}

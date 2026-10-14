@@ -2,6 +2,32 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Mobile controls and fullscreen — 0.4.2
+
+This update is a mobile input/presentation change. core.js, survival.js, story.js, viewport.js, weapon definitions, enemies, arena colliders, source/runtime artwork and progression saves are unchanged.
+
+Audit: the prior build already supported independent joystick pointer IDs, original weapon cooldowns, movement/dash, landscape overlays, automatic blur pause and the current/next prologue image cache. Missing pieces were configurable controls, a rotate prompt, explicit fullscreen entry, a compact weapon-icon HUD, touch dash cooldown feedback and selective arena loading. The previous missing Joe bug was Safari/CDN resizing source sheets while keeping original crop coordinates; the source-grid normalization and integrated 320-square held poses remain intact.
+
+Implemented: available landscape viewport fills gameplay with safe-area offsets and unchanged camera math. Mobile attempts browser fullscreen from a user gesture and requests landscape lock where permitted. Unsupported fullscreen falls back to the viewport. Portrait gameplay pauses behind a friendly rotate-device prompt; return to landscape and resume. Resize/orientation, pointer cancellation, pause and blur clear captured stick pointers and shooting. Left stick moves/faces; right stick aims/fires only beyond its dead zone. Fire rates, cooldowns and invulnerability still come from the existing engine.
+
+Dash is above the aiming stick by default, with an optional center position, visible countdown and cooldown fill. Left-handed layout places aiming/dash on the left. Weapon icon is top-left; level, health, XP and wave occupy the central overlay; pause remains top-right and boss bars remain below the HUD. No reference-game art, logos or graphics were copied.
+
+Open the gear button or Story Options > Touch controls. Settings persist under the separate bsa-touch-v1 key: joystick size 90–160 CSS pixels (limited to fit the viewport), opacity 25–100%, dead zone 5–35%, dash above aiming stick or center, and left-handed layout. Defaults: 112 px, 70%, 16%, dash near aim, right-handed. Invalid/blocked storage uses defaults and reports when changes cannot persist. Existing Story/Survival save keys are untouched. The settings dialog pauses active combat and traps keyboard focus.
+
+Rendering: mobile Canvas density is capped at 2x, and neither backing dimension exceeds 2400 pixels; desktop policy is unchanged. Image objects are cached and explicitly decoded before entering render use. Only the current arena background is retained; the next selection loads before run initialization, and a failure leaves the old state intact with a retry message. Prologue artwork still loads current/next frames on demand. No sprite quality reduction, replacement or new dependencies.
+
+Local verification: npm test passed classic combat, Survival weapons/perks/40-wave progression, Story/save protection, 227 ready assets/93 source hashes, viewport and new touch-settings assertions. Installed Edge + Playwright 1.62.1 was used because the Browser plugin is not available. Desktop 1440x1000, touch/Safari-UA 844x390 at device DPR3 (Canvas DPR2), portrait 390x844, touch tablet 1024x768, and compact 667x375 at DPR4 (Canvas DPR2) passed. No unexpected page/console errors.
+
+Browser interactions: WASD/mouse firing/release/Space/Escape; independent move/aim pointers; northeast projectile direction; third-finger dash with cooldown; center dead zone; individual release and touch cancellation; settings persistence/reset/left-handed geometry; blur-handler pause and orientation state preservation; weapon pickup/icon/held sprite switching; level-up choices; boss bar; all four supplied arena entries after decode; Story Options, initial comic dialogue/pause/skip/replay, Sling/base stats and the implemented first-trial exit. Boss release/trial exit use explicit fixtures, not human play. A controlled aborted arena-image request displayed the failure and successfully retried without resetting the existing mode. Unsupported fullscreen was simulated; the viewport fallback worked. Requested joystick sizes 90 and 160 produced actual 90 and 135px controls on the compact viewport.
+
+Known limitations: no physical iPhone/iPad/Android or actual Safari/WebKit engine testing. OS/browser-specific orientation locks, notches, address bars and backgrounding still need hardware verification. Later Story arena doors/encounters remain unimplemented; the existing first-trial completion correctly reports that and preserves the Survival lock. No human boss or forty-wave balancing run was performed in this update. Full walk/fire sprite animation cycles remain a pre-existing art gap.
+
+Files: game.js (decode/cache/on-demand arena start/mobile density), touch.js (input/settings/fullscreen/rotation/HUD), touch.css (layout/safe areas/settings), story-ui.js (Options integration), index.html/story.html/survival.html (cache versions), package.json (0.4.2/test command), tests/touch.cjs (small assert check), README.md (release record).
+
+Rollback: backup-before-0.4.2 preserves 32d0bb0. Full pre-edit ZIP: Backups/Build_before_0.4.2_20261014_070006.zip. Original Legends of Belize and its saves are untouched.
+
+Hosted verification pending. Earlier entries record historical releases.
+
 ## Held weapons and separate open Survival field — 0.4.1
 
 Joe now visibly holds all twelve live weapons. Each weapon uses eight transparent, integrated teenage Joe poses; hands, weapon and body are one image. The detached rotating weapon overlay is removed. Joe keeps his backward tan cap, white tank, blue shorts, backpack and jade pendant. A small turn between directional poses follows continuous aiming; subtle walking compression and firing recoil are procedural, not full animation cycles.
