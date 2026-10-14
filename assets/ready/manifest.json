@@ -531,6 +531,848 @@
       ]
     }
   },
+  "holding": {
+    "bow": {
+      "frames": [
+        "ready/holding/bow/aim-1.png",
+        "ready/holding/bow/aim-2.png",
+        "ready/holding/bow/aim-3.png",
+        "ready/holding/bow/aim-4.png",
+        "ready/holding/bow/aim-5.png",
+        "ready/holding/bow/aim-6.png",
+        "ready/holding/bow/aim-7.png",
+        "ready/holding/bow/aim-8.png"
+      ],
+      "pivots": [
+        [
+          58.21,
+          156.31
+        ],
+        [
+          68.21,
+          156.67
+        ],
+        [
+          80.03,
+          156.69
+        ],
+        [
+          96.4,
+          157.03
+        ],
+        [
+          101.91,
+          157.01
+        ],
+        [
+          81.65,
+          156.61
+        ],
+        [
+          78.72,
+          156.65
+        ],
+        [
+          71.29,
+          156.73
+        ]
+      ],
+      "bodyHeights": [
+        151.79,
+        152.92,
+        152.97,
+        153.63,
+        152.75,
+        143.49,
+        126.51,
+        138.37
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "dart": {
+      "frames": [
+        "ready/holding/dart/aim-1.png",
+        "ready/holding/dart/aim-2.png",
+        "ready/holding/dart/aim-3.png",
+        "ready/holding/dart/aim-4.png",
+        "ready/holding/dart/aim-5.png",
+        "ready/holding/dart/aim-6.png",
+        "ready/holding/dart/aim-7.png",
+        "ready/holding/dart/aim-8.png"
+      ],
+      "pivots": [
+        [
+          55.78,
+          155.04
+        ],
+        [
+          73.38,
+          155.82
+        ],
+        [
+          80.04,
+          155.4
+        ],
+        [
+          95.84,
+          155.81
+        ],
+        [
+          99.51,
+          155.68
+        ],
+        [
+          93.0,
+          155.78
+        ],
+        [
+          78.9,
+          156.18
+        ],
+        [
+          71.9,
+          155.7
+        ]
+      ],
+      "bodyHeights": [
+        152.14,
+        152.48,
+        152.06,
+        151.62,
+        152.65,
+        152.82,
+        126.4,
+        151.4
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "spear": {
+      "frames": [
+        "ready/holding/spear/aim-1.png",
+        "ready/holding/spear/aim-2.png",
+        "ready/holding/spear/aim-3.png",
+        "ready/holding/spear/aim-4.png",
+        "ready/holding/spear/aim-5.png",
+        "ready/holding/spear/aim-6.png",
+        "ready/holding/spear/aim-7.png",
+        "ready/holding/spear/aim-8.png"
+      ],
+      "pivots": [
+        [
+          50.98,
+          151.91
+        ],
+        [
+          59.4,
+          156.57
+        ],
+        [
+          79.26,
+          156.1
+        ],
+        [
+          97.41,
+          156.98
+        ],
+        [
+          104.89,
+          157.06
+        ],
+        [
+          95.72,
+          157.0
+        ],
+        [
+          79.92,
+          157.03
+        ],
+        [
+          64.04,
+          157.04
+        ]
+      ],
+      "bodyHeights": [
+        145.09,
+        153.14,
+        152.63,
+        153.1,
+        153.7,
+        147.13,
+        122.13,
+        141.42
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "crystal": {
+      "frames": [
+        "ready/holding/crystal/aim-1.png",
+        "ready/holding/crystal/aim-2.png",
+        "ready/holding/crystal/aim-3.png",
+        "ready/holding/crystal/aim-4.png",
+        "ready/holding/crystal/aim-5.png",
+        "ready/holding/crystal/aim-6.png",
+        "ready/holding/crystal/aim-7.png",
+        "ready/holding/crystal/aim-8.png"
+      ],
+      "pivots": [
+        [
+          50.61,
+          149.04
+        ],
+        [
+          56.41,
+          156.49
+        ],
+        [
+          82.09,
+          147.57
+        ],
+        [
+          48.22,
+          156.07
+        ],
+        [
+          101.69,
+          155.31
+        ],
+        [
+          90.92,
+          156.35
+        ],
+        [
+          79.57,
+          156.56
+        ],
+        [
+          66.4,
+          156.35
+        ]
+      ],
+      "bodyHeights": [
+        140.15,
+        152.99,
+        145.02,
+        152.57,
+        151.89,
+        137.72,
+        102.7,
+        136.04
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "cacao": {
+      "frames": [
+        "ready/holding/cacao/aim-1.png",
+        "ready/holding/cacao/aim-2.png",
+        "ready/holding/cacao/aim-3.png",
+        "ready/holding/cacao/aim-4.png",
+        "ready/holding/cacao/aim-5.png",
+        "ready/holding/cacao/aim-6.png",
+        "ready/holding/cacao/aim-7.png",
+        "ready/holding/cacao/aim-8.png"
+      ],
+      "pivots": [
+        [
+          50.91,
+          154.52
+        ],
+        [
+          52.19,
+          156.58
+        ],
+        [
+          79.54,
+          158.24
+        ],
+        [
+          95.03,
+          156.51
+        ],
+        [
+          104.23,
+          152.47
+        ],
+        [
+          96.77,
+          156.31
+        ],
+        [
+          79.86,
+          157.62
+        ],
+        [
+          61.13,
+          156.59
+        ]
+      ],
+      "bodyHeights": [
+        148.78,
+        153.16,
+        154.71,
+        153.02,
+        143.71,
+        134.56,
+        114.14,
+        127.39
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "drum": {
+      "frames": [
+        "ready/holding/drum/aim-1.png",
+        "ready/holding/drum/aim-2.png",
+        "ready/holding/drum/aim-3.png",
+        "ready/holding/drum/aim-4.png",
+        "ready/holding/drum/aim-5.png",
+        "ready/holding/drum/aim-6.png",
+        "ready/holding/drum/aim-7.png",
+        "ready/holding/drum/aim-8.png"
+      ],
+      "pivots": [
+        [
+          70.04,
+          156.71
+        ],
+        [
+          79.26,
+          155.86
+        ],
+        [
+          79.65,
+          156.25
+        ],
+        [
+          80.84,
+          157.0
+        ],
+        [
+          83.46,
+          155.37
+        ],
+        [
+          81.06,
+          156.29
+        ],
+        [
+          81.7,
+          155.85
+        ],
+        [
+          71.78,
+          157.04
+        ]
+      ],
+      "bodyHeights": [
+        153.42,
+        152.09,
+        152.88,
+        153.24,
+        151.52,
+        152.95,
+        149.81,
+        153.33
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "claw": {
+      "frames": [
+        "ready/holding/claw/aim-1.png",
+        "ready/holding/claw/aim-2.png",
+        "ready/holding/claw/aim-3.png",
+        "ready/holding/claw/aim-4.png",
+        "ready/holding/claw/aim-5.png",
+        "ready/holding/claw/aim-6.png",
+        "ready/holding/claw/aim-7.png",
+        "ready/holding/claw/aim-8.png"
+      ],
+      "pivots": [
+        [
+          53.97,
+          143.41
+        ],
+        [
+          104.61,
+          155.31
+        ],
+        [
+          78.9,
+          154.85
+        ],
+        [
+          50.78,
+          154.9
+        ],
+        [
+          106.85,
+          148.24
+        ],
+        [
+          124.85,
+          155.78
+        ],
+        [
+          83.33,
+          155.66
+        ],
+        [
+          61.61,
+          156.17
+        ]
+      ],
+      "bodyHeights": [
+        129.31,
+        152.18,
+        151.68,
+        151.76,
+        137.93,
+        139.66,
+        127.78,
+        138.56
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "feather": {
+      "frames": [
+        "ready/holding/feather/aim-1.png",
+        "ready/holding/feather/aim-2.png",
+        "ready/holding/feather/aim-3.png",
+        "ready/holding/feather/aim-4.png",
+        "ready/holding/feather/aim-5.png",
+        "ready/holding/feather/aim-6.png",
+        "ready/holding/feather/aim-7.png",
+        "ready/holding/feather/aim-8.png"
+      ],
+      "pivots": [
+        [
+          51.18,
+          147.57
+        ],
+        [
+          57.77,
+          157.07
+        ],
+        [
+          79.34,
+          150.85
+        ],
+        [
+          96.48,
+          156.7
+        ],
+        [
+          105.68,
+          149.74
+        ],
+        [
+          94.95,
+          155.82
+        ],
+        [
+          79.22,
+          156.96
+        ],
+        [
+          55.93,
+          156.35
+        ]
+      ],
+      "bodyHeights": [
+        135.98,
+        153.3,
+        147.26,
+        152.99,
+        140.79,
+        130.74,
+        111.63,
+        126.39
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "obsidian": {
+      "frames": [
+        "ready/holding/obsidian/aim-1.png",
+        "ready/holding/obsidian/aim-2.png",
+        "ready/holding/obsidian/aim-3.png",
+        "ready/holding/obsidian/aim-4.png",
+        "ready/holding/obsidian/aim-5.png",
+        "ready/holding/obsidian/aim-6.png",
+        "ready/holding/obsidian/aim-7.png",
+        "ready/holding/obsidian/aim-8.png"
+      ],
+      "pivots": [
+        [
+          49.05,
+          149.72
+        ],
+        [
+          65.34,
+          155.32
+        ],
+        [
+          79.05,
+          155.28
+        ],
+        [
+          91.18,
+          156.1
+        ],
+        [
+          105.04,
+          155.44
+        ],
+        [
+          96.27,
+          154.59
+        ],
+        [
+          80.88,
+          156.66
+        ],
+        [
+          66.79,
+          155.62
+        ]
+      ],
+      "bodyHeights": [
+        141.51,
+        151.91,
+        151.85,
+        152.63,
+        151.71,
+        150.99,
+        113.6,
+        145.53
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "cohune": {
+      "frames": [
+        "ready/holding/cohune/aim-1.png",
+        "ready/holding/cohune/aim-2.png",
+        "ready/holding/cohune/aim-3.png",
+        "ready/holding/cohune/aim-4.png",
+        "ready/holding/cohune/aim-5.png",
+        "ready/holding/cohune/aim-6.png",
+        "ready/holding/cohune/aim-7.png",
+        "ready/holding/cohune/aim-8.png"
+      ],
+      "pivots": [
+        [
+          23.92,
+          156.65
+        ],
+        [
+          73.62,
+          156.67
+        ],
+        [
+          107.08,
+          157.16
+        ],
+        [
+          89.08,
+          156.67
+        ],
+        [
+          90.52,
+          156.52
+        ],
+        [
+          90.34,
+          156.19
+        ],
+        [
+          79.67,
+          155.84
+        ],
+        [
+          73.48,
+          156.34
+        ]
+      ],
+      "bodyHeights": [
+        153.72,
+        153.33,
+        153.52,
+        153.33,
+        153.04,
+        151.96,
+        129.11,
+        144.94
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "staff": {
+      "frames": [
+        "ready/holding/staff/aim-1.png",
+        "ready/holding/staff/aim-2.png",
+        "ready/holding/staff/aim-3.png",
+        "ready/holding/staff/aim-4.png",
+        "ready/holding/staff/aim-5.png",
+        "ready/holding/staff/aim-6.png",
+        "ready/holding/staff/aim-7.png",
+        "ready/holding/staff/aim-8.png"
+      ],
+      "pivots": [
+        [
+          14.94,
+          145.84
+        ],
+        [
+          76.9,
+          150.52
+        ],
+        [
+          93.62,
+          149.42
+        ],
+        [
+          88.45,
+          156.13
+        ],
+        [
+          119.71,
+          142.46
+        ],
+        [
+          103.87,
+          156.6
+        ],
+        [
+          79.48,
+          157.1
+        ],
+        [
+          56.57,
+          156.7
+        ]
+      ],
+      "bodyHeights": [
+        131.3,
+        145.71,
+        146.03,
+        152.75,
+        124.36,
+        134.47,
+        115.11,
+        131.55
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    },
+    "slingshot": {
+      "frames": [
+        "ready/holding/slingshot/aim-1.png",
+        "ready/holding/slingshot/aim-2.png",
+        "ready/holding/slingshot/aim-3.png",
+        "ready/holding/slingshot/aim-4.png",
+        "ready/holding/slingshot/aim-5.png",
+        "ready/holding/slingshot/aim-6.png",
+        "ready/holding/slingshot/aim-7.png",
+        "ready/holding/slingshot/aim-8.png"
+      ],
+      "pivots": [
+        [
+          63.48,
+          156.17
+        ],
+        [
+          72.56,
+          156.51
+        ],
+        [
+          79.0,
+          156.62
+        ],
+        [
+          89.31,
+          156.84
+        ],
+        [
+          98.81,
+          156.5
+        ],
+        [
+          88.48,
+          156.13
+        ],
+        [
+          79.15,
+          156.3
+        ],
+        [
+          75.36,
+          156.82
+        ]
+      ],
+      "bodyHeights": [
+        153.11,
+        153.41,
+        153.62,
+        153.68,
+        152.99,
+        152.25,
+        122.31,
+        150.47
+      ],
+      "frameSize": [
+        160,
+        160
+      ],
+      "angles": [
+        0.0,
+        0.7853981634,
+        1.5707963268,
+        2.3561944902,
+        3.1415926536,
+        3.926990817,
+        4.7123889804,
+        5.4977871438
+      ]
+    }
+  },
   "arenas": {
     "canyon": {
       "nativeSize": [
@@ -575,6 +1417,17 @@
         1200
       ],
       "liveFile": "underworld-arena.png"
+    },
+    "open": {
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "gameSize": [
+        1200,
+        1200
+      ],
+      "liveFile": "open-survival-arena.png"
     }
   },
   "exports": [
@@ -3590,6 +4443,2214 @@
       "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-08.png",
       "file": "ready/sprites/miniLlorona/frame-08.png",
       "sha256": "b2c6775de4f21bbda5dcb4d4079edac36d02df812e92f504a39195f13e09469c"
+    },
+    {
+      "id": "bow",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        100,
+        37,
+        381,
+        390
+      ],
+      "nativeSize": [
+        381,
+        390
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/bow/aim-1.png",
+      "sha256": "bca0379d3f17259d2187645ce2c3fb43fe10cf9176bda495d8ba18622a374b72"
+    },
+    {
+      "id": "bow",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        541,
+        43,
+        319,
+        384
+      ],
+      "nativeSize": [
+        319,
+        384
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/bow/aim-2.png",
+      "sha256": "70297aa565a9ec9e646ebb820eb04dafa140c2a0ddcf9b9e4e3de09a8dde5084"
+    },
+    {
+      "id": "bow",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        1004,
+        38,
+        242,
+        387
+      ],
+      "nativeSize": [
+        242,
+        387
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/bow/aim-3.png",
+      "sha256": "82cc384bb4bcd8df206d14d15c31563f8a217715f984d85e842e0a542bb3393a"
+    },
+    {
+      "id": "bow",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        1364,
+        48,
+        316,
+        377
+      ],
+      "nativeSize": [
+        316,
+        377
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/bow/aim-4.png",
+      "sha256": "f9f374fba4d4e058980fb93e79d6ab931f4c358f381d646785661e810928fa71"
+    },
+    {
+      "id": "bow",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        26,
+        468,
+        371,
+        375
+      ],
+      "nativeSize": [
+        371,
+        375
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/bow/aim-5.png",
+      "sha256": "4488be33b815362e56a7474a8e739750b310ba6a4fc66ee07bf1f4b1083ba20d"
+    },
+    {
+      "id": "bow",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        523,
+        462,
+        285,
+        378
+      ],
+      "nativeSize": [
+        285,
+        378
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/bow/aim-6.png",
+      "sha256": "f4f82930759df3a8aa38f7f14b81f7ed0b8e05c9f3f4e8b43d57d7214901bbbf"
+    },
+    {
+      "id": "bow",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        1002,
+        420,
+        239,
+        430
+      ],
+      "nativeSize": [
+        239,
+        430
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/bow/aim-7.png",
+      "sha256": "041a6c9ce8c2d641ce8ae6d07cbb4f9b099fd37b76e3294d41674e2745de92fd"
+    },
+    {
+      "id": "bow",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "sourceRect": [
+        1407,
+        457,
+        307,
+        392
+      ],
+      "nativeSize": [
+        307,
+        392
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/bow/aim-8.png",
+      "sha256": "ebd09eab0d015c25de5ead00058131d6e82e15b840a8b2e32b6cdb5b88c3ee5d"
+    },
+    {
+      "id": "dart",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        131,
+        45,
+        380,
+        387
+      ],
+      "nativeSize": [
+        380,
+        387
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/dart/aim-1.png",
+      "sha256": "c9f0e581aae62cdee37e69e59b3f102b203bbb2f85c3ca41be650c6235f18208"
+    },
+    {
+      "id": "dart",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        579,
+        48,
+        278,
+        383
+      ],
+      "nativeSize": [
+        278,
+        383
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/dart/aim-2.png",
+      "sha256": "39efc3d63d5dc9de29db129486e600488e89d8cf6e89ca87ab88079625fe820f"
+    },
+    {
+      "id": "dart",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        970,
+        44,
+        230,
+        383
+      ],
+      "nativeSize": [
+        230,
+        383
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/dart/aim-3.png",
+      "sha256": "dfe4e24158c1a6377d4ab0858be8b5bbd55381321604c6744a2801571e56d9e0"
+    },
+    {
+      "id": "dart",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        1353,
+        48,
+        311,
+        382
+      ],
+      "nativeSize": [
+        311,
+        382
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/dart/aim-4.png",
+      "sha256": "f47a9cc409e97f43a726f8bd5a47b717c2200ca3ca1f1b05100b5385aa861e85"
+    },
+    {
+      "id": "dart",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        36,
+        465,
+        361,
+        370
+      ],
+      "nativeSize": [
+        361,
+        370
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/dart/aim-5.png",
+      "sha256": "4f9fcebb2bfcbf0fcdf7b6a589d4203ac581590b3abc6483aa3541fad65f6f1e"
+    },
+    {
+      "id": "dart",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        502,
+        465,
+        317,
+        379
+      ],
+      "nativeSize": [
+        317,
+        379
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/dart/aim-6.png",
+      "sha256": "8c636223c9c625fc7fca93fed6dec443f3ee550c83a3f4529f0b5b83135baa44"
+    },
+    {
+      "id": "dart",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        980,
+        434,
+        212,
+        419
+      ],
+      "nativeSize": [
+        212,
+        419
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/dart/aim-7.png",
+      "sha256": "c76d9b219fe0b1359bca093e49489e0e22bcd4c0ebe3e72cd7f6d4c53d6855eb"
+    },
+    {
+      "id": "dart",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "sourceRect": [
+        1400,
+        463,
+        283,
+        372
+      ],
+      "nativeSize": [
+        283,
+        372
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/dart/aim-8.png",
+      "sha256": "81aa9fcb9688c8a0e9940d4c7a9b958a84641249ffab6021c9e9bf4ab1944bac"
+    },
+    {
+      "id": "spear",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        115,
+        47,
+        397,
+        375
+      ],
+      "nativeSize": [
+        397,
+        375
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/spear/aim-1.png",
+      "sha256": "8de872b9942a8d29ed1adc469aa05a720e313fe38698f2ec3c89d4e1e2070c49"
+    },
+    {
+      "id": "spear",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        544,
+        47,
+        317,
+        373
+      ],
+      "nativeSize": [
+        317,
+        373
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/spear/aim-2.png",
+      "sha256": "cbd076c7f7336e1b4aba50223644c22bcaec3f739f4bf4ed09cdf937731271cc"
+    },
+    {
+      "id": "spear",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        1000,
+        47,
+        220,
+        369
+      ],
+      "nativeSize": [
+        220,
+        369
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/spear/aim-3.png",
+      "sha256": "8736ec64fddd465c482ea836b953d4610c120c394beeff6adc175e339162db8a"
+    },
+    {
+      "id": "spear",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        1350,
+        48,
+        328,
+        371
+      ],
+      "nativeSize": [
+        328,
+        371
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/spear/aim-4.png",
+      "sha256": "ec04b408f96854da4bedaee64554b9bc58c1cf4e6fe4bb7169b8eef0ade24a4d"
+    },
+    {
+      "id": "spear",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        48,
+        476,
+        370,
+        381
+      ],
+      "nativeSize": [
+        370,
+        381
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/spear/aim-5.png",
+      "sha256": "e2c17561b8f405f99f337dd79153f83a41a90746ed4f17db6231de72c18b6c77"
+    },
+    {
+      "id": "spear",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        487,
+        470,
+        322,
+        373
+      ],
+      "nativeSize": [
+        322,
+        373
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/spear/aim-6.png",
+      "sha256": "b8b2f12465c5ef828e14c9131d09f2aa31d67a0f5a98ef0fd14adc4683539d4e"
+    },
+    {
+      "id": "spear",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        987,
+        424,
+        242,
+        431
+      ],
+      "nativeSize": [
+        242,
+        431
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/spear/aim-7.png",
+      "sha256": "aae3b8f2312f85324530c7eeba2b036e44111375f2d121e087f5d88b1cda782e"
+    },
+    {
+      "id": "spear",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "sourceRect": [
+        1395,
+        463,
+        329,
+        379
+      ],
+      "nativeSize": [
+        329,
+        379
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/spear/aim-8.png",
+      "sha256": "9e77ad2872cd56857dd299dd9105e0c96279509fd0148ea6ff6a0cb97b72aea8"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        124,
+        35,
+        411,
+        383
+      ],
+      "nativeSize": [
+        411,
+        383
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/crystal/aim-1.png",
+      "sha256": "16f9356d32677874a45358e9a7424771ed87cb8fb78dc9eded1a927b71687147"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        578,
+        39,
+        337,
+        365
+      ],
+      "nativeSize": [
+        337,
+        365
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/crystal/aim-2.png",
+      "sha256": "6c4610c6d88836f23fb6587e04d1e734e0d5eebed02ed6fc46c6e84366c8889f"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        989,
+        30,
+        226,
+        502
+      ],
+      "nativeSize": [
+        226,
+        502
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/crystal/aim-3.png",
+      "sha256": "466b47094322de54fd602449a59d82575c4d95d494473cdc994f57d0153ca921"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        1350,
+        39,
+        297,
+        366
+      ],
+      "nativeSize": [
+        297,
+        366
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/crystal/aim-4.png",
+      "sha256": "f9ff7d8793d3526d2510540610ae19cbc637e5cfd2313026dbc2f0356b08a5d6"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        45,
+        484,
+        371,
+        375
+      ],
+      "nativeSize": [
+        371,
+        375
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/crystal/aim-5.png",
+      "sha256": "8587869e7ca4eedd4d2f3b01d7879edbf1ff0a85a275bcfa447c1c77d25f17cf"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        529,
+        450,
+        311,
+        395
+      ],
+      "nativeSize": [
+        311,
+        395
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/crystal/aim-6.png",
+      "sha256": "03da15ee7781bd87b5da1f2455855c161a607f758675bd6e35a6f5674f107efe"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        989,
+        355,
+        240,
+        511
+      ],
+      "nativeSize": [
+        240,
+        511
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/crystal/aim-7.png",
+      "sha256": "85af4bfa2446288cd61714d08fbbb489a1dd89a12ef0d06bf38a35c55c092d6b"
+    },
+    {
+      "id": "crystal",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "sourceRect": [
+        1385,
+        449,
+        331,
+        394
+      ],
+      "nativeSize": [
+        331,
+        394
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/crystal/aim-8.png",
+      "sha256": "3aa2fb40aba2ccdebed7e9df8f56888a357422c5515fb537dba8713029eaebd6"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        90,
+        33,
+        385,
+        374
+      ],
+      "nativeSize": [
+        385,
+        374
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/cacao/aim-1.png",
+      "sha256": "bba745073954f27f377535b67dfccee9d52a2e3b0487a8007aeb6532ab24d0e8"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        517,
+        32,
+        374,
+        373
+      ],
+      "nativeSize": [
+        374,
+        373
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/cacao/aim-2.png",
+      "sha256": "59376c5e283880f11eb0ab8e2c6f06129a8827fa85b9b323c38a40862e0c9e1c"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        957,
+        23,
+        253,
+        363
+      ],
+      "nativeSize": [
+        253,
+        363
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/cacao/aim-3.png",
+      "sha256": "21137c167ab39788daa6324e2d1a9ef2ce24a64c27e916ca916bb2764fd55fa6"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        1340,
+        35,
+        341,
+        367
+      ],
+      "nativeSize": [
+        341,
+        367
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/cacao/aim-4.png",
+      "sha256": "cde2e5d91ccd8f4775d37703281a14d498897603cca4aa7bd1bdabeb989413b2"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        38,
+        484,
+        383,
+        359
+      ],
+      "nativeSize": [
+        383,
+        359
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/cacao/aim-5.png",
+      "sha256": "50073ed14234267f1e643e3e71012fc99681ff3384de1d51d09b6f0381db9406"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        501,
+        458,
+        342,
+        390
+      ],
+      "nativeSize": [
+        342,
+        390
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/cacao/aim-6.png",
+      "sha256": "ca6652623ff252c659441d903ccda491824505fcf5cf6326f9095f6e4607144c"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        974,
+        390,
+        219,
+        471
+      ],
+      "nativeSize": [
+        219,
+        471
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/cacao/aim-7.png",
+      "sha256": "09e519c3606ea1a588805e66faba3eb0139895eee1fa3318d78587c8a146e4a7"
+    },
+    {
+      "id": "cacao",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "sourceRect": [
+        1364,
+        433,
+        371,
+        422
+      ],
+      "nativeSize": [
+        371,
+        422
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/cacao/aim-8.png",
+      "sha256": "c4bea3a72dc5e52993aa8755f57761ce3485d9efd9a2bd655ee315e60a56028e"
+    },
+    {
+      "id": "drum",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        93,
+        0,
+        317,
+        438
+      ],
+      "nativeSize": [
+        317,
+        438
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/drum/aim-1.png",
+      "sha256": "43c64de640e083357b3ab4fe5794b2c119b69a62b01151b67d9f253ae7d48389"
+    },
+    {
+      "id": "drum",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        545,
+        2,
+        268,
+        425
+      ],
+      "nativeSize": [
+        268,
+        425
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/drum/aim-2.png",
+      "sha256": "42e8bbf181bba9283c78a247f55023f1667307fc3091ea45e78bec5e8c80bc29"
+    },
+    {
+      "id": "drum",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        953,
+        0,
+        281,
+        427
+      ],
+      "nativeSize": [
+        281,
+        427
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/drum/aim-3.png",
+      "sha256": "b291ace25a3bce41b4e240e029f340c5b00c7547dc86dcd4b6fe8e82380e647b"
+    },
+    {
+      "id": "drum",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        1397,
+        3,
+        285,
+        426
+      ],
+      "nativeSize": [
+        285,
+        426
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/drum/aim-4.png",
+      "sha256": "8c15024b3c26eda8f271b82c26b29473c851c309fc7144dcdb2e4c137cd3f50d"
+    },
+    {
+      "id": "drum",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        58,
+        438,
+        306,
+        415
+      ],
+      "nativeSize": [
+        306,
+        415
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/drum/aim-5.png",
+      "sha256": "641c91d5fdbbc3f152fe87ca13b242d2557ebd7453836edf363276bb8ca86209"
+    },
+    {
+      "id": "drum",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        512,
+        443,
+        293,
+        431
+      ],
+      "nativeSize": [
+        293,
+        431
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/drum/aim-6.png",
+      "sha256": "71819f9a5cf6bda1edf28b83dd0e535421bff495de79ba2888cfcdc150f48810"
+    },
+    {
+      "id": "drum",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        971,
+        439,
+        266,
+        424
+      ],
+      "nativeSize": [
+        266,
+        424
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/drum/aim-7.png",
+      "sha256": "3a8e22ab07071a1e3d480f3964b1c5580417be432573ceda8a727097aa337a16"
+    },
+    {
+      "id": "drum",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "sourceRect": [
+        1414,
+        443,
+        328,
+        432
+      ],
+      "nativeSize": [
+        328,
+        432
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/drum/aim-8.png",
+      "sha256": "f2e6a263985aab8bbda5ed903ea7b19459166e4bfbf20575cfbf2f710ea3167d"
+    },
+    {
+      "id": "claw",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        53,
+        18,
+        464,
+        396
+      ],
+      "nativeSize": [
+        464,
+        396
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/claw/aim-1.png",
+      "sha256": "d57a174267dc04728e9be3b5fb33d9490f5b853d830ef21132f6166d42830829"
+    },
+    {
+      "id": "claw",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        556,
+        15,
+        326,
+        409
+      ],
+      "nativeSize": [
+        326,
+        409
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/claw/aim-2.png",
+      "sha256": "b89340cd7199eca9ccf95691a72b0d559245985df5d4a40399c90faeb7a01ce2"
+    },
+    {
+      "id": "claw",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        971,
+        13,
+        254,
+        404
+      ],
+      "nativeSize": [
+        254,
+        404
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/claw/aim-3.png",
+      "sha256": "43feb80ca0639da67248146a1cca8e901b9ffca7751da43e5e059a99eb3e63b1"
+    },
+    {
+      "id": "claw",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        1380,
+        20,
+        356,
+        408
+      ],
+      "nativeSize": [
+        356,
+        408
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/claw/aim-4.png",
+      "sha256": "0cecc6f59da204c6d213f7f4f109204b46fdd9e08f2fdd437975a66d929e71d3"
+    },
+    {
+      "id": "claw",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        15,
+        455,
+        435,
+        397
+      ],
+      "nativeSize": [
+        435,
+        397
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/claw/aim-5.png",
+      "sha256": "6a3ce1467a30e5dfb140ee81069a32e4a0eb074372405dbb2cab38797efa59a9"
+    },
+    {
+      "id": "claw",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        503,
+        452,
+        349,
+        417
+      ],
+      "nativeSize": [
+        349,
+        417
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/claw/aim-6.png",
+      "sha256": "073a0ea96a7028e464cf7425e501ddb0d3d28471c0e92b2eb58f4938abc37380"
+    },
+    {
+      "id": "claw",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        974,
+        424,
+        250,
+        442
+      ],
+      "nativeSize": [
+        250,
+        442
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/claw/aim-7.png",
+      "sha256": "946e2e5408369fb67f90eb9d6147598672f8701ac173fc96caeb313c06f6b841"
+    },
+    {
+      "id": "claw",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "sourceRect": [
+        1399,
+        451,
+        348,
+        418
+      ],
+      "nativeSize": [
+        348,
+        418
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/claw/aim-8.png",
+      "sha256": "ff806b120cddd1e42762bdc18ea4ecfa31594b25252bb03af8f39594abcc694f"
+    },
+    {
+      "id": "feather",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        69,
+        28,
+        433,
+        383
+      ],
+      "nativeSize": [
+        433,
+        383
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/feather/aim-1.png",
+      "sha256": "7cb3feb5f8bda93cc142e715ac4fc506fbb42124bcf966f99694d9ef495b4827"
+    },
+    {
+      "id": "feather",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        549,
+        37,
+        356,
+        382
+      ],
+      "nativeSize": [
+        356,
+        382
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/feather/aim-2.png",
+      "sha256": "011f81fee1425204020f52967f79f4cae07329961241075b094d688c456c2269"
+    },
+    {
+      "id": "feather",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        960,
+        19,
+        264,
+        402
+      ],
+      "nativeSize": [
+        264,
+        402
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/feather/aim-3.png",
+      "sha256": "b55129f2c36ca2a37f116df7b072ad861f66cfea72c27fc5b83d779e7b53a70b"
+    },
+    {
+      "id": "feather",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        1334,
+        35,
+        354,
+        388
+      ],
+      "nativeSize": [
+        354,
+        388
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/feather/aim-4.png",
+      "sha256": "e7f295a552eb02aae1cc5726d8bf90e20887bba21ccb727386bdfb205d25a598"
+    },
+    {
+      "id": "feather",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        15,
+        466,
+        433,
+        399
+      ],
+      "nativeSize": [
+        433,
+        399
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/feather/aim-5.png",
+      "sha256": "47d8551ababeedeca4597bccf2bdf287b7532e95e39d11eb9331de89fa7c092d"
+    },
+    {
+      "id": "feather",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        531,
+        440,
+        346,
+        421
+      ],
+      "nativeSize": [
+        346,
+        421
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/feather/aim-6.png",
+      "sha256": "47bd25a2af81f15e0f358156e9cef415839c9d8e8780e2b2959b854389556741"
+    },
+    {
+      "id": "feather",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        1000,
+        405,
+        228,
+        473
+      ],
+      "nativeSize": [
+        228,
+        473
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/feather/aim-7.png",
+      "sha256": "e4a993f132ed7c636cac8b458c9c1cc11c78357365c42fae14356ae4dab297b2"
+    },
+    {
+      "id": "feather",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "sourceRect": [
+        1372,
+        433,
+        376,
+        438
+      ],
+      "nativeSize": [
+        376,
+        438
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/feather/aim-8.png",
+      "sha256": "e6ae0a4fcd00409f749309f081685ba32a2c784b249cefd089d3108c590839a2"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        102,
+        39,
+        398,
+        372
+      ],
+      "nativeSize": [
+        398,
+        372
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/obsidian/aim-1.png",
+      "sha256": "351cbe5e1398fcb9fd145b2180b4a641fd24d1075be1dd55dafc0ad1e8b95dfa"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        568,
+        39,
+        316,
+        376
+      ],
+      "nativeSize": [
+        316,
+        376
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/obsidian/aim-2.png",
+      "sha256": "6dc5d965adc986b4c9306a5b9a952271d659f2236493dedbdb8b74da5ae2e9a4"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        977,
+        33,
+        239,
+        373
+      ],
+      "nativeSize": [
+        239,
+        373
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/obsidian/aim-3.png",
+      "sha256": "b0f582380d4e041ee289a512e46efb06d1182e17c4cf98dca3f56f78cd94461a"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        1354,
+        39,
+        304,
+        369
+      ],
+      "nativeSize": [
+        304,
+        369
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/obsidian/aim-4.png",
+      "sha256": "4a97e3b0876c9422ffc748b397ae15b47faf21d7bcb57943aa547fb8efa2653f"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        42,
+        473,
+        380,
+        386
+      ],
+      "nativeSize": [
+        380,
+        386
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/obsidian/aim-5.png",
+      "sha256": "0484f702f3e749bf4672fbb143568ac563a8329512f1f04c1355f0ddc689e82d"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        532,
+        484,
+        331,
+        355
+      ],
+      "nativeSize": [
+        331,
+        355
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/obsidian/aim-6.png",
+      "sha256": "901b76dfe618adf094c5b7a5077160f247c0284efb2cbedb6447eb25406b197a"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        996,
+        437,
+        225,
+        431
+      ],
+      "nativeSize": [
+        225,
+        431
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/obsidian/aim-7.png",
+      "sha256": "fb2bbacf18ce0e59d97f216867e90f8a2c4807fab09322179186ccd9000b9eb6"
+    },
+    {
+      "id": "obsidian",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "sourceRect": [
+        1373,
+        473,
+        307,
+        365
+      ],
+      "nativeSize": [
+        307,
+        365
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/obsidian/aim-8.png",
+      "sha256": "cbc58ceae527caa7ea8305ead46f8e385a3e27b7d4d7534d7829b76bc4625921"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        47,
+        62,
+        342,
+        382
+      ],
+      "nativeSize": [
+        342,
+        382
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/cohune/aim-1.png",
+      "sha256": "205142cfe41fa37011d8530a28a91a2288047027a9143a0ed892a8024e3c33ec"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        446,
+        58,
+        272,
+        384
+      ],
+      "nativeSize": [
+        272,
+        384
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/cohune/aim-2.png",
+      "sha256": "43938cc85e7dc26fb70301b922e3a8e90fe7e63ebebdb0605f665cf37ef9b107"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        842,
+        53,
+        213,
+        395
+      ],
+      "nativeSize": [
+        213,
+        395
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/cohune/aim-3.png",
+      "sha256": "1a39078593d0e02992088b24ac273ed316804c66f0d5ebeebd885241cbdc58ad"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        1194,
+        63,
+        301,
+        384
+      ],
+      "nativeSize": [
+        301,
+        384
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/cohune/aim-4.png",
+      "sha256": "b87fef839f1c1ad23072a213795235dcf01fdf71b62f8345403f6517ad868727"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        31,
+        557,
+        327,
+        368
+      ],
+      "nativeSize": [
+        327,
+        368
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/cohune/aim-5.png",
+      "sha256": "83ee252d8de1f3911ded59c6c95433aeb01b8e884f583d787bdce5059bc0b738"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        441,
+        559,
+        308,
+        378
+      ],
+      "nativeSize": [
+        308,
+        378
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/cohune/aim-6.png",
+      "sha256": "5205ea8579d980c74bc732875fc0c7c5ef287105f4edeb3b473e4acb2f3d3f9d"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        863,
+        506,
+        195,
+        461
+      ],
+      "nativeSize": [
+        195,
+        461
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/cohune/aim-7.png",
+      "sha256": "62678e7000aa95acccfaf35ece54e9673850145c9937f5ca9466105b82a85c44"
+    },
+    {
+      "id": "cohune",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "sourceRect": [
+        1226,
+        549,
+        279,
+        393
+      ],
+      "nativeSize": [
+        279,
+        393
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/cohune/aim-8.png",
+      "sha256": "634e1bf8ef8b4107d9bfc85ac0f94d0cec3f89305d8710aacc1f73c82dc595df"
+    },
+    {
+      "id": "staff",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        82,
+        69,
+        407,
+        350
+      ],
+      "nativeSize": [
+        407,
+        350
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/staff/aim-1.png",
+      "sha256": "6f35856623150a84721f9716d5fa5f56026e9ad338b0c1e0f7675b6690d5ddd2"
+    },
+    {
+      "id": "staff",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        575,
+        56,
+        336,
+        332
+      ],
+      "nativeSize": [
+        336,
+        332
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/staff/aim-2.png",
+      "sha256": "83863a09c700fba9bbf6b9e91bd7d4b3bb888abe3ad7d8876e26cf5f0042d717"
+    },
+    {
+      "id": "staff",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        1026,
+        46,
+        213,
+        378
+      ],
+      "nativeSize": [
+        213,
+        378
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/staff/aim-3.png",
+      "sha256": "831d185d95fea77800123a5b7f2d41c4e9255b92efdbf4bd5993d9ec3f806168"
+    },
+    {
+      "id": "staff",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        1392,
+        64,
+        302,
+        331
+      ],
+      "nativeSize": [
+        302,
+        331
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/staff/aim-4.png",
+      "sha256": "4c90aa072dabb14fbb3a2895f4e5e7a066d4835abe0254170d7bfe22cdce66d1"
+    },
+    {
+      "id": "staff",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        23,
+        499,
+        413,
+        335
+      ],
+      "nativeSize": [
+        413,
+        335
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/staff/aim-5.png",
+      "sha256": "60e4111f998d7d330cf9df9668ba8b23525523ae8b616801bff20f87cd9a5c2f"
+    },
+    {
+      "id": "staff",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        504,
+        455,
+        348,
+        376
+      ],
+      "nativeSize": [
+        348,
+        376
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/staff/aim-6.png",
+      "sha256": "656a2dfc0fbf0c82ac57e1e297b938a902a2e20296382b787ffc4e5c9ffff942"
+    },
+    {
+      "id": "staff",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        1040,
+        428,
+        184,
+        442
+      ],
+      "nativeSize": [
+        184,
+        442
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/staff/aim-7.png",
+      "sha256": "4099a01f8eb8614e608ea4de46e8650536b2664566b194ae691d46271bc7282e"
+    },
+    {
+      "id": "staff",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "sourceRect": [
+        1410,
+        447,
+        332,
+        388
+      ],
+      "nativeSize": [
+        332,
+        388
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/staff/aim-8.png",
+      "sha256": "1ae961a93e9dac7c1e0cb46d79bd1740beac978a52e434950f5240cb958ba75a"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-1",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        51,
+        16,
+        352,
+        418
+      ],
+      "nativeSize": [
+        352,
+        418
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-1.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-1.png",
+      "file": "ready/holding/slingshot/aim-1.png",
+      "sha256": "b951c8bca37ca36d7136a98dfbac574213dd6744883cae0bf9caa11ab6a8aeb6"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-2",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        538,
+        16,
+        300,
+        413
+      ],
+      "nativeSize": [
+        300,
+        413
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-2.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-2.png",
+      "file": "ready/holding/slingshot/aim-2.png",
+      "sha256": "d36b76d0b24440aeb9f288446dfdd40e71421c7a80bf260dc36a29934b6dbf5e"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-3",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        978,
+        12,
+        231,
+        426
+      ],
+      "nativeSize": [
+        231,
+        426
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-3.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-3.png",
+      "file": "ready/holding/slingshot/aim-3.png",
+      "sha256": "db27a30eb313442bb4081ae49bf2138b39fd899ccebdccb6aa0a2c507363552f"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-4",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        1387,
+        23,
+        315,
+        405
+      ],
+      "nativeSize": [
+        315,
+        405
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-4.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-4.png",
+      "file": "ready/holding/slingshot/aim-4.png",
+      "sha256": "ed6347842773fac00b3c958069e54c0856e9444d4738ce71d68801a821c9dfa9"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-5",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        39,
+        460,
+        350,
+        411
+      ],
+      "nativeSize": [
+        350,
+        411
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-5.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-5.png",
+      "file": "ready/holding/slingshot/aim-5.png",
+      "sha256": "89ab50dc981e61806218d108d6ecc76f4c626e1d303ac6604a292f94d296b26c"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-6",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        499,
+        452,
+        324,
+        413
+      ],
+      "nativeSize": [
+        324,
+        413
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-6.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-6.png",
+      "file": "ready/holding/slingshot/aim-6.png",
+      "sha256": "2434b1abb65145d68dcb9d8f5f6d8ee936d39ca057cb522d9c09e96adde61be6"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-7",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        969,
+        437,
+        268,
+        433
+      ],
+      "nativeSize": [
+        268,
+        433
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-7.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-7.png",
+      "file": "ready/holding/slingshot/aim-7.png",
+      "sha256": "9d74f09f780e4d2ba2545cc65e837225d6c596ba1a6611703ca54d5c24209fb5"
+    },
+    {
+      "id": "slingshot",
+      "role": "aim-8",
+      "source": "Assets/Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "sourceRect": [
+        1419,
+        455,
+        317,
+        403
+      ],
+      "nativeSize": [
+        317,
+        403
+      ],
+      "displaySize": [
+        160,
+        160
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/aim-8.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/aim-8.png",
+      "file": "ready/holding/slingshot/aim-8.png",
+      "sha256": "c8f25e37efc109c957dba2da5fb9978e19b3c44d0338afd19a74673e3b75bf9d"
     }
   ],
   "sourceInventory": [
@@ -3619,6 +6680,15 @@
       ],
       "mode": "RGB",
       "sha256": "0edf85f1b9334ea7d7e56d4f54b2d4cbe1d632430a9ab2e9bd7f98c9b8fa95a3"
+    },
+    {
+      "file": "Arenas/Open Jungle Clearing/Open Jungle Clearing v1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "f83a4111f7d623e34ebdccce91a482374b7f9f27e071d31ea0ddf9192407b5a0"
     },
     {
       "file": "Arenas/Underworld Corrupted Maya Arena Concept.png",
@@ -3828,6 +6898,15 @@
       "sha256": "38206e77ecae3db7997681fe09a7c40bcdb994234e62e19c79bc39494eb0d4b3"
     },
     {
+      "file": "Weapons/Belize Hardwood Bow/Teenage Joe Holding bow v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "e0b40810f2f554442c6e29dac65dde62a508535330e00a1994b645fe9085a4dc"
+    },
+    {
       "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Concept Sheet-5.png",
       "size": [
         1536,
@@ -3882,6 +6961,15 @@
       "sha256": "b920f6c4ad5d60f6aeaff0e4b343e72262def89e8a7f47438aff9c88379f0bf3"
     },
     {
+      "file": "Weapons/Cohune Bomb Launcher/Teenage Joe Holding cohune v1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "1c635ef2863862a114be0cbe97d15df2bf853c5f3ef94815c24eeca627fff574"
+    },
+    {
       "file": "Weapons/Crystal Staff/Crystal Staff Concerpt Art Regular  - Powered Ammo.png",
       "size": [
         1254,
@@ -3927,6 +7015,15 @@
       "sha256": "61970c4251875a61e8e3166ec196e635532cb96a8ec8a9896a3310bb50776dec"
     },
     {
+      "file": "Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "cbf9c57c42ecb573f616b1c6247523e03bf55f943ecf5544c7fa5a2075d9a6bb"
+    },
+    {
       "file": "Weapons/Drums OF My Calling/Drum of Calling Asset Atlas-2.png",
       "size": [
         1536,
@@ -3961,6 +7058,15 @@
       ],
       "mode": "RGBA",
       "sha256": "c2fb066a88e935d946c50af8fad8047f0fa5a9e1174a57b3ce145c176a69a6d2"
+    },
+    {
+      "file": "Weapons/Drums OF My Calling/Teenage Joe Holding drum v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "27e5203c744143370853a7bcb38e3899566f886057c822eff892e8a0a3660943"
     },
     {
       "file": "Weapons/Duende Staff/Duende Staff  Holding.png",
@@ -4008,6 +7114,15 @@
       "sha256": "44949c1ddd0c83227d6b0b32b20eae0f5ef8442f08a191ed59eb87346cf395bb"
     },
     {
+      "file": "Weapons/Duende Staff/Teenage Joe Holding staff v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "685f7f40c559099efe7430a73d59ce84b6517fe8550af4db6d54d8750a709d0b"
+    },
+    {
       "file": "Weapons/Fishing Spear thrower/Fishing Spear Thrower Ammo.png",
       "size": [
         1254,
@@ -4051,6 +7166,15 @@
       ],
       "mode": "RGB",
       "sha256": "6b1e9d29a6c5a1ec4e784e902e6458a01842a0c2668dbd9d2f39412d805d30e4"
+    },
+    {
+      "file": "Weapons/Fishing Spear thrower/Teenage Joe Holding spear v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "e45e907dc3c1fa2bcf2c2afb5402a52a87dfafd0e2e9f76653698e12fdfd6094"
     },
     {
       "file": "Weapons/Jaguar Spirit Claw/Jaguar Spirit Claw Attack Frames.png",
@@ -4098,6 +7222,15 @@
       "sha256": "409a2eca1a8bdcf170ffd27c6fcce45f888ad96ced9933895c377bceca4a40eb"
     },
     {
+      "file": "Weapons/Jaguar Spirit Claw/Teenage Joe Holding claw v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "8d76e7e29c300755c7c4ec68e5145b4af522ea9f1d4f642904a39461719c1fde"
+    },
+    {
       "file": "Weapons/Kukulkan Feather Cast/Kukulkan Feather Cast Attack shots.png",
       "size": [
         1254,
@@ -4143,6 +7276,15 @@
       "sha256": "dcabdea099389f135fc74002160e00ad7f1ff69109dc7175f57514a4da53b2d0"
     },
     {
+      "file": "Weapons/Kukulkan Feather Cast/Teenage Joe Holding feather v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "3f6596d9435d7527e2aa760458f43877a312a54beab4b64923867031369ca844"
+    },
+    {
       "file": "Weapons/Maya Dart Launcher/Joe Maya Dart Launcher Held.png",
       "size": [
         1254,
@@ -4186,6 +7328,15 @@
       ],
       "mode": "RGB",
       "sha256": "bcddf6754697d29a1a885960a0a6f817564770f99e31f34c760a13888a5a354d"
+    },
+    {
+      "file": "Weapons/Maya Dart Launcher/Teenage Joe Holding dart v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "e2b6e4385f3abeb27bedc9d8e51c334a97ed4e88e1f93fe6cc6732350c7f3afe"
     },
     {
       "file": "Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
@@ -4242,6 +7393,15 @@
       "sha256": "6ccd744bd3886429225af4853e57f80667b243e7ac330dc03b59d448ab6f3fb2"
     },
     {
+      "file": "Weapons/Obsidian Spirit Shards/Teenage Joe Holding obsidian v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "694ba2a5351c8e2101cf43c159002a3e024d1708769f5577ba63423ec9aff602"
+    },
+    {
       "file": "Weapons/Slingshot/Pixel Art Slingshot Sprite Sheet.png",
       "size": [
         1254,
@@ -4267,6 +7427,15 @@
       ],
       "mode": "RGB",
       "sha256": "c3b4bb083978136b052493329fd8bcda39057df5b3ab1082ba60f69d3ccd5c04"
+    },
+    {
+      "file": "Weapons/Slingshot/Teenage Joe Holding slingshot v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "a131bb4532011d3315d07925239fa2678e984b89759aee3847705607cf85cfd1"
     },
     {
       "file": "Weapons/Staff Of Cacao Smoke/Staff Of Cacao Smoke Concept Design Regular - Powered up - Joe holding.png",
@@ -4312,6 +7481,15 @@
       ],
       "mode": "RGB",
       "sha256": "bf0737995e85f603a4843a680478c4ea1b8cbe3c0343c01774fdc913dfd5a690"
+    },
+    {
+      "file": "Weapons/Staff Of Cacao Smoke/Teenage Joe Holding cacao v1.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "77c683cc3046feeb06fb9e04eea6a374a2d1148ec7b895f1dbdc72662af0070d"
     }
   ],
   "missing": [
@@ -4321,6 +7499,6 @@
     "Enemy spawn effects",
     "Perk icons",
     "Mobile control artwork",
-    "Full directional held-weapon animations matching canonical teenage Joe"
+    "Full walking/attack frame cycles for integrated held-weapon poses"
   ]
 }

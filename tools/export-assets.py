@@ -11,7 +11,7 @@ import json
 import re
 import shutil
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 BUILD = Path(__file__).resolve().parents[1]
 SOURCE = BUILD.parent / "Assets"
@@ -43,7 +43,7 @@ POWERS = {
 }
 HELD_ANGLES = {"slingshot": -.2, "bow": 0, "dart": -.72, "spear": -.57, "crystal": -.74, "cacao": -.92, "drum": 0, "claw": 0, "feather": -.93, "obsidian": -.49, "cohune": -.32, "staff": -1.5707963267948966}
 PROJECTILE_ANGLES = {"feather": -.5, "obsidian": -.24}
-manifest = {"version": 1, "weapons": {}, "powers": {}, "sprites": {}, "arenas": {}, "exports": []}
+manifest = {"version": 1, "weapons": {}, "powers": {}, "sprites": {}, "holding": {}, "arenas": {}, "exports": []}
 
 
 def crop(source, rect, matte=False):
@@ -78,8 +78,8 @@ def fit(image, size):
     return result
 
 
-def export(folder, category, asset_id, name, source, rect, size, matte=False):
-    native = crop(source, rect, matte)
+def export(folder, category, asset_id, name, source, rect, size, matte=False, native=None):
+    native = crop(source, rect, matte) if native is None else native
     full = folder / "Game Ready" / "Full Resolution" / (name + ".png")
     game = folder / "Game Ready" / "Game Resolution" / (name + ".png")
     hires = game.with_name(name + "@2x.png")
@@ -172,15 +172,92 @@ for asset_id, art in sprites.items():
     if art.get("portrait"):
         manifest["sprites"][asset_id]["portrait"] = export(directory, "sprites", asset_id, "portrait", original, art["portrait"], (64,64))
 
-for asset_id, name in {"canyon":"Ancient Forest Canyon Arena.png", "coast":"Hopkins Beach Concept.png", "maya":"Maya Arena Concept.png", "underworld":"Underworld Corrupted Maya Arena Concept.png"}.items():
+def largest_component(mask):
+    width, height = mask.size
+    todo = bytearray(mask.tobytes())
+    best = []
+    for start in range(len(todo)):
+        if not todo[start]:
+            continue
+        todo[start] = 0
+        stack, component = [start], []
+        while stack:
+            index = stack.pop()
+            component.append(index)
+            x, y = index % width, index // width
+            for dx, dy in ((-1,0),(1,0),(0,-1),(0,1)):
+                nx, ny = x+dx, y+dy
+                if 0 <= nx < width and 0 <= ny < height:
+                    neighbor = ny*width+nx
+                    if todo[neighbor]:
+                        todo[neighbor] = 0
+                        stack.append(neighbor)
+        if len(component) > len(best):
+            best = component
+    data = bytearray(width*height)
+    for index in best:
+        data[index] = 255
+    return Image.frombytes("L", mask.size, bytes(data))
+
+
+for spec in json.loads((BUILD / "tools" / "holding-source-map.json").read_text()):
+    source = SOURCE / spec["file"]
+    sheet = Image.open(source).convert("RGBA")
+    width, height = sheet.size
+    frames, pivots, bodies = [], [], []
+    for index in range(8):
+        col, row = index % 4, index // 4
+        # Overlapping extraction regions preserve long weapon tips; detached neighboring pixels are excluded.
+        left, top = max(0,round((col-.25)*width/4)), max(0,round((row-.2)*height/2))
+        right, bottom = min(width,round((col+1.25)*width/4)), min(height,round((row+1.2)*height/2))
+        actor = sheet.crop((left,top,right,bottom))
+        connected = largest_component(actor.getchannel("A").point(lambda a: 255 if a > 32 else 0)).filter(ImageFilter.MaxFilter(9))
+        alpha = actor.getchannel("A")
+        alpha.paste(0, mask=connected.point(lambda a: 255-a))
+        actor.putalpha(alpha)
+        bounds = actor.getbbox()
+        assert bounds, (spec["id"], index, "Empty held pose")
+        actor = actor.crop(bounds)
+        left += bounds[0]; top += bounds[1]
+        pixels, aw, ah = actor.load(), actor.width, actor.height
+        shoes = [(x,y) for y in range(ah//2,ah) for x in range(aw)
+                 if pixels[x,y][3] > 220 and pixels[x,y][0] >= 160 and pixels[x,y][1] >= 140 and pixels[x,y][2] >= 105
+                 and max(pixels[x,y][:3])-min(pixels[x,y][:3]) < 65]
+        assert shoes, (spec["id"], index, "No shoe anchor")
+        foot_y = min(ah, max(y for x,y in shoes)+6)
+        feet = [(x,y) for x,y in shoes if y > foot_y-ah*.15]
+        foot_x = (min(x for x,y in feet)+max(x for x,y in feet))/2
+        cap = Image.new("L", actor.size)
+        cp = cap.load()
+        for y in range(min(ah//2,int(foot_y*.65))):
+            for x in range(aw):
+                r,g,b,a = pixels[x,y]
+                if a > 160 and r > 55 and g > 45 and 1.02 < r/max(1,g) < 1.42 and .42 < b/max(1,g) < .83:
+                    cp[x,y] = 255
+        cap_bounds = largest_component(cap).getbbox()
+        assert cap_bounds, (spec["id"], index, "No cap calibration")
+        body = foot_y-cap_bounds[1]
+        assert ah*.45 < body <= ah, (spec["id"], index, "Invalid body height", body, ah)
+        rect = [left,top,aw,ah]
+        frames.append(export(source.parent,"holding",spec["id"],"aim-"+str(index+1),source,rect,(160,160),native=actor))
+        scale = min(160/aw,160/ah)
+        pivots.append([round((160-round(aw*scale))//2+foot_x*scale,2), round((160-round(ah*scale))//2+foot_y*scale,2)])
+        bodies.append(round(body*scale,2))
+    manifest["holding"][spec["id"]] = {"frames":frames,"pivots":pivots,"bodyHeights":bodies,"frameSize":[160,160],"angles":[round(i*3.141592653589793/4,10) for i in range(8)]}
+    (source.parent / "Game Ready" / "holding-frames.json").write_text(json.dumps(manifest["holding"][spec["id"]],indent=2)+"\n")
+
+for asset_id, name in {"canyon":"Ancient Forest Canyon Arena.png", "coast":"Hopkins Beach Concept.png", "maya":"Maya Arena Concept.png", "underworld":"Underworld Corrupted Maya Arena Concept.png", "open":"Open Jungle Clearing/Open Jungle Clearing v1.png"}.items():
     source = SOURCE / "Arenas" / name
     image = Image.open(source)
-    folder = source.parent / asset_id / "Game Ready"
+    folder = (source.parent if asset_id == "open" else source.parent / asset_id) / "Game Ready"
     for subfolder in ("Full Resolution", "Game Resolution"):
         (folder / subfolder).mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source, folder / "Full Resolution" / "arena.png")
     image.resize((1200,1200), Image.Resampling.LANCZOS).save(folder / "Game Resolution" / "arena.png", optimize=True)
-    manifest["arenas"][asset_id] = {"nativeSize": list(image.size), "gameSize": [1200,1200], "liveFile": None if asset_id == "maya" else asset_id+"-arena.png"}
+    live_file = None if asset_id == "maya" else "open-survival-arena.png" if asset_id == "open" else asset_id+"-arena.png"
+    manifest["arenas"][asset_id] = {"nativeSize": list(image.size), "gameSize": [1200,1200], "liveFile": live_file}
+    if asset_id == "open":
+        shutil.copyfile(folder / "Game Resolution" / "arena.png", BUILD / "assets" / live_file)
 
 inventory = []
 for source in sorted(SOURCE.rglob("*.png")):
@@ -189,10 +266,10 @@ for source in sorted(SOURCE.rglob("*.png")):
     image = Image.open(source)
     inventory.append({"file": str(source.relative_to(SOURCE)).replace("\\", "/"), "size": list(image.size), "mode": image.mode, "sha256": sha256(source.read_bytes()).hexdigest()})
 manifest["sourceInventory"] = inventory
-manifest["missing"] = ["Reflex Boost pickup art", "Food pickups", "Arena hazards", "Enemy spawn effects", "Perk icons", "Mobile control artwork", "Full directional held-weapon animations matching canonical teenage Joe"]
+manifest["missing"] = ["Reflex Boost pickup art", "Food pickups", "Arena hazards", "Enemy spawn effects", "Perk icons", "Mobile control artwork", "Full walking/attack frame cycles for integrated held-weapon poses"]
 READY.mkdir(parents=True, exist_ok=True)
 (READY / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-client = {key: manifest[key] for key in ("version", "weapons", "powers", "sprites", "arenas")}
+client = {key: manifest[key] for key in ("version", "weapons", "powers", "sprites", "holding", "arenas")}
 (BUILD / "assets" / "ready-assets.js").write_text("// Generated by tools/export-assets.py; paths point to separate transparent sprites.\nwindow.ARENA_READY = " + json.dumps(client, separators=(",", ":")) + ";\n", encoding="utf-8")
 
 # Boundaries, alpha, and source hashes catch blank crops and accidental source edits.

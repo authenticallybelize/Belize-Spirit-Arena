@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   const W = 1200, H = 800;
-  const AIM_HEIGHT = 32;
+  const AIM_HEIGHT = 54;
   function aimAt(player, input = {}) {
     const origin = { x: player.x, y: player.y - AIM_HEIGHT };
     const dx = input.relativeAim ? input.aimDX : input.aimX - origin.x;

@@ -3,6 +3,11 @@ window.ARENA_SPRITES = {"joe":{"file":"teenage-joe.png","frames":[[134,41,154,23
 // Crop coordinates use the original sheet grid; mobile CDNs may deliver smaller images.
 window.ArenaArt = {
   playerHeightRatio: 30 / 320,
+  holdingPose(art, angle, height) {
+    const index = (Math.round(angle / (Math.PI / 4)) % 8 + 8) % 8;
+    const turn = Math.atan2(Math.sin(angle - art.angles[index]), Math.cos(angle - art.angles[index]));
+    return { file: art.frames[index], pivot: art.pivots[index], scale: height / art.bodyHeights[index], turn, index };
+  },
   sourceSizes: {"cave-crab-v1.png":[384,256],"cave-shadow-v1.png":[384,256],"duende-v1.png":[2172,724],"jaguar-spirit.png":[1774,887],"limestone-ruins.png":[1659,948],"llorona.png":[577,433],"mini-jaguar.png":[1260,170],"teenage-joe.png":[1402,1122],"tommy-goff-v2.png":[2172,724],"weapon-sheet.png":[1672,941],"powers/badman.png":[1254,1254],"powers/bonusXP.png":[1254,1254],"powers/doubleXP.png":[1254,1254],"powers/evolution.png":[1254,1254],"powers/freeze.png":[1254,1254],"powers/heavy.png":[1254,1254],"powers/nuke.png":[1254,1254],"powers/shield.png":[1254,1254],"powers/shock.png":[1254,1254]},
   sourceGrid(image, file) {
     const size = this.sourceSizes[file];

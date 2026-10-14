@@ -56,7 +56,7 @@
       button('storyMenu', 'STORY MODE', true) + button('survivalMenu', 'SURVIVAL MODE', false, !store.data.survivalUnlocked) +
       button('leaderboardMenu', 'LEADERBOARD') + button('howMenu', 'HOW TO PLAY') + button('optionsMenu', 'OPTIONS') +
       '</div><p class="menu-footnote">' + (store.data.survivalUnlocked ? 'Survival unlocked.' : 'Survival unlocks after all four Story trials.') +
-      '</p><a href="survival.html" class="test-link">Open Survival test · four arenas</a><br><a href="index.html" class="test-link">Original ten-wave prototype</a>' +
+      '</p><a href="survival.html" class="test-link">Open Survival test · open field + four arenas</a><br><a href="index.html" class="test-link">Original ten-wave prototype</a>' +
       (store.warning ? '<p class="save-warning" role="status">' + esc(store.warning) + '</p>' : ''));
     $('storyMenu').onclick = storyMenu;
     $('survivalMenu').onclick = () => { if (store.data.survivalUnlocked) location.href = 'survival.html'; };

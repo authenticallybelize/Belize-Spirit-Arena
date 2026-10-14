@@ -3,6 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Game, WEAPONS, PERKS, POWERS, move, visible } = require('../survival.js');
 const { circleRect, AIM_HEIGHT, aimAt } = require('../core.js');
+const originalArenas = require('./fixtures/original-arenas.json');
+const originalBounds = { canyon: { x: 180, y: 145, w: 835, h: 685 }, underworld: { x: 180, y: 145, w: 835, h: 685 }, coast: { x: 180, y: 145, w: 835, h: 685 }, jungle: { x: 135, y: 232, w: 930, h: 728 } };
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
 function playing(weapon = 'slingshot', arena = 'canyon') { const g = new Game(seeded(8)); g.start({ weapon, arena, mode: 'survival' }); g.spawnTimer = 999; return g; }
 function enemy(g, x = 710, y = 575, hp = 1000) {
@@ -14,7 +16,7 @@ const northAim = playing(); northAim.player.x = 610; northAim.player.y = northAi
 northAim.update(1 / 60, { shooting: true, relativeAim: true, aimDX: 1, aimDY: 0 });
 assert(northAim.bullets.some(b => !b.hostile && b.y > northAim.arena.bounds.y), 'North-wall muzzle killed a horizontal shot');
 assert.equal(northAim.player.y, northAim.arena.bounds.y + northAim.player.r + AIM_HEIGHT);
-function field(weapon = 'slingshot') { const g = playing(weapon); g.arena = { ...g.arena, obstacles: [] }; Object.assign(g.player, { x: 200, y: 400, angle: 0 }); return g; }
+function field(weapon = 'slingshot') { const g = playing(weapon, 'open'); g.arena = { ...g.arena, obstacles: [] }; Object.assign(g.player, { x: 200, y: 400, angle: 0 }); return g; }
 assert.equal(WEAPONS.length, 12); assert.equal(PERKS.length, 31); assert.equal(Object.keys(POWERS).length, 10);
 for (const w of WEAPONS) {
   const g = playing(w.id), e = enemy(g, w.melee ? 660 : 710);
@@ -24,8 +26,10 @@ for (const w of WEAPONS) {
 }
 for (const arena of ['canyon', 'jungle', 'underworld', 'coast']) {
   const g = playing('slingshot', arena);
-  assert.deepEqual(g.arena.bounds, { x: 88, y: 88, w: 1024, h: 1024 });
-  const edge = { x: 90, y: 90, r: 13 }; move(g, edge, -1000, -1000); assert.deepEqual(edge, { x: 101, y: 101, r: 13 });
+  assert.deepEqual(g.arena.bounds, originalBounds[arena], 'Supplied map boundary changed');
+  assert.deepEqual(g.arena.obstacles, originalArenas[arena].obstacles, 'Supplied map boulders/walls changed');
+  assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(__dirname, '../assets', g.arena.image))).digest('hex'), originalArenas[arena].sha256, 'Supplied arena image changed');
+  const edge = { x: g.arena.bounds.x + 14, y: g.arena.bounds.y + 14, r: 13 }; move(g, edge, -1000, -1000); assert.equal(edge.x, g.arena.bounds.x + 13); assert.equal(edge.y, g.arena.bounds.y + 13);
   for (const type of ['crab', 'jaguar', 'shadow', 'duende', 'jaguarBoss', 'tommy', 'miniLlorona']) {
     assert(g.spawn(type)); const e = g.enemies.at(-1);
     assert(Math.hypot(e.x - g.player.x, e.y - g.player.y) > 230);
@@ -34,6 +38,8 @@ for (const arena of ['canyon', 'jungle', 'underworld', 'coast']) {
   const o = g.arena.obstacles[0], p = { x: o.x - 30, y: o.y + o.h / 2, r: 13 };
   move(g, p, 500, 0); assert(p.x + p.r <= o.x + .01);
 }
+const open = playing('slingshot', 'open'); assert.deepEqual(open.arena.bounds, { x: 88, y: 88, w: 1024, h: 1024 }); assert.deepEqual(open.arena.obstacles, []);
+for (const type of ['crab', 'jaguar', 'shadow', 'duende', 'jaguarBoss', 'tommy', 'miniLlorona']) assert(open.spawn(type), 'Open field spawn failed: ' + type);
 const a = playing(), b = playing();
 const navigation = playing(); navigation.player.x = 519; navigation.player.y = 566;
 const routed = enemy(navigation, 501, 309); routed.speed = 145; routed.routeTimer = 0;
@@ -110,7 +116,7 @@ const tracking = field('feather'); tracking.weaponLevels.feather = 4; tracking.r
 tracking.fire(); for (let i = 0; i < 190; i++) tracking.update(1 / 120); assert(diagonal.hp < 1000, 'Rank IV failed to capture a visible diagonal target');
 for (const [distance, degrees] of [[120, -70], [120, 70], [250, 70], [700, -15], [700, 15], [700, 45]]) {
   const seek = field('feather'); Object.assign(seek.player, { x: 300, y: 550 }); seek.weaponLevels.feather = 4; seek.refreshStats();
-  const angle = degrees * Math.PI / 180, target = enemy(seek, 300 + Math.cos(angle) * distance, 518 + Math.sin(angle) * distance);
+  const angle = degrees * Math.PI / 180, target = enemy(seek, 300 + Math.cos(angle) * distance, seek.player.y - AIM_HEIGHT + Math.sin(angle) * distance);
   seek.fire(); for (let i = 0; i < 190; i++) seek.update(1 / 120);
   assert(target.hp < 1000, 'Rank IV overshot/expired before a visible target at ' + degrees + ' degrees / ' + distance + ' range');
 }
@@ -187,7 +193,7 @@ progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equa
 progression.level = 40; progression.xp = 99999; assert(!progression.levelUp());
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
 for (const w of WEAPONS.filter(w => w.art)) { const [x, y, ww, hh] = w.art; assert(x >= 0 && y >= 0 && x + ww <= width && y + hh <= height); }
-console.log('PASS: 12 weapons, all four arenas, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 40-wave progression, XP cap and restart.');
+console.log('PASS: 12 weapons, four preserved arenas plus an open field, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 40-wave progression, XP cap and restart.');
 
 const snake = playing(); snake.spawn('tommy'); const striker = snake.enemies.at(-1);
 Object.assign(striker, { x: 650, y: 575, warmup: 0, rushTimer: 0, routeTimer: 99 });
@@ -199,4 +205,4 @@ Object.assign(echo, { x: 710, y: 575, warmup: 0, shotTimer: 0, routeTimer: 99 })
 spirit.enemyTick(echo, 1 / 120); assert.equal(spirit.bullets.filter(b => b.hostile).length, 3);
 assert.equal(echo.boss, undefined, 'Mini Llorona incorrectly counts as a full boss');
 console.log('PASS: Tommy warned strike and Mini Llorona ranged fan; neither changes Story enemy definitions.');
-console.log('PASS: 1024-square bounds, five-second floor weapons/intermission grace, maxed/dead perk filtering, rocket flight/splash/order/range/border, smoke damage snapshot, aimed/ranked feather seeking, bounded nearest-link Shock and full-map Nuke.');
+console.log('PASS: separate open-field 1024-square bounds, original map hashes/walls/borders, five-second floor weapons/intermission grace, maxed/dead perk filtering, rocket flight/splash/order/range/border, smoke damage snapshot, aimed/ranked feather seeking, bounded nearest-link Shock and full-map Nuke.');

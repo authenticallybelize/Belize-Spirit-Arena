@@ -10,16 +10,17 @@
   const W = 1200, H = 1200, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
-    underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
+    open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 }, obstacles: [], spawn: { x: 600, y: 600 } },
+    underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 518, y: 252, w: 85, h: 48 }, { x: 333, y: 345, w: 75, h: 70 }, { x: 808, y: 337, w: 95, h: 65 }, { x: 480, y: 521, w: 93, h: 65 }, { x: 713, y: 648, w: 87, h: 65 }, { x: 210, y: 677, w: 77, h: 56 }],
       spawn: { x: 610, y: 575 } },
-    coast: { name: 'Spirit Coast · Hopkins', image: 'coast-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
+    coast: { name: 'Spirit Coast · Hopkins', image: 'coast-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 540, y: 268, w: 100, h: 60 }, { x: 772, y: 392, w: 106, h: 57 }, { x: 623, y: 645, w: 96, h: 65 }, { x: 337, y: 580, w: 69, h: 61 }],
       spawn: { x: 610, y: 575 } },
-    canyon: { name: 'Ancient Forest Canyon', image: 'canyon-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
+    canyon: { name: 'Ancient Forest Canyon', image: 'canyon-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 524, y: 237, w: 78, h: 49 }, { x: 358, y: 311, w: 81, h: 82 }, { x: 451, y: 461, w: 122, h: 75 }, { x: 695, y: 611, w: 111, h: 73 }, { x: 854, y: 459, w: 101, h: 73 }],
       spawn: { x: 610, y: 575 } },
-    jungle: { name: 'Jungle Ruins', image: 'jungle-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
+    jungle: { name: 'Jungle Ruins', image: 'jungle-arena.png', bounds: { x: 135, y: 232, w: 930, h: 728 },
       obstacles: Base.OBSTACLES.map(o => ({ ...o, y: o.y * 1.5, h: o.h * 1.5 })), spawn: { x: 600, y: 645 } }
   };
   const WEAPONS = [
@@ -124,7 +125,7 @@
   class Game extends Base.Game {
     reset() {
       super.reset();
-      this.arenaId = this.arenaId || 'canyon'; this.arena = ARENAS[this.arenaId]; this.totalWaves = this.totalWaves || 40;
+      this.arenaId = this.arenaId || 'open'; this.arena = ARENAS[this.arenaId]; this.totalWaves = this.totalWaves || 40;
       Object.assign(this.player, this.arena.spawn); this.player.weapon = 'slingshot';
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.attackCount = 0;
@@ -134,7 +135,7 @@
       this.refreshStats();
     }
     start(options = {}) {
-      this.arenaId = Object.hasOwn(ARENAS, options.arena) ? options.arena : this.arenaId || 'canyon';
+      this.arenaId = Object.hasOwn(ARENAS, options.arena) ? options.arena : this.arenaId || 'open';
       this.totalWaves = options.mode === 'run' ? 10 : options.mode === 'survival' ? 40 : this.totalWaves || 40;
       this.reset(); this.player.weapon = weapon(options.weapon).id; this.refreshStats(); this.mode = 'playing'; this.beginWave();
     }

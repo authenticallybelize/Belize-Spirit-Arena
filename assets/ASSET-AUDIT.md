@@ -1,5 +1,11 @@
 # Source asset audit and exports
 
+## 0.4.1 update
+
+twelve new holding atlases and one open-field background were generated with the built-in image tool. Sources and prompts are beside their respective Assets items. The exporter produces 96 integrated poses at 160-square display size and 320-square phone size, plus native isolated crops. There are 227 verified runtime exports and 93 source images; all 80 pre-existing source hashes remain unchanged. Supplied arena artwork was not edited. tools/holding-source-map.json records holding prompts and source locations.
+
+Eight integrated held directions per weapon are now runtime artwork. Full walking/firing cycles remain missing. Earlier source inventory below describes 0.4.0.
+
 The supplied Assets folder contains 78 original PNGs. Two existing runtime enemy sheets, Tommy Goff and Mini Llorona, are also copied into their own source folders so their references have a home. Original source images are preserved. Generated derivatives sit beside each item in `Game Ready/Full Resolution` and `Game Ready/Game Resolution`, with a local `README.txt`.
 
 `Full Resolution` means the reviewed region at its original pixel dimensions. It does not claim new detail or invented high-resolution art. `Game Resolution` contains fitted transparent images at display dimensions and a 2x variant for phone rendering. Arena exports preserve the complete original 1254×1254 scene and provide a 1200×1200 game derivative. The Maya arena concept remains an unused concept, with no invented campaign completion.

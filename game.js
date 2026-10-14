@@ -119,25 +119,20 @@
     ctx.beginPath(); ctx.ellipse(p.x, p.y + 4, 22, 11, 0, 0, Math.PI * 2); ctx.stroke();
     const firing = input.shooting && game.mode === 'playing';
     const direction = input.aiming || firing || !p.walking ? p.angle : Math.atan2(input.dy, input.dx);
-    const row = Math.abs(direction) < Math.PI / 4 ? 1 : Math.abs(direction) > Math.PI * .75 ? 2 : direction < 0 ? 3 : 0;
-    const frame = row * 5 + (p.walking ? 1 + Math.floor(t * 9) % 2 : 0);
-    // The supplied firing poses bake in a diagonal Sling; the independent held art follows the real aim instead.
+    const art = ARENA_READY.holding[p.weapon], held = ArenaArt.holdingPose(art, direction, joeHeight);
     const alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
-    const art = ARENA_READY.sprites.joe, pivot = art.pivots[frame], scale = joeHeight / art.frameSize[1];
     function pose(x, y, opacity) {
       ctx.save(); ctx.globalAlpha = opacity; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
       ctx.shadowColor = '#d8ffed'; ctx.shadowBlur = 2;
       ctx.translate(x, y + 13);
-      ctx.drawImage(images[art.frames[frame]], -pivot[0] * scale, -pivot[1] * scale, art.frameSize[0] * scale, art.frameSize[1] * scale); ctx.restore();
+      ctx.rotate(held.turn);
+      const step = !reducedMotion && p.walking ? 1 + Math.sin(t * 18) * .01 : 1;
+      ctx.scale(held.scale, held.scale * step);
+      ctx.drawImage(images[held.file], -held.pivot[0], -held.pivot[1], ...art.frameSize); ctx.restore();
     }
     if (p.dashTime > 0) for (let i = 3; i > 0; i--) pose(p.x - p.dashX * i * 15, p.y - p.dashY * i * 15, .1);
-    pose(p.x, p.y, alpha);
-    const held = ARENA_READY.weapons[p.weapon];
-    if (held) {
-      const recoil = firing && p.fireCooldown > p.interval - .06 ? 3 : 0;
-      ctx.save(); ctx.translate(p.x + Math.cos(p.angle) * (16 - recoil), p.y - ArenaCore.AIM_HEIGHT + Math.sin(p.angle) * (16 - recoil));
-      ctx.rotate(p.angle - held.heldAngle); ctx.drawImage(images[held.held], -26, -26, 52, 52); ctx.restore();
-    }
+    const recoil = !reducedMotion && firing && p.fireCooldown > p.interval - .06 ? 1.5 : 0;
+    pose(p.x - Math.cos(p.angle) * recoil, p.y - Math.sin(p.angle) * recoil, alpha);
   }
   function render(t) {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -148,7 +143,7 @@
     if (shake > 0 && !reducedMotion) ctx.translate(Math.sin(t * 175) * 3, Math.cos(t * 150) * 3);
     ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
-    if (extended) {
+    if (extended && game.arenaId === 'open') {
       const b = game.arena.bounds;
       ctx.save(); ctx.strokeStyle = '#c2cf91aa'; ctx.lineWidth = 5; ctx.setLineDash([14, 10]); ctx.strokeRect(b.x, b.y, b.w, b.h); ctx.restore();
     }
@@ -178,9 +173,6 @@
     for (const enemy of enemies) drawables.push({ y: enemy.y, draw: () => drawEnemy(enemy, t) });
     drawables.sort((a, b) => a.y - b.y).forEach(item => item.draw());
     if (extended) SurvivalUI.draw(game, ctx, images);
-    // Keep Joe visible above cover, crowds and pickups; collisions still use his original radius.
-    drawJoe(t);
-    if (extended) SurvivalUI.drawPlayer(game, ctx, images, joeHeight);
     for (const b of game.bullets) {
       const len = Math.hypot(b.vx, b.vy), color = b.color || (b.hostile ? '#d99cfa' : b.kind === 'magic' ? '#9fffd0' : '#c5b39a');
       ctx.lineWidth = b.hostile ? 3 : 3.5; ctx.strokeStyle = b.hostile ? '#8948b5aa' : b.kind === 'magic' ? '#58dca88c' : '#77664e66';
@@ -193,6 +185,9 @@
         ctx.drawImage(images[readyArt.projectile], -width / 2, -height / 2, width, height); ctx.restore();
       }
     }
+    // Joe covers the initial shot segment inside his held weapon, rather than bullets crossing his hands/body.
+    drawJoe(t);
+    if (extended) SurvivalUI.drawPlayer(game, ctx, images, joeHeight);
     for (const particle of particles) { ctx.globalAlpha = Math.min(1, particle.life * 3); ctx.fillStyle = particle.color; ctx.fillRect(particle.x - 2, particle.y - 2, 4, 4); } ctx.globalAlpha = 1;
     ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
     for (const effect of game.effects) { ctx.globalAlpha = Math.min(1, effect.life * 4); ctx.fillStyle = '#092217'; ctx.fillText(effect.text, effect.x + 1, effect.y + 1); ctx.fillStyle = effect.color; ctx.fillText(effect.text, effect.x, effect.y); } ctx.globalAlpha = 1;
@@ -327,10 +322,12 @@
     if (!story || !StoryUI.active) render(game.mode === 'menu' ? now / 1000 : game.time);
     requestAnimationFrame(frame);
   }
-  const weaponFiles = (extended ? Object.values(ARENA_READY.weapons) : ['slingshot', 'staff'].map(id => ARENA_READY.weapons[id])).flatMap(a => [a.pickup, a.held, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]);
-  const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([,a]) => [...a.frames, ...(a.portrait ? [a.portrait] : [])]);
-  const files = [...new Set([...spriteFiles, 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
-    ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
+  const weaponIds = extended ? Object.keys(ARENA_READY.weapons) : ['slingshot', 'staff'];
+  const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
+  const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
+  const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
+  const files = [...new Set([...spriteFiles, ...holdingFiles, 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+    ...(extended ? ['open-survival-arena.png', 'canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   Promise.all(files.map(file => new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => {
