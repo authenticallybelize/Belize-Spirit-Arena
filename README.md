@@ -16,7 +16,7 @@ Rollback: backup-before-0.4.1 points to 886c152 (0.4.0). Full backup: Backups/Bu
 
 Remaining limits: real iPhone Safari/Android hardware is untested; Safari-user-agent checks use Edge. The integrated poses have eight aiming directions, not complete walk/attack frame cycles. Generated art still benefits from manual anatomy/perspective review. Reflex Boost still lacks supplied artwork; recorded audio and later Story encounters remain unfinished.
 
-Publication verification is recorded in Obsidian after deployment. Earlier sections below describe their own historical releases.
+Published 2026-10-14: implementation commit 1329ee0 on GitHub features; Hostinger deployment accepted, cache cleared, and live desktop/touch/browser checks passed for 0.4.1. All twelve integrated grips/eight directions, actual mouse attacks, simultaneous mobile move/aim-fire, pause, original maps, and Story skip passed without application errors. Hostinger presented its existing browser challenge before several initial navigations; those transport responses are logged separately, then the game loaded normally. Static deployment archive: Backups/Build_20261014_065407.zip. Backup tag backup-before-0.4.1 preserves 886c152. Evidence and screenshots: Backups/QA_0.4.1. Main, drafting and next-launch branches were not moved. Earlier sections below describe their own historical releases.
 
 ## Combat, mobile and asset audit — 0.4.0
 
