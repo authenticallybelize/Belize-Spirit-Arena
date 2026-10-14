@@ -46,6 +46,8 @@
           ctx.fillStyle = '#092119ee'; ctx.fillRect(d.x - width / 2, d.y + 23, width, 22); ctx.fillStyle = color; ctx.fillText(text, d.x, d.y + 39);
         }
       }
+    },
+    drawPlayer(game, ctx, images) {
       const p = game.player, w = SurvivalCore.weapon(p.weapon);
       if (w.art && p.weapon !== 'slingshot') { ctx.save(); ctx.translate(p.x + Math.cos(p.angle) * 16, p.y - 19); ctx.rotate(p.angle + Math.PI / 4); icon(ctx, images['weapon-sheet.png'], w, 0, 0, 28); ctx.restore(); }
       if (game.active('shield')) { ctx.strokeStyle = '#b7fff2'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y - 12, 36, 0, Math.PI * 2); ctx.stroke(); }

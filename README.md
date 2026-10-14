@@ -2,11 +2,13 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
-## Story opening and mobile edition — 0.3.0
+## Story opening and mobile edition — 0.3.1
 
 Launch **story.html** for the main menu and canon prologue, **survival.html** for the four-arena test, or **index.html** for the preserved classic game. `npm start` serves this checkout on port 4180 (use `$env:PORT=4181` if another preview is running). Hostinger's DirectoryIndex serves story.html at the site root.
 
-Joe is sixteen, seven years after Legends of Belize. The five-scene prologue covers Grandma's errand, the obsidian discovery, her warning, sleep and the Spirit Layer awakening. Four original generated illustrated frames are included; the fifth scene reveals the actual jungle arena with Joe's existing sprite. Static frames pan gently, fade, pulse and use dialogue overlays. Reduced motion follows the OS setting. Birdlike tones, distant bass, heartbeat and wordless whisper texture are synthesized, not recorded voice acting.
+Joe is sixteen, seven years after Legends of Belize. All twelve comic panels now have their own generated portrait illustrations, based directly on the supplied storyboard: home, errand, discovery, silence, warning, sleep, awakening, the ruins’ echo, Sling preparation, first creatures, journey and title card. Native image output is 1086 × 1448; full compositions fit phone screens without cropping. Text stays readable below the art or beside it in landscape. Frames crossfade and pan gently; advancing dialogue no longer resets the camera. Only current/next frames preload, and loading failure has a readable Continue/Skip fallback. No twelve-image download blocks the main menu. Reduced motion follows the OS preference. Audio remains synthesized ambient tones, not recorded voice acting.
+
+Joe’s twenty source poses were checked for bounds and visible pixels. Shared rendering now uses high-quality smoothing, pixel-density-aware Canvas backing, a larger phone silhouette, a subtle light outline and a foreground player pass above cover, crowds and world pickups. The gameplay sheet, physics, collision radius, weapons and stats are unchanged. Source artwork limits remain; the renderer does not manufacture sprite detail.
 
 Tap the scene / Continue or press Enter to advance. Skip prologue / Space skips every scene; Escape and Pause pause it. Sound starts muted; the sound button works during the prologue. Story menu offers New Story, Continue and Replay. Replay does not initialize a run or erase checkpoints.
 
@@ -24,13 +26,15 @@ Nine supplied Power Ups sheets provide measured pickup-icon crops: Badman, Nuke,
 
 Changed surfaces: story.js (save and cinematic state, Story game adapter), story-ui.js (menu/dialogue/presentation), story.html/story.css, touch.js/touch.css, shared game.js hooks, Survival arena/enemy definitions, power pickup rendering, sprite metadata, supplied/generated asset copies, tests and hosting DirectoryIndex. core.js is byte-for-byte unchanged.
 
-Validation: `npm test` passes classic, expanded Survival and Story checks. Browser plugin not available; installed Playwright / Edge used instead, with no new dependency. Browser QA at 1440×1080, tablet 820×1180, phone 390×844 and 844×390 verified page identity, nonblank screens, watch/skip at every scene, cinematic input isolation, sound toggle, movement/shooting/dash/pause, replay/checkpoint/reload, first-trial completion fixtures, all four maps/mob/pickup rendering, game over/restart and simultaneous touch sticks. No page/console/resource errors. A model stress fixture ran 32 enemies / 150 initial hostile shots for ten simulated seconds in each map without invalid coordinates; this is not a real-device frame-rate result. Existing forty-wave progression fixtures still pass; the new mob balance has not had a fresh full human Survival playtest.
+Validation for 0.3.1: `npm test` passes classic, Survival and twelve-frame Story checks, including every skip point and actual portrait asset files. Playwright/Edge checks at 1440 × 1080, 820 × 1180, 390 × 844, 844 × 390 and 320 × 568 watched all twelve frames, tested sound/pause/skip, keyboard and simultaneous sticks, replay/checkpoint/reload and actual Joe visibility. A Canvas pixel comparison covered twenty rendered direction/move/fire states plus hurt/cover, with at least 3,637 changed Joe pixels in the phone backing store; numerical position alone was not treated as proof of visibility. All four Survival maps and classic gameplay rendered without app console/page errors. Missing-image fallback, reduced motion, Enter/Escape/Space isolation and resize were checked. A headless light-wave sample averaged 16.61 ms between animation frames (p95 16.9 ms); it does not establish a real-phone FPS guarantee. The unchanged core.js SHA-256 is 78c1d2911c703aaaaa7b490d834096a5776462f4f31243894cee036692d690e9.
+
+Previous 0.3.0 validation: `npm test` passes classic, expanded Survival and Story checks. Browser plugin not available; installed Playwright / Edge used instead, with no new dependency. Browser QA at 1440×1080, tablet 820×1180, phone 390×844 and 844×390 verified page identity, nonblank screens, watch/skip at every scene, cinematic input isolation, sound toggle, movement/shooting/dash/pause, replay/checkpoint/reload, first-trial completion fixtures, all four maps/mob/pickup rendering, game over/restart and simultaneous touch sticks. No page/console/resource errors. A model stress fixture ran 32 enemies / 150 initial hostile shots for ten simulated seconds in each map without invalid coordinates; this is not a real-device frame-rate result. Existing forty-wave progression fixtures still pass; the new mob balance has not had a fresh full human Survival playtest.
 
 Remaining limits: later Story encounters and transition scenes, online leaderboard, final voiced/recorded ambient audio, Reflex pickup art, real iOS/Android hardware and Safari QA, exact mid-wave/cloud saves, hazards and final mobile performance/balance. See [assets/PROLOGUE-ASSETS.md](assets/PROLOGUE-ASSETS.md) for art/audio requirements and provenance.
 
 ## Play
 
-**Canyon & Survival edition (0.2.0):** open [survival.html](survival.html), or visit **http://127.0.0.1:4180/survival.html** while the local server is running. Select Ancient Forest Canyon or Jungle Ruins, then a ten-wave Arena Run or forty-wave Survival test. The original game remains available at index.html.
+**Canyon & Survival edition (0.2.0):** open [survival.html](survival.html), or visit **http://127.0.0.1:4180/survival.html** while the local server is running. Select Jungle Ruins, Ancient Forest Canyon, The Corrupted Underworld or Spirit Coast, then a ten-wave Arena Run or forty-wave Survival test. The original game remains available at index.html.
 
 Survival has 40 waves and a separate XP-level cap of 40. Bosses alternate Tata Duende and Corrupted Jaguar every five waves. The complete schedule contains 1,258 enemies, with at most 32 alive simultaneously.
 
@@ -40,7 +44,7 @@ The new edition implements 31 capped perks, compatible choices, wave-dependent r
 
 The supplied square canyon image is used intact; mapped rocks block movement and shots. The dry canyon image is archived as a reference rather than another arena. No image-processing dependency or external runtime service is needed.
 
-**Test-edition limits:** permanent unlocks/saves, arena hazards/mastery, seasons/cosmetics and 19 remaining perk designs are deferred. Weapon Power Up is a temporary 50% damage boost, not twelve bespoke evolutions. Enhancements use the damage curve above; Cacao additionally gains cloud duration, and Drum/Claw gain reach. No charge/windup system was added. Keyboard/mouse only; narrow layout checks do not establish mobile/touch support. Balance is experimental.
+**Test-edition limits:** permanent unlocks/saves, arena hazards/mastery, seasons/cosmetics and 19 remaining perk designs are deferred. Weapon Power Up is a temporary 50% damage boost, not twelve bespoke evolutions. Enhancements use the damage curve above; Cacao additionally gains cloud duration, and Drum/Claw gain reach. No charge/windup system was added. Keyboard/mouse and simultaneous touch sticks are supported in the current edition; real-device performance still needs testing. Balance is experimental.
 
 New browser QA checked 1440×1080 and 390×844, direct-file launch, arena/mode selection, movement, held fire, dash, pause, E enhancement, 1–4 choices, temporary powers, game over, restart and the original game. An accelerated browser run completed all forty waves, all 1,258 kills and XP level 40 using earned upgrades and ordinary combat inputs. Transition fixtures were tested separately. No console/resource errors remained. npm test runs classic and Survival checks.
 
@@ -49,7 +53,7 @@ Open this folder's `index.html` in a desktop browser. Keep `assets/`, `core.js`,
 For an HTTP preview, with Node 18 or newer installed:
 
 ```powershell
-cd "C:\Users\holis\OneDrive\Documents\The Legends of Belize\spirit-arena"
+cd "C:\Users\holis\OneDrive\Projects\The Legends Of Belize\Belize-spirit-arena\Build"
 npm start
 ```
 
@@ -89,7 +93,7 @@ Browser QA used installed Edge/Playwright because the in-app browser repeatedly 
 
 ## Prototype limits
 
-- Keyboard and mouse only; no touch or gamepad controls.
+- Keyboard/mouse and dual touch joysticks; no gamepad controls.
 - One fixed arena and ten waves. Upgrades and the collected staff last for the current run; there is no saved progression.
 - Balance is preliminary. Human playtesting and Safari/Firefox performance are not yet verified.
 - Enemy steering is simple cover avoidance, not a general pathfinding system for larger maps.

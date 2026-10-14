@@ -1,31 +1,28 @@
-# Prologue and mobile edition assets — 0.3.0
+# Prologue and mobile edition assets — 0.3.1
 
-Four included scene illustrations were generated with the built-in Image Gen tool on 2026-10-13 from scene briefs based on the user's storyboard. They are new cinematic art, not extracted storyboard panels. No text is baked into the art; the game supplies dialogue and controls.
+All **twelve** storyboard moments now have distinct included illustrations. The built-in Image Gen tool redrew each panel using the actual supplied comic as its reference, keeping its painterly style and teenage Joe. Generated PNGs are native **1086 × 1448**, portrait 3:4; no comic numbers or small embedded captions. They are not video animation. The game supplies dialogue, subtle camera motion, fades and particles.
 
-| Runtime file | Dimensions | Scene |
-|---|---|---|
-| prologue/home.png | 1536 × 1024 | Late afternoon rural home, Joe and Grandma |
-| prologue/discovery.png | 1536 × 1024 | Firewood, roots, glowing obsidian |
-| prologue/warning.png | 1536 × 1024 | Grandma studies the stone |
-| prologue/bedroom.png | 1536 × 1024 | Joe sleeps; purple fractures glow |
-| jungle-arena.png | Existing arena image | Awakening; reused with Joe's existing sprite |
+| File in assets/prologue | Scene |
+|---|---|
+| frame-01.png | Joe and Grandma at home |
+| frame-02.png | Firewood errand |
+| frame-03.png | Obsidian beneath roots |
+| frame-04.png | The forest falls silent |
+| frame-05.png | Grandma’s warning |
+| frame-06.png | Joe sleeps beside the stone |
+| frame-07.png | Awakening in the ruins |
+| frame-08.png | The Jungle Remembers |
+| frame-09.png | Joe draws his Sling |
+| frame-10.png | The first creatures |
+| frame-11.png | A deeper journey |
+| frame-12.png | Belize: Spirit Arena title background |
 
-Generated source copies remain in C:\Users\holis\.codex\generated_images\01a135d1-9a29-7451-b9cd-9e448290d45b. Runtime copies are kept here so the game does not depend on that location. The reference storyboard remains the user-supplied attachment; it was not altered.
+The illustrations use object-fit: contain in every layout. Portrait phones put captions below the art; landscape/tablet-wide layouts place them beside it. Current/next frames preload, with only those two retained in the image cache, plus the outgoing DOM frame during a fade. Loading failures/timeouts leave readable dialogue and working Continue/Skip controls. The menu no longer waits for twelve large scene downloads. The prior four landscape runtime copies were replaced; their generated originals remain untouched.
 
-Optional final replacements should keep these filenames and 1536 × 1024 landscape dimensions, with important faces/stone in the central 60% for portrait cropping and a quiet lower quarter for dialogue. Current images are working generated illustrations, not missing-image placeholders.
+See [PROLOGUE-PROMPTS.md](PROLOGUE-PROMPTS.md) for the complete prompt set and generated source paths. Runtime art is copied into this repository; nothing depends on a .codex folder to run.
 
-Audio uses Web Audio synthesis: birdlike chirps, a distant low pulse, heartbeat tones and filtered wordless noise. These are temporary sound design, not recordings or character voices. Final audio still needed:
+Joe gameplay still uses the supplied **1402 × 1122** teenage-joe.png sheet and twenty existing measured rectangles. Every rectangle contains visible pixels. The renderer uses smooth high-quality scaling, a subtle outline, a phone-size display minimum and a foreground pass after world pickups/cover. Collision radius, movement, damage and attack intervals are unchanged. The Canvas backing store follows display pixel density up to 2× the logical world size; no CSS enlargement is claimed as new sprite detail.
 
-- jungle-ambience.ogg / .mp3 — seamless ambient jungle loop; fade on touching obsidian.
-- obsidian-pulse.ogg / .mp3 — brief supernatural low sound.
-- heartbeat.ogg / .mp3 — quiet repeating heartbeat.
-- wordless-whisper.ogg / .mp3 — restrained, unintelligible texture; never identify its source.
-- Optional recorded Joe / Grandma lines, only after approving the dialogue.
+Audio is existing Web Audio synthesis, not recorded voices: birdlike chirps, a low pulse, heartbeat and filtered wordless noise. Final recordings remain optional future replacements: jungle-ambience.ogg/.mp3, obsidian-pulse.ogg/.mp3, heartbeat.ogg/.mp3, wordless-whisper.ogg/.mp3. No missing audio URLs are requested. Never identify the whisper’s source.
 
-These filenames are a production checklist, not runtime requests; no missing audio URLs are fetched.
-
-The user's source Assets/Arenas supplied Underworld Corrupted Maya Arena Concept.png and Hopkins Beach Concept.png, copied intact as underworld-arena.png and coast-arena.png. Their collision rectangles are game metadata. Crystals, tides and decorative structures do not gain hazards merely because they appear in the artwork.
-
-Nine full, opaque Power Ups concept sheets were copied intact from Assets/Pickups/Power Ups into powers/. survival-ui.js has measured pickup-icon rectangles. Labels, character examples and concept statistics are excluded from the crops. Runtime screen blending softens dark background squares; no permanent alpha extraction was performed. A dedicated Reflex Boost icon is missing; the existing generic star remains its temporary symbol. Animation/VFX sections of these sheets are not all integrated.
-
-Tommy Goff and Llorona sheets were copied intact from the original Legends of Belize assets. Their original measured crops were adapted in sprites.js. Original sources and saves were never edited. Existing copyright and prototype asset policies still apply; see ART-SOURCES.md and LICENSE.
+The supplied Underworld and Hopkins concept arenas, intact power-up sheets, Tommy Goff and Llorona sprites retain their 0.3.0 provenance and mechanics. Reflex Boost still lacks dedicated art. See ART-SOURCES.md and LICENSE. Original Legends of Belize assets and saves were not changed.

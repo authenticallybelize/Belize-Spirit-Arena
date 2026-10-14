@@ -9,7 +9,16 @@
   const game = new Game(), canvas = document.getElementById('arena'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id), overlay = $('overlay'), content = $('dialogContent');
   const startButton = $('startButton');
-  canvas.width = W; canvas.height = H;
+  let canvasScale = 1, joeHeight = 62;
+  function sizeCanvas() {
+    const width = canvas.getBoundingClientRect().width || W;
+    canvasScale = Math.max(1, Math.min(2, width * (window.devicePixelRatio || 1) / W));
+    canvas.width = Math.round(W * canvasScale); canvas.height = Math.round(H * canvasScale);
+    canvasScale = canvas.width / W;
+    joeHeight = Math.max(62, Math.min(112, 32 * W / width));
+  }
+  new ResizeObserver(sizeCanvas).observe(canvas);
+  window.addEventListener('resize', sizeCanvas); sizeCanvas();
   if (extended || story) window.spiritArena = game;
   const keys = new Set(), input = { dx: 0, dy: 0, shooting: false, aimX: 920, aimY: 350 };
   const images = {}, particles = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -63,7 +72,7 @@
   function drawSprite(type, index, x, bottom, height, flip = false, alpha = 1, hurt = false) {
     const art = ARENA_SPRITES[type === 'jaguar' ? 'minijaguar' : type], image = images[art.file], frame = art.frames[index] || art.frames[0];
     const width = frame[2] * height / frame[3];
-    ctx.save(); ctx.globalAlpha = alpha; ctx.imageSmoothingEnabled = false;
+    ctx.save(); ctx.globalAlpha = alpha; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
     ctx.translate(Math.round(x), Math.round(bottom)); if (flip) ctx.scale(-1, 1);
     if (hurt) ctx.filter = 'brightness(2)';
     ctx.drawImage(image, ...frame, Math.round(-width / 2), -height, Math.round(width), height); ctx.restore();
@@ -74,7 +83,7 @@
   function paintPortraits() {
     if (!ready) return;
     document.querySelectorAll('.joe-portrait').forEach(portrait => {
-      const context = portrait.getContext('2d'); context.clearRect(0, 0, 64, 64); context.imageSmoothingEnabled = false;
+      const context = portrait.getContext('2d'); context.clearRect(0, 0, 64, 64); context.imageSmoothingEnabled = true; context.imageSmoothingQuality = 'high';
       context.drawImage(images[ARENA_SPRITES.joe.file], ...ARENA_SPRITES.joe.portrait, 1, 0, 62, 64);
     });
   }
@@ -120,9 +129,11 @@
     let frame = row * 5 + (p.walking ? 1 + Math.floor(t * 9) % 2 : 0), flip = false;
     if (firing && p.weapon === 'slingshot') { frame = (row === 2 ? 1 : row) * 5 + (p.fireCooldown > p.interval - .07 ? 4 : 3); flip = row === 2; }
     const alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
-    const art = ARENA_SPRITES.joe, rect = art.frames[frame], scale = 62 / 260;
+    const art = ARENA_SPRITES.joe, rect = art.frames[frame], scale = joeHeight / 260;
     function pose(x, y, opacity) {
-      ctx.save(); ctx.globalAlpha = opacity; ctx.imageSmoothingEnabled = false; ctx.translate(x, y + 13); if (flip) ctx.scale(-1, 1);
+      ctx.save(); ctx.globalAlpha = opacity; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+      ctx.shadowColor = '#d8ffed'; ctx.shadowBlur = 2;
+      ctx.translate(x, y + 13); if (flip) ctx.scale(-1, 1);
       ctx.drawImage(images[art.file], ...rect, -(art.anchors[frame] - rect[0]) * scale, -rect[3] * scale, rect[2] * scale, rect[3] * scale); ctx.restore();
     }
     if (p.dashTime > 0) for (let i = 3; i > 0; i--) pose(p.x - p.dashX * i * 15, p.y - p.dashY * i * 15, .1);
@@ -130,10 +141,12 @@
     if (p.weapon === 'staff') drawStaff(p.x + Math.cos(p.angle) * 12, p.y - 15, Math.cos(p.angle) * .18, .8);
   }
   function render(t) {
+    ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
     ctx.clearRect(0, 0, W, H); if (!ready) { ctx.fillStyle = '#1b3d29'; ctx.fillRect(0, 0, W, H); return; }
     ctx.save();
     if (shake > 0 && !reducedMotion) ctx.translate(Math.sin(t * 175) * 3, Math.cos(t * 150) * 3);
-    ctx.imageSmoothingEnabled = false; ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
     const drawables = (extended ? game.arenaId === 'jungle' ? game.arena.obstacles : [] : OBSTACLES).map(o => ({ y: o.y + o.h, draw: () => {
       shadow(o.x + o.w / 2, o.y + o.h - 15, o.w * .44, .17);
       const width = o.w + 16, height = width * 642 / 1059;
@@ -158,9 +171,11 @@
       { ...ArenaCore.TYPES.shadow, type: 'shadow', x: 970, y: 460, maxHp: 48, id: 1 }
     ] : game.enemies;
     for (const enemy of enemies) drawables.push({ y: enemy.y, draw: () => drawEnemy(enemy, t) });
-    drawables.push({ y: game.player.y, draw: () => drawJoe(t) });
     drawables.sort((a, b) => a.y - b.y).forEach(item => item.draw());
     if (extended) SurvivalUI.draw(game, ctx, images);
+    // Keep Joe visible above cover, crowds and pickups; collisions still use his original radius.
+    drawJoe(t);
+    if (extended) SurvivalUI.drawPlayer(game, ctx, images);
     for (const b of game.bullets) {
       const len = Math.hypot(b.vx, b.vy), color = b.color || (b.hostile ? '#d99cfa' : b.kind === 'magic' ? '#9fffd0' : '#c5b39a');
       ctx.lineWidth = b.hostile ? 3 : 3.5; ctx.strokeStyle = b.hostile ? '#8948b5aa' : b.kind === 'magic' ? '#58dca88c' : '#77664e66';
@@ -286,11 +301,11 @@
       for (let i = particles.length - 1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i, 1);
       shake = Math.max(0, shake - dt); if (now - lastHud > 80) { updateHud(); lastHud = now; }
     }
-    render(game.mode === 'menu' ? now / 1000 : game.time); requestAnimationFrame(frame);
+    if (!story || !StoryUI.active) render(game.mode === 'menu' ? now / 1000 : game.time);
+    requestAnimationFrame(frame);
   }
   const files = [...new Set([...Object.entries(ARENA_SPRITES).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).map(([,a]) => a.file), 'jungle-arena.png', 'limestone-ruins.png',
-    ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', 'weapon-sheet.png', ...Object.values(SurvivalUI.powerArt).map(a => a.file)] : []),
-    ...(story ? StoryCore.SCENES.filter(s => s.id !== 'arena').map(s => s.art) : [])])];
+    ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', 'weapon-sheet.png', ...Object.values(SurvivalUI.powerArt).map(a => a.file)] : [])])];
   Promise.all(files.map(file => new Promise((resolve, reject) => {
     const image = new Image(); image.onload = resolve; image.onerror = () => reject(new Error(`Missing artwork: assets/${file}`)); image.src = `assets/${file}`; images[file] = image;
   }))).then(() => {
