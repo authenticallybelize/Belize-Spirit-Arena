@@ -73,15 +73,3 @@ for (const [angle,row] of [[Math.PI/2,0],[0,1],[Math.PI,2],[-Math.PI/2,3]]) {
 assert.equal(Object.keys(context.window.ArenaArt.carryGrips).length,12);
 for(const grip of Object.values(context.window.ArenaArt.carryGrips))assert(grip.every(n=>n>0&&n<64));
 console.log('PASS: original idle/two-frame walking cycle and all twelve measured hand/weapon grip anchors.');
-vm.runInNewContext(fs.readFileSync(path.join(assets,'joe-motion.js'),'utf8'),context);
-const motion=context.window.ARENA_JOE_MOTION;
-function polygonsValid(polys,size) { assert(polys.length>0); for(const poly of polys){assert(poly.length>=3);for(const pair of poly)assert(pair.length===2&&pair.every(v=>Number.isFinite(v)&&v>=0&&v<=size));} }
-for(const [id,poses] of Object.entries(motion.holding)) {
- assert.equal(poses.length,8);poses.forEach((pose,i)=>{
-  assert(pose.waist.every(v=>v>=0&&v<=160));polygonsValid(pose.polygons,160);
-  assert.equal(pose.sha256,hash(fs.readFileSync(path.join(assets,manifest.holding[id].frames[i]))),'Stale motion mask: '+id+'/'+i);
- });
-}
-for(const frame of Object.keys(context.window.ArenaArt.carryHands)) {polygonsValid(motion.nativeLegs[frame].polygons,112);assert(motion.nativeWaists[frame].length===2);}
-for(const frame of [8,9])assert(motion.nativeWaists[frame].length===2);
-console.log('PASS: 96 motion masks match current PNG hashes, native waist/leg geometry and Sling charge/release joints.');

@@ -1,6 +1,10 @@
 # Source asset audit and exports
 
-## 0.5.0 animation and crop repair
+## 0.5.1 whole-body repair
+
+The incompatible torso/leg masks and their generator were removed. All 227 existing PNG exports and 93 original sources are unchanged. Joe uses complete native idle/walking frames with measured carried grips and complete eight-direction held images while firing. No replacement art was generated or arbitrarily cropped. Held images are static full poses, not complete walking-with-weapon cycles. See README.md for the root cause, verified visual evidence and the explicit future 192-frame authoring requirement. Historical 0.5.0 mask work below is superseded.
+
+## Historical 0.5.0 animation and crop repair
 
 All 93 source originals remain unchanged; 227 ready exports still verify. Crystal south/north crop regions avoid adjacent-pose overlap and blue glow is excluded from shoe detection. Updated Full Resolution and Game Resolution exports sit beside their source holding atlas as before. No new AI artwork was created. `python tools/build-joe-motion.py` derives cached waist/leg polygons from existing ready images; it does not modify PNGs. Its runtime data in joe-motion.js includes 96 upper-pose masks and twelve original idle/walk-leg regions tied to verified image hashes. Native walking legs are reused with held upper poses, and original idle/walk fists occlude measured lowered handles. Complete hand-authored eight-direction moving upper-body cycles remain missing; this release restores the accepted original gait through a layered rig. Open terrain extends through cached native-scale tiling, with visible repetition possible. See README.md for verification and limitations.
 

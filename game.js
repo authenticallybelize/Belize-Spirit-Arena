@@ -113,29 +113,6 @@
       ctx.fillStyle = '#e86b52'; ctx.fillRect(x - w / 2, y - height - 1, w * Math.max(0, enemy.hp / enemy.maxHp), 4);
     }
   }
-  const legFrames=new Map(), raisedFrames=new Map(); let raisedWeapon='';
-  function polygons(paint, shapes) {
-    paint.beginPath();
-    for(const polygon of shapes) { polygon.forEach(([x,y],i)=>i ? paint.lineTo(x,y) : paint.moveTo(x,y)); paint.closePath(); }
-  }
-  function legs(frame) {
-    if(!legFrames.has(frame)) {
-      const art=ARENA_READY.sprites.joe, image=images[art.frames[frame]], layer=document.createElement('canvas');
-      layer.width=layer.height=224; layer.nativeFrame=frame;
-      const paint=layer.getContext('2d'); paint.scale(2,2); polygons(paint,ARENA_JOE_MOTION.nativeLegs[frame].polygons); paint.clip('evenodd'); paint.drawImage(image,0,0,112,112);
-      legFrames.set(frame,layer);
-    }
-    return legFrames.get(frame);
-  }
-  function raised(weapon,index) {
-    if(raisedWeapon!==weapon) { raisedFrames.clear(); raisedWeapon=weapon; }
-    if(!raisedFrames.has(index)) {
-      const image=images[ARENA_READY.holding[weapon].frames[index]], layer=document.createElement('canvas'); layer.width=layer.height=320;
-      const paint=layer.getContext('2d'); paint.scale(2,2); paint.drawImage(image,0,0,160,160); paint.globalCompositeOperation='destination-out';
-      polygons(paint,ARENA_JOE_MOTION.holding[weapon][index].polygons); paint.fill('evenodd'); raisedFrames.set(index,layer);
-    }
-    return raisedFrames.get(index);
-  }
   function drawJoe(t) {
     const p = game.player, firing = input.shooting && game.mode === 'playing';
     const direction = firing || !p.walking ? p.angle : Math.atan2(input.dy,input.dx);
@@ -159,22 +136,8 @@
         // The original moving fist occludes the handle at its measured grip keyframe.
         ctx.drawImage(images[native.file],rx,ry,rw,rh,(rx-rect[0])*scale-anchor,(ry-rect[1])*scale-joeHeight,rw*scale,rh*scale);
       } else {
-        const base=ARENA_READY.sprites.joe, baseScale=joeHeight/112, pivot=base.pivots[frame], nativeWaist=ARENA_JOE_MOTION.nativeLegs[frame].waist;
-        const waist=[(nativeWaist[0]-pivot[0])*baseScale,(nativeWaist[1]-pivot[1])*baseScale];
-        ctx.drawImage(legs(frame),-pivot[0]*baseScale,-pivot[1]*baseScale,112*baseScale,112*baseScale);
-        const aimRow=Math.floor(ArenaArt.nativeJoeFrame(p.angle,false,t)/5);
-        if(p.weapon==='slingshot' && (aimRow===1 || aimRow===2)) {
-          const shotFrame=5+(p.fireCooldown>p.interval-.07 ? 4 : 3), crop=native.frames[shotFrame], shotScale=joeHeight/crop[3];
-          const shotWaist=ARENA_JOE_MOTION.nativeWaists[shotFrame];
-          ctx.save(); ctx.translate(...waist); if(aimRow===2)ctx.scale(-1,1); ctx.rotate(aimRow===2 ? Math.PI-p.angle : p.angle);
-          ctx.beginPath(); ctx.rect(-joeHeight*2,-joeHeight*2,joeHeight*4,joeHeight*2+2); ctx.clip();
-          ctx.drawImage(images[native.file],...crop,-(shotWaist[0]-crop[0])*shotScale,-(shotWaist[1]-crop[1])*shotScale,crop[2]*shotScale,joeHeight); ctx.restore();
-        } else {
-          const joint=ARENA_JOE_MOTION.holding[p.weapon][held.index].waist;
-          // Overlap the shirt hem with the native belt so the cropped layers stay connected.
-          ctx.save(); ctx.translate(waist[0],waist[1]+4); ctx.rotate(held.turn); ctx.scale(held.scale,held.scale);
-          ctx.drawImage(raised(p.weapon,held.index),-joint[0],-joint[1],...art.frameSize); ctx.restore();
-        }
+        // Keep the complete held pose and its foot pivot; these images are not compatible body layers.
+        ctx.drawImage(images[held.file],-held.pivot[0]*held.scale,-held.pivot[1]*held.scale,art.frameSize[0]*held.scale,art.frameSize[1]*held.scale);
       }
       ctx.restore();
     }
@@ -415,7 +378,7 @@
   const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.held, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
   const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
-  const files = [...new Set([...spriteFiles, ...holdingFiles, ...Object.keys(ArenaArt.carryHands).map(i=>ARENA_READY.sprites.joe.frames[i]), 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+  const files = [...new Set([...spriteFiles, ...holdingFiles, 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
     ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
@@ -426,7 +389,7 @@
         try { if (image.decode) await image.decode(); images[file] = ArenaArt.sourceGrid(image, file); clearTimeout(timeout); resolve(); }
         catch { fail(); }
       };
-      image.onerror = fail; image.src = `assets/${file}?v=0.5.0`;
+      image.onerror = fail; image.src = `assets/${file}?v=0.5.1`;
     }).catch(error => { loads.delete(file); throw error; }));
     return loads.get(file);
   }
