@@ -26,7 +26,9 @@ Files: game.js (decode/cache/on-demand arena start/mobile density), touch.js (in
 
 Rollback: backup-before-0.4.2 preserves 32d0bb0. Full pre-edit ZIP: Backups/Build_before_0.4.2_20261014_070006.zip. Original Legends of Belize and its saves are untouched.
 
-Hosted verification pending. Earlier entries record historical releases.
+Published 2026-10-14: implementation 05beeeb pushed to GitHub features and deployed through Hostinger. Live desktop, mobile/touch, tablet, four-map loading and Story checks passed after cache clearing, with no application errors. Hostinger's existing initial browser challenge generated transport responses before normal navigation; these are retained separately in the QA log. Static archive: Backups/Build_20261014_072321.zip. Evidence: Backups/QA_0.4.2. Main/drafting/next-launch were not moved. Backup tag backup-before-0.4.2 preserves 32d0bb0.
+
+Performance and fullscreen: native browser fullscreen activated in installed Edge (available=true, active=true). A local touch-emulated 844x390/DPR3 fixture retained a 1688x780 Canvas backing, spawned 32 enemies and accepted exactly 200 friendly plus 150 hostile projectiles initially. Ninety-frame sample: 16.7 ms median / 16.8 ms p95, no page errors. This does not measure physical iPhone/Android performance or guarantee a frame rate on other devices. The unsupported-fullscreen case passed separately. Earlier entries record historical releases.
 
 ## Held weapons and separate open Survival field — 0.4.1
 
