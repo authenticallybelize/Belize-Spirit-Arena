@@ -41,6 +41,7 @@
     let wasMoving = false, wasAiming = false;
     panel.querySelector('#touchDash').addEventListener('pointerdown', e => { e.preventDefault(); update(); game.dash(input); });
     panel.querySelector('#touchPickup').addEventListener('pointerdown', e => { e.preventDefault(); if (game.mode === 'playing' && game.pickup) game.pickup(); });
+    panel.querySelector('#touchPickup').hidden = typeof game.pickup !== 'function';
     panel.querySelector('#touchPause').onclick = () => { if (['playing', 'paused'].includes(game.mode)) togglePause(); };
     if (matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0) document.body.classList.add('touch-enabled');
     return { update, reset() { sticks.forEach(resetStick); wasMoving = wasAiming = false; input.dx = input.dy = 0; input.shooting = false; } };

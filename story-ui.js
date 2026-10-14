@@ -46,12 +46,18 @@
     $('replayPrologue').onclick = () => begin(true); $('backMenu').onclick = home;
   }
   function begin(replay) {
+    play(StoryCore.SCENES, skipped => {
+      store.recordPrologue(skipped);
+      if (replay) { bridge.game.mode = 'menu'; storyMenu(); } else bridge.startStory(store, false);
+    });
+  }
+  function play(scenes, finish) {
     bridge.clearInput(); bridge.game.mode = 'cinematic'; $('overlay').hidden = true;
     $('cinematic').hidden = false; document.body.classList.add('cinematic-open');
-    cinematic = new StoryCore.Cinematic(StoryCore.SCENES, skipped => {
-      store.recordPrologue(skipped); $('cinematic').hidden = true; document.body.classList.remove('cinematic-open');
+    cinematic = new StoryCore.Cinematic(scenes, skipped => {
+      $('cinematic').hidden = true; document.body.classList.remove('cinematic-open');
       cinematic = null; bridge.clearInput();
-      if (replay) { bridge.game.mode = 'menu'; storyMenu(); } else bridge.startStory(store, false);
+      finish(skipped);
     });
     paintLine(); $('cinemaNext').focus();
   }
@@ -59,13 +65,14 @@
     if (!cinematic) return;
     const scene = cinematic.current, [speaker, text, effect] = scene.lines[cinematic.line];
     const image = $('cinemaArt');
+    image.style.objectPosition = ['discovery', 'bedroom'].includes(scene.id) ? '65% 42%' : '50% 42%';
     if (image.dataset.scene !== scene.id) { image.src = 'assets/' + scene.art; image.dataset.scene = scene.id; }
     $('cinemaTitle').textContent = scene.id === 'arena' ? 'THE JUNGLE REMEMBERS' : scene.title;
     $('cinemaActor').hidden = scene.id !== 'arena';
     $('cinemaSpeaker').textContent = speaker; $('cinemaText').textContent = text;
     $('cinemaCount').textContent = 'SCENE ' + (cinematic.scene + 1) + ' / ' + cinematic.scenes.length;
     $('cinematic').dataset.effect = effect || '';
-    $('cinemaNext').textContent = cinematic.scene === 4 && cinematic.line === 3 ? 'Enter the jungle' : 'Continue';
+    $('cinemaNext').textContent = scene.id === 'arena' && cinematic.line === scene.lines.length - 1 ? 'Enter the jungle' : 'Continue';
     $('cinemaPause').textContent = cinematic.paused ? 'Resume' : 'Pause';
     $('cinemaPaused').hidden = !cinematic.paused; pulseClock = 0;
     if (effect === 'pulse') bridge.tone(62, .75, .06, 35);
@@ -74,6 +81,7 @@
   function pause() { if (!cinematic) return; cinematic.paused = !cinematic.paused; bridge.clearInput(); paintLine(); }
   window.StoryUI = {
     store,
+    play,
     get active() { return !!cinematic; },
     init(context) {
       bridge = context;
@@ -89,6 +97,7 @@
     key(event) {
       if (!bridge) return true;
       if (cinematic) {
+        if (event.key === 'Enter' && event.target?.tagName === 'BUTTON') return true;
         if (['Enter', ' ', 'Escape'].includes(event.key)) {
           event.preventDefault();
           if (!event.repeat) { if (event.key === ' ') cinematic.end(true); else if (event.key === 'Escape') pause(); else advance(); }
@@ -114,18 +123,18 @@
       if (cinematic.paused) return;
       pulseClock -= dt;
       if (pulseClock <= 0) {
-        pulseClock = cinematic.scene === 3 ? .9 : 1.4;
+        pulseClock = cinematic.current.id === 'bedroom' ? .9 : 1.4;
         const effect = cinematic.current.lines[cinematic.line][2];
-        if (cinematic.scene === 3) {
+        if (cinematic.current.id === 'bedroom') {
           bridge.tone(58, .16, .025, 38); bridge.whisper();
-        } else if ((cinematic.scene < 2 && effect !== 'pulse')) bridge.tone(1400, .08, .007, 1900);
+        } else if (['home', 'discovery'].includes(cinematic.current.id) && effect !== 'pulse') bridge.tone(1400, .08, .007, 1900);
       }
     },
     overlay(game) {
       if (game.mode !== 'storyComplete') return false;
       view = 'complete';
       show('<h2 id="overlayTitle">The first door opens.</h2><p>Tata Duende is purified. His staff is yours.<br>The Jungle Remembers trial is complete.</p><p>The Corrupted Underworld Story encounter is still in development. Chapter I remains unfinished.</p>' +
-        button('backMenu', 'Story menu', true) + '<span class="small-note">One of four trials restored. Production Survival remains locked.</span>');
+        button('backMenu', 'Story menu', true) + '<span class="small-note">' + (store.data.survivalUnlocked ? 'Your existing Survival unlock is preserved.' : 'One of four trials restored. Production Survival remains locked.') + '</span>');
       $('backMenu').onclick = () => { bridge.game.mode = 'menu'; storyMenu(); }; return true;
     },
     menu: home,
