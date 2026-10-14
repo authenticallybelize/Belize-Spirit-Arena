@@ -5,6 +5,10 @@ const vm = require('node:vm');
 const { Game, BOUNDS, OBSTACLES, WAVES, circleRect, move, segmentCircle, segmentRect } = require('../core.js');
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
 const playing = () => { const g = new Game(seeded(7)); g.start(); return g; };
+const northAim = playing(); northAim.spawnTimer = 999; northAim.player.x = 600; northAim.player.y = BOUNDS.y + northAim.player.r;
+northAim.update(1 / 60, { shooting: true, relativeAim: true, aimDX: 1, aimDY: 0 });
+assert(northAim.bullets.some(b => !b.hostile && b.y > BOUNDS.y), 'North-wall muzzle killed a horizontal shot');
+assert.equal(northAim.player.y, BOUNDS.y + northAim.player.r + require('../core.js').AIM_HEIGHT);
 const a = playing(), b = playing();
 for (const g of [a, b]) { g.player.x = 500; g.player.y = 380; }
 for (let i = 0; i < 60; i++) a.update(1 / 60, { dx: 1, dy: 1 });

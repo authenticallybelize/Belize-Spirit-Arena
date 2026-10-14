@@ -9,15 +9,14 @@
   const game = new Game(), canvas = document.getElementById('arena'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id), overlay = $('overlay'), content = $('dialogContent');
   const startButton = $('startButton');
-  let canvasScale = 1;
   const joeHeight = W * ArenaArt.playerHeightRatio;
+  let view = { x: 0, y: 0, w: W, h: H }, mouse = null, mousePointer = null;
   function sizeCanvas() {
-    const width = canvas.getBoundingClientRect().width || W;
-    canvasScale = Math.max(1, Math.min(2, width * (window.devicePixelRatio || 1) / W));
-    canvas.width = Math.round(W * canvasScale); canvas.height = Math.round(H * canvasScale);
-    canvasScale = canvas.width / W;
+    const rect = canvas.getBoundingClientRect(), width = rect.width || W, height = rect.height || H;
+    const density = Math.min(window.devicePixelRatio || 1, 2400 / width, 2400 / height);
+    canvas.width = Math.round(width * density); canvas.height = Math.round(height * density);
   }
-  new ResizeObserver(sizeCanvas).observe(canvas);
+  new ResizeObserver(() => { sizeCanvas(); render(game.time); }).observe(canvas);
   window.addEventListener('resize', sizeCanvas); sizeCanvas();
   if (extended || story) window.spiritArena = game;
   const keys = new Set(), input = { dx: 0, dy: 0, shooting: false, aimX: 920, aimY: 350 };
@@ -26,7 +25,7 @@
   let ready = false, previousMode = '', last = 0, lastHud = 0, shake = 0, helpOpen = false, helpMode = 'menu';
   let soundOn = false, audio = null;
   let touch = null;
-  function clearInput() { keys.clear(); input.dx = input.dy = 0; input.shooting = false; touch?.reset(); }
+  function clearInput() { keys.clear(); input.dx = input.dy = 0; input.shooting = false; input.aiming = false; mousePointer = null; touch?.reset(); }
   function movement() {
     input.dx = Number(keys.has('d') || keys.has('ArrowRight')) - Number(keys.has('a') || keys.has('ArrowLeft'));
     input.dy = Number(keys.has('s') || keys.has('ArrowDown')) - Number(keys.has('w') || keys.has('ArrowUp'));
@@ -70,12 +69,14 @@
     }
   }
   function drawSprite(type, index, x, bottom, height, flip = false, alpha = 1, hurt = false) {
-    const art = ARENA_SPRITES[type === 'jaguar' ? 'minijaguar' : type], image = images[art.file], frame = art.frames[index] || art.frames[0];
-    const width = frame[2] * height / frame[3];
+    const id = type === 'jaguar' ? 'minijaguar' : type, art = ARENA_READY.sprites[id];
+    index = art.frames[index] ? index : 0;
+    const frame = ARENA_SPRITES[id].frames[index], pivot = art.pivots[index];
+    const scale = height / (frame[3] * Math.min(art.frameSize[0] / frame[2], art.frameSize[1] / frame[3]));
     ctx.save(); ctx.globalAlpha = alpha; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
     ctx.translate(Math.round(x), Math.round(bottom)); if (flip) ctx.scale(-1, 1);
     if (hurt) ctx.filter = 'brightness(2)';
-    ctx.drawImage(image, ...frame, Math.round(-width / 2), -height, Math.round(width), height); ctx.restore();
+    ctx.drawImage(images[art.frames[index]], -pivot[0] * scale, -pivot[1] * scale, art.frameSize[0] * scale, art.frameSize[1] * scale); ctx.restore();
   }
   function shadow(x, y, r, alpha = .26) {
     ctx.fillStyle = `rgba(3,20,10,${alpha})`; ctx.beginPath(); ctx.ellipse(x, y + 4, r * 1.25, r * .4, 0, 0, Math.PI * 2); ctx.fill();
@@ -84,15 +85,8 @@
     if (!ready) return;
     document.querySelectorAll('.joe-portrait').forEach(portrait => {
       const context = portrait.getContext('2d'); context.clearRect(0, 0, 64, 64); context.imageSmoothingEnabled = true; context.imageSmoothingQuality = 'high';
-      context.drawImage(images[ARENA_SPRITES.joe.file], ...ARENA_SPRITES.joe.portrait, 1, 0, 62, 64);
+      context.drawImage(images[ARENA_READY.sprites.joe.portrait], 1, 0, 62, 64);
     });
-  }
-  function drawStaff(x, y, tilt = 0, size = 1) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(size, size);
-    ctx.strokeStyle = '#402f1f'; ctx.lineWidth = 7; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(0, 20); ctx.lineTo(-2, -30); ctx.quadraticCurveTo(-10, -45, 4, -45); ctx.quadraticCurveTo(13, -41, 5, -35); ctx.stroke();
-    ctx.strokeStyle = '#a87c43'; ctx.lineWidth = 3; ctx.stroke();
-    ctx.fillStyle = '#87efb6'; ctx.beginPath(); ctx.arc(4, -40, 4, 0, Math.PI * 2); ctx.fill(); ctx.restore();
   }
   function drawEnemy(enemy, t) {
     const { x, y, type } = enemy;
@@ -124,29 +118,40 @@
     ctx.strokeStyle = p.dashTime > 0 ? '#b8ffe3' : '#a8e7c28c'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.ellipse(p.x, p.y + 4, 22, 11, 0, 0, Math.PI * 2); ctx.stroke();
     const firing = input.shooting && game.mode === 'playing';
-    const direction = firing || !p.walking ? p.angle : Math.atan2(input.dy, input.dx);
+    const direction = input.aiming || firing || !p.walking ? p.angle : Math.atan2(input.dy, input.dx);
     const row = Math.abs(direction) < Math.PI / 4 ? 1 : Math.abs(direction) > Math.PI * .75 ? 2 : direction < 0 ? 3 : 0;
-    let frame = row * 5 + (p.walking ? 1 + Math.floor(t * 9) % 2 : 0), flip = false;
-    if (firing && p.weapon === 'slingshot') { frame = (row === 2 ? 1 : row) * 5 + (p.fireCooldown > p.interval - .07 ? 4 : 3); flip = row === 2; }
+    const frame = row * 5 + (p.walking ? 1 + Math.floor(t * 9) % 2 : 0);
+    // The supplied firing poses bake in a diagonal Sling; the independent held art follows the real aim instead.
     const alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
-    const art = ARENA_SPRITES.joe, rect = art.frames[frame], scale = joeHeight / rect[3];
+    const art = ARENA_READY.sprites.joe, pivot = art.pivots[frame], scale = joeHeight / art.frameSize[1];
     function pose(x, y, opacity) {
       ctx.save(); ctx.globalAlpha = opacity; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
       ctx.shadowColor = '#d8ffed'; ctx.shadowBlur = 2;
-      ctx.translate(x, y + 13); if (flip) ctx.scale(-1, 1);
-      ctx.drawImage(images[art.file], ...rect, -(art.anchors[frame] - rect[0]) * scale, -rect[3] * scale, rect[2] * scale, rect[3] * scale); ctx.restore();
+      ctx.translate(x, y + 13);
+      ctx.drawImage(images[art.frames[frame]], -pivot[0] * scale, -pivot[1] * scale, art.frameSize[0] * scale, art.frameSize[1] * scale); ctx.restore();
     }
     if (p.dashTime > 0) for (let i = 3; i > 0; i--) pose(p.x - p.dashX * i * 15, p.y - p.dashY * i * 15, .1);
     pose(p.x, p.y, alpha);
-    if (p.weapon === 'staff') drawStaff(p.x + Math.cos(p.angle) * 12, p.y - 15, Math.cos(p.angle) * .18, .8);
+    const held = ARENA_READY.weapons[p.weapon];
+    if (held) {
+      const recoil = firing && p.fireCooldown > p.interval - .06 ? 3 : 0;
+      ctx.save(); ctx.translate(p.x + Math.cos(p.angle) * (16 - recoil), p.y - ArenaCore.AIM_HEIGHT + Math.sin(p.angle) * (16 - recoil));
+      ctx.rotate(p.angle - held.heldAngle); ctx.drawImage(images[held.held], -26, -26, 52, 52); ctx.restore();
+    }
   }
   function render(t) {
-    ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
-    ctx.clearRect(0, 0, W, H); if (!ready) { ctx.fillStyle = '#1b3d29'; ctx.fillRect(0, 0, W, H); return; }
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#081811'; ctx.fillRect(0, 0, canvas.width, canvas.height); if (!ready) return;
+    const zoom = canvas.width / view.w;
+    ctx.setTransform(zoom, 0, 0, canvas.height / view.h, -view.x * zoom, -view.y * canvas.height / view.h);
     ctx.save();
     if (shake > 0 && !reducedMotion) ctx.translate(Math.sin(t * 175) * 3, Math.cos(t * 150) * 3);
     ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
+    if (extended) {
+      const b = game.arena.bounds;
+      ctx.save(); ctx.strokeStyle = '#c2cf91aa'; ctx.lineWidth = 5; ctx.setLineDash([14, 10]); ctx.strokeRect(b.x, b.y, b.w, b.h); ctx.restore();
+    }
     const drawables = (extended ? game.arenaId === 'jungle' ? game.arena.obstacles : [] : OBSTACLES).map(o => ({ y: o.y + o.h, draw: () => {
       shadow(o.x + o.w / 2, o.y + o.h - 15, o.w * .44, .17);
       const width = o.w + 16, height = width * 642 / 1059;
@@ -155,7 +160,7 @@
     if (game.staffPickup) {
       const drop = game.staffPickup;
       ctx.strokeStyle = '#8ff4b1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(drop.x, drop.y + 4, 26, 13, 0, 0, Math.PI * 2); ctx.stroke();
-      drawStaff(drop.x, drop.y - 4 + Math.sin(t * 3) * 3, .55, .85);
+      const staff = ARENA_READY.weapons.staff; ctx.drawImage(images[staff.pickup], drop.x - 24, drop.y - 44, 48, 48);
       ctx.fillStyle = '#0b281ade'; ctx.fillRect(drop.x - 57, drop.y + 21, 114, 21); ctx.fillStyle = '#baffca'; ctx.font = '12px Arial'; ctx.textAlign = 'center'; ctx.fillText('DUENDE STAFF', drop.x, drop.y + 36);
     }
     for (const gem of game.gems) {
@@ -175,18 +180,27 @@
     if (extended) SurvivalUI.draw(game, ctx, images);
     // Keep Joe visible above cover, crowds and pickups; collisions still use his original radius.
     drawJoe(t);
-    if (extended) SurvivalUI.drawPlayer(game, ctx, images);
+    if (extended) SurvivalUI.drawPlayer(game, ctx, images, joeHeight);
     for (const b of game.bullets) {
       const len = Math.hypot(b.vx, b.vy), color = b.color || (b.hostile ? '#d99cfa' : b.kind === 'magic' ? '#9fffd0' : '#c5b39a');
       ctx.lineWidth = b.hostile ? 3 : 3.5; ctx.strokeStyle = b.hostile ? '#8948b5aa' : b.kind === 'magic' ? '#58dca88c' : '#77664e66';
       ctx.beginPath(); ctx.moveTo(b.x - b.vx / len * (b.kind === 'stone' ? 7 : 18), b.y - b.vy / len * (b.kind === 'stone' ? 7 : 18)); ctx.lineTo(b.x, b.y); ctx.stroke();
       ctx.fillStyle = color; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+      const readyArt = ARENA_READY.weapons[b.weapon || (b.kind === 'stone' ? 'slingshot' : 'staff')];
+      if (!b.hostile && readyArt && images[readyArt.projectile]) {
+        const width = b.explosive ? 38 : 32, height = width * .75;
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(Math.atan2(b.vy, b.vx) - readyArt.projectileAngle);
+        ctx.drawImage(images[readyArt.projectile], -width / 2, -height / 2, width, height); ctx.restore();
+      }
     }
     for (const particle of particles) { ctx.globalAlpha = Math.min(1, particle.life * 3); ctx.fillStyle = particle.color; ctx.fillRect(particle.x - 2, particle.y - 2, 4, 4); } ctx.globalAlpha = 1;
     ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
     for (const effect of game.effects) { ctx.globalAlpha = Math.min(1, effect.life * 4); ctx.fillStyle = '#092217'; ctx.fillText(effect.text, effect.x + 1, effect.y + 1); ctx.fillStyle = effect.color; ctx.fillText(effect.text, effect.x, effect.y); } ctx.globalAlpha = 1;
     if (game.mode === 'playing' && !helpOpen) {
-      const { aimX: x, aimY: y } = input; ctx.strokeStyle = '#fff4d7'; ctx.lineWidth = 1.5;
+      const x = input.relativeAim ? game.player.x + Math.cos(game.player.angle) * 230 : input.aimX;
+      const y = input.relativeAim ? game.player.y - ArenaCore.AIM_HEIGHT + Math.sin(game.player.angle) * 230 : input.aimY;
+      ctx.strokeStyle = '#fff4d7'; ctx.lineWidth = 1.5;
+      ctx.save(); ctx.globalAlpha = .2; ctx.setLineDash([5, 9]); ctx.beginPath(); ctx.moveTo(game.player.x, game.player.y - ArenaCore.AIM_HEIGHT); ctx.lineTo(x, y); ctx.stroke(); ctx.restore();
       ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.stroke();
       for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) { ctx.beginPath(); ctx.moveTo(x + dx * 10, y + dy * 10); ctx.lineTo(x + dx * 15, y + dy * 15); ctx.stroke(); }
     }
@@ -208,7 +222,7 @@
     if (extended) SurvivalUI.hud(game);
     const boss = game.enemies.find(e => e.boss); $('bossHud').hidden = !boss;
     if (boss) { $('bossFill').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`; $('bossName').textContent = boss.name.toUpperCase(); }
-    $('waveBanner').hidden = game.bannerTime <= 0 || game.mode !== 'playing' || helpOpen;
+    $('waveBanner').hidden = !!boss || game.bannerTime <= 0 || game.mode !== 'playing' || helpOpen;
     $('waveBanner').textContent = game.banner;
     $('pauseButton').disabled = !['playing', 'paused', 'cinematic'].includes(game.mode) || helpOpen;
     $('pauseButton').textContent = game.mode === 'paused' ? '▷' : 'Ⅱ';
@@ -223,6 +237,7 @@
   function syncOverlay() {
     if (helpOpen || previousMode === game.mode) return;
     previousMode = game.mode; overlay.hidden = ['playing', 'cinematic'].includes(game.mode); document.body.classList.toggle('paused', game.mode !== 'playing'); updateHud();
+    document.body.classList.toggle('in-game', ['playing', 'paused', 'upgrade'].includes(game.mode));
     if (game.mode === 'playing' || game.mode === 'menu') return;
     if (story && game.mode === 'cinematic') return;
     clearInput();
@@ -233,6 +248,7 @@
     } else if (game.mode === 'paused') {
       content.innerHTML = '<h2 id="overlayTitle">Take a breath.</h2><p>Your run is paused. Nothing moves until you return.</p><button id="resumeButton" class="primary">Back to the jungle</button><br><button id="restartButton" class="secondary">Restart run</button><span class="small-note">Esc to resume · Switching tabs pauses automatically</span>';
       $('resumeButton').onclick = togglePause; $('restartButton').onclick = start;
+      if (extended) { const viewButton = document.createElement('button'); viewButton.className = 'secondary'; viewButton.textContent = $('entireArena').checked ? 'Use following camera' : 'Show entire arena'; viewButton.onclick = () => { $('entireArena').checked = !$('entireArena').checked; viewButton.textContent = $('entireArena').checked ? 'Use following camera' : 'Show entire arena'; }; content.append(viewButton); }
       if (story) { const back = document.createElement('button'); back.className = 'secondary'; back.textContent = 'Story menu'; back.onclick = StoryUI.menu; content.append(back); }
     } else {
       const won = game.mode === 'victory', seconds = Math.floor(game.time);
@@ -262,17 +278,21 @@
     if (story) content.innerHTML = '<h2 id="overlayTitle">The first trial.</h2><div class="instructions"><p><strong>Desktop:</strong> WASD / arrows move; mouse aims; hold left-click to fire. Space dashes; Escape pauses.</p><p><strong>Touch:</strong> left stick moves and faces Joe; right stick aims and fires while pushed. Dash and Pause have buttons. Walk over gems and the dropped Duende Staff.</p><p><strong>Prologue:</strong> tap the scene or Continue, or press Enter. Skip prologue / Space skips the whole opening. Escape pauses it. Replay is available in the Story menu.</p><p><strong>The Jungle Remembers:</strong> five waves, ending with Tata Duende. Purify his manifestation, release the remaining creatures and collect his staff to complete this trial.</p><p><strong>Progress:</strong> Continue restarts the saved wave with its starting build. The other three Story encounters are still in development. Production Survival unlocks after all four trials.</p></div><button id="closeHelpButton" class="primary">Got it</button>';
     $('closeHelpButton').onclick = closeHelp; $('closeHelpButton').focus(); updateHud();
   };
-  canvas.addEventListener('pointermove', event => {
-    const rect = canvas.getBoundingClientRect(); input.aimX = (event.clientX - rect.left) / rect.width * W; input.aimY = (event.clientY - rect.top) / rect.height * H;
-  });
+  function mouseAim(event) {
+    if (event.pointerType === 'touch') return;
+    mouse = { x: event.clientX, y: event.clientY }; input.relativeAim = false; input.aiming = true;
+    const target = ArenaViewport.point(view, canvas.getBoundingClientRect(), mouse.x, mouse.y);
+    input.aimX = target.x; input.aimY = target.y;
+  }
+  canvas.addEventListener('pointermove', mouseAim);
   canvas.addEventListener('pointerdown', event => {
-    if (event.button !== 0 || game.mode !== 'playing') return;
-    canvas.focus(); canvas.setPointerCapture(event.pointerId); input.shooting = true;
-    const rect = canvas.getBoundingClientRect(); input.aimX = (event.clientX - rect.left) / rect.width * W; input.aimY = (event.clientY - rect.top) / rect.height * H;
+    if (event.pointerType === 'touch' || event.button !== 0 || game.mode !== 'playing') return;
+    canvas.focus(); canvas.setPointerCapture(event.pointerId); mousePointer = event.pointerId; input.shooting = true; mouseAim(event);
   });
-  window.addEventListener('pointerup', () => { input.shooting = false; });
-  canvas.addEventListener('pointercancel', () => { input.shooting = false; });
-  canvas.addEventListener('lostpointercapture', () => { input.shooting = false; });
+  function mouseRelease(event) { if (event.pointerId === mousePointer) { input.shooting = false; mousePointer = null; } }
+  window.addEventListener('pointerup', mouseRelease);
+  canvas.addEventListener('pointercancel', mouseRelease);
+  canvas.addEventListener('lostpointercapture', mouseRelease);
   canvas.addEventListener('contextmenu', event => event.preventDefault());
   window.addEventListener('keydown', event => {
     const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
@@ -295,6 +315,9 @@
   function frame(now) {
     const dt = last ? Math.min((now - last) / 1000, .05) : 0; last = now;
     if (ready) {
+      const rect = canvas.getBoundingClientRect();
+      view = ArenaViewport.follow(game.player, { w: W, h: H }, rect.width / rect.height, extended && !!$('entireArena')?.checked, view, game.mode === 'playing' ? dt : 0);
+      if (mouse && !input.relativeAim) { const target = ArenaViewport.point(view, rect, mouse.x, mouse.y); input.aimX = target.x; input.aimY = target.y; }
       touch?.update(); game.update(dt, input); handleEvents(); syncOverlay();
       if (story) StoryUI.update(dt, reducedMotion);
       if (game.mode === 'playing') for (const p of particles) { p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
@@ -304,8 +327,10 @@
     if (!story || !StoryUI.active) render(game.mode === 'menu' ? now / 1000 : game.time);
     requestAnimationFrame(frame);
   }
-  const files = [...new Set([...Object.entries(ARENA_SPRITES).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).map(([,a]) => a.file), 'jungle-arena.png', 'limestone-ruins.png',
-    ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', 'weapon-sheet.png', ...Object.values(SurvivalUI.powerArt).map(a => a.file)] : [])])];
+  const weaponFiles = (extended ? Object.values(ARENA_READY.weapons) : ['slingshot', 'staff'].map(id => ARENA_READY.weapons[id])).flatMap(a => [a.pickup, a.held, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]);
+  const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([,a]) => [...a.frames, ...(a.portrait ? [a.portrait] : [])]);
+  const files = [...new Set([...spriteFiles, 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+    ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   Promise.all(files.map(file => new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => {

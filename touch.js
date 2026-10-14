@@ -33,7 +33,9 @@
       wasMoving = move.pointer !== null;
       const a = aim.pointer !== null && Math.hypot(aim.x, aim.y) > 0;
       if (a || move.pointer !== null && Math.hypot(move.x, move.y) > 0) {
-        const v = a ? aim : move; input.aimX = game.player.x + v.x * 600; input.aimY = game.player.y + v.y * 600;
+        const v = a ? aim : move;
+        input.relativeAim = true; input.aimDX = v.x; input.aimDY = v.y; input.aiming = true;
+        input.aimX = game.player.x + v.x * 600; input.aimY = game.player.y - ArenaCore.AIM_HEIGHT + v.y * 600;
       }
       if (aim.pointer !== null || wasAiming) input.shooting = !!a;
       wasAiming = aim.pointer !== null;
@@ -44,7 +46,7 @@
     panel.querySelector('#touchPickup').hidden = typeof game.pickup !== 'function';
     panel.querySelector('#touchPause').onclick = () => { if (['playing', 'paused'].includes(game.mode)) togglePause(); };
     if (matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0) document.body.classList.add('touch-enabled');
-    return { update, reset() { sticks.forEach(resetStick); wasMoving = wasAiming = false; input.dx = input.dy = 0; input.shooting = false; } };
+    return { update, reset() { sticks.forEach(resetStick); wasMoving = wasAiming = false; input.dx = input.dy = 0; input.shooting = false; input.relativeAim = false; input.aiming = false; } };
   }
   if (typeof module !== 'undefined' && module.exports) module.exports = { vector }; else root.TouchControls = { attach, vector };
 })(typeof window !== 'undefined' ? window : globalThis);

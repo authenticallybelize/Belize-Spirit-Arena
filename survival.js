@@ -10,16 +10,16 @@
   const W = 1200, H = 1200, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
-    underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
+    underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
       obstacles: [{ x: 518, y: 252, w: 85, h: 48 }, { x: 333, y: 345, w: 75, h: 70 }, { x: 808, y: 337, w: 95, h: 65 }, { x: 480, y: 521, w: 93, h: 65 }, { x: 713, y: 648, w: 87, h: 65 }, { x: 210, y: 677, w: 77, h: 56 }],
       spawn: { x: 610, y: 575 } },
-    coast: { name: 'Spirit Coast · Hopkins', image: 'coast-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
+    coast: { name: 'Spirit Coast · Hopkins', image: 'coast-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
       obstacles: [{ x: 540, y: 268, w: 100, h: 60 }, { x: 772, y: 392, w: 106, h: 57 }, { x: 623, y: 645, w: 96, h: 65 }, { x: 337, y: 580, w: 69, h: 61 }],
       spawn: { x: 610, y: 575 } },
-    canyon: { name: 'Ancient Forest Canyon', image: 'canyon-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
+    canyon: { name: 'Ancient Forest Canyon', image: 'canyon-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
       obstacles: [{ x: 524, y: 237, w: 78, h: 49 }, { x: 358, y: 311, w: 81, h: 82 }, { x: 451, y: 461, w: 122, h: 75 }, { x: 695, y: 611, w: 111, h: 73 }, { x: 854, y: 459, w: 101, h: 73 }],
       spawn: { x: 610, y: 575 } },
-    jungle: { name: 'Jungle Ruins', image: 'jungle-arena.png', bounds: { x: 135, y: 232, w: 930, h: 728 },
+    jungle: { name: 'Jungle Ruins', image: 'jungle-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 },
       obstacles: Base.OBSTACLES.map(o => ({ ...o, y: o.y * 1.5, h: o.h * 1.5 })), spawn: { x: 600, y: 645 } }
   };
   const WEAPONS = [
@@ -36,6 +36,7 @@
     { id: 'cohune', name: 'Cohune Bomb Launcher', damage: 400, rate: .125, speed: 450, range: 530, r: 9, explosive: true, tags: ['projectile', 'explosive', 'area'], color: '#ffbc5c', art: [635, 816, 85, 108] },
     { id: 'staff', name: 'Duende Staff', damage: 30.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
   ];
+  const FEATHER_HOMING = [1.1, 1.75, 2.45, Math.PI];
   const weapon = id => WEAPONS.find(w => w.id === id) || WEAPONS[0];
   const PERKS = [
     ['damage', 'Heart of the Jungle', '+25% compounded damage', 5, 'Common'],
@@ -87,7 +88,7 @@
     for (let i = 0; i < n; i++) {
       const x = clamp(e.x + dx / n, b.x + e.r, b.x + b.w - e.r);
       if (!g.arena.obstacles.some(o => circleRect(x, e.y, e.r, o))) e.x = x;
-      const y = clamp(e.y + dy / n, b.y + e.r, b.y + b.h - e.r);
+      const y = clamp(e.y + dy / n, b.y + e.r + (e === g.player ? Base.AIM_HEIGHT : 0), b.y + b.h - e.r);
       if (!g.arena.obstacles.some(o => circleRect(e.x, y, e.r, o))) e.y = y;
     }
   }
@@ -157,7 +158,7 @@
       if (this.wave >= 4) this.queue = this.queue.map((type, i) => i % 7 === 3 ? 'tommy' : this.wave >= 7 && i % 7 === 6 ? 'miniLlorona' : type);
       if (this.wave % 5 === 0) this.queue.unshift(this.wave % 10 === 5 ? 'duende' : 'jaguarBoss');
       this.spawnTimer = 1.3; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
-      this.drops = this.drops.filter(d => !d.untilWave || d.untilWave >= this.wave);
+      for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
       this.events.push({ type: 'wave' });
     }
     spawn(type) {
@@ -173,13 +174,21 @@
       }
       return false;
     }
+    compatible(perk) {
+      const w = weapon(this.player.weapon);
+      if ((w.explosive || w.cloud) && ['pierce', 'ricochet', 'poison', 'fire'].includes(perk.id)) return false;
+      if (perk.tag && perk.tag !== 'boss' && !w.tags.includes(perk.tag)) return false;
+      if (perk.id === 'homing' && w.homing && this.weaponLevels[w.id] === 4) return false;
+      return true;
+    }
     eligible(perk) {
       const w = weapon(this.player.weapon);
+      if (!this.compatible(perk)) return false;
       if (this.rank(perk.id) >= perk.max) return false;
       if (perk.tag === 'boss') return this.wave >= 5;
-      if (perk.tag && !w.tags.includes(perk.tag)) return false;
       if (perk.id === 'commit') return this.wave >= 5 && !this.commitWeapon;
       if (perk.id === 'rate') return this.player.interval > Math.max(.065, 1 / w.rate * .45) + .001;
+      if (perk.id === 'homing') return (w.homing ? FEATHER_HOMING[this.weaponLevels[w.id] - 1] : 0) + .55 * this.rank('homing') < Math.PI - .001;
       return true;
     }
     roll(pool, grandma = false) {
@@ -195,10 +204,11 @@
       let available = PERKS.filter(p => this.eligible(p)); this.choices = [];
       const n = this.rank('grandma') ? 4 : 3;
       for (let i = 0; i < n; i++) {
+        if (!available.length && this.choices.length) break;
         let pool = i === 0 ? available.filter(p => !p.tag && ['Common', 'Uncommon'].includes(p.rarity)) : i === 1 ? available.filter(p => p.tag !== 'boss') : available;
         if (!pool.length) pool = available;
         let pick = pool.length ? this.roll(pool, i === 3) : { id: 'overflowHeal', name: 'Jungle Recovery', detail: 'Heal 25 HP · all useful perks exhausted', max: 0, rarity: 'Common', icon: '♡' };
-        this.choices.push({ ...pick, detail: pick.detail + (pick.max ? ' · ' + (this.rank(pick.id) + 1) + '/' + pick.max : '') });
+        this.choices.push({ ...pick, detail: pick.detail + (pick.max ? ' · Current ' + this.rank(pick.id) + '/' + pick.max + ' · +1 rank' : '') });
         available = available.filter(p => p.id !== pick.id);
       }
       this.mode = 'upgrade'; this.events.push({ type: 'level' }); return true;
@@ -232,7 +242,9 @@
     }
     addDrop(id, x, y, kind = 'weapon', boss = false) {
       if (this.drops.length >= 24) { const old = this.drops.findIndex(d => !d.boss); if (old < 0) return; this.drops.splice(old, 1); }
-      const drop = { id, x, y, kind, boss, life: boss ? Infinity : 45 };
+      const bounds = this.arena.bounds;
+      x = clamp(x, bounds.x + 12, bounds.x + bounds.w - 12); y = clamp(y, bounds.y + 12, bounds.y + bounds.h - 12);
+      const drop = { id, x, y, kind, boss, life: kind === 'weapon' ? 5 : boss ? Infinity : 45 };
       this.drops.push(drop); return drop;
     }
     defeat(e, reducedXP = false) {
@@ -258,8 +270,7 @@
       } else {
         const old = { ...this.player, r: 8 };
         move(this, old, -Math.cos(this.player.angle) * 55, -Math.sin(this.player.angle) * 55);
-        const replaced = this.addDrop(this.player.weapon, old.x, old.y);
-        if (replaced) replaced.untilWave = this.wave + 1;
+        this.addDrop(this.player.weapon, old.x, old.y);
         this.player.weapon = drop.id;
       }
       this.player.fireCooldown = 0; this.refreshStats(); this.banner = weapon(drop.id).name + ' · Rank ' + this.weaponLevels[drop.id]; this.bannerTime = 2;
@@ -270,9 +281,11 @@
       if (!POWERS[id]) return;
       if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5), false);
       else if (id === 'nuke') {
-        for (const e of [...this.enemies]) this.damageEnemy(e, e.boss ? e.maxHp * .2 : e.hp, null, true);
-        this.bullets = this.bullets.filter(b => !b.hostile); this.flashes.push({ x: this.player.x, y: this.player.y, r: 700, color: '#ffcf8f', life: .7 });
+        for (const e of [...this.enemies]) if (!e.dead) { e.hp = 0; this.defeat(e, true); }
+        this.enemies = []; this.bullets = this.bullets.filter(b => !b.hostile);
+        this.flashes.push({ x: this.player.x, y: this.player.y, r: 1450, kind: 'nuke', color: '#ffcf8f', life: .7 });
       } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
+      if (id === 'shock') this.shockClock = 0;
       this.banner = POWERS[id].name + ' collected'; this.bannerTime = 2; this.refreshStats();
     }
     gainXP(value, gem = true) {
@@ -301,13 +314,15 @@
     }
     fire() {
       const p = this.player, w = weapon(p.weapon); this.attackCount++;
+      const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id];
       let damage = p.damage;
       if (this.random() < Math.min(.5, .08 * this.rank('crit'))) damage *= 2;
-      if (w.melee || w.pulse) this.pulse(p, w.range + (this.weaponLevels[w.id] - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
+      if (w.melee || w.pulse) this.pulse(w.melee ? origin : p, w.range + (this.weaponLevels[w.id] - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
       else {
-        const launch = (angle, multiplier = 1, secondary = false) => this.shot(p.x + Math.cos(angle) * 24, p.y + Math.sin(angle) * 24 - 8, angle, false, damage * multiplier,
+        const launch = (angle, multiplier = 1, secondary = false) => this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
           w.speed * (1 + .2 * this.rank('harpy')), { kind: w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: w.range * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
-            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: this.rank('ricochet'), homing: (w.homing ? .8 : 0) + .55 * this.rank('homing'), weapon: w.id,
+            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: this.rank('ricochet'), homing: Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
+            targetId: w.homing ? this.homingTarget(origin, angle)?.id : undefined, seekingRank: w.homing ? rank : 0,
             poison: (w.poison || 0) + 6 * this.rank('poison'), burn: this.random() < .15 * this.rank('fire') ? 10 * this.rank('fire') : 0,
             explosive: w.explosive, cloud: w.cloud, secondary });
         launch(p.angle);
@@ -318,8 +333,14 @@
     }
     explode(b) {
       const radius = Math.min(160, (100 + 10 * this.rank('damage')) * (1 + .25 * this.rank('blast')) * (this.active('evolution') ? 1.2 : 1));
-      this.flashes.push({ x: b.x, y: b.y, r: radius, color: '#ffc378', life: .5 });
+      this.flashes.push({ x: b.x, y: b.y, r: radius, kind: 'explosion', color: '#ffc378', life: .5 });
       for (const e of [...this.enemies]) if (dist(e, b) <= radius && visible(this, b, e)) this.damageEnemy(e, b.damage * (1 - .5 * clamp((dist(e, b) - radius / 2) / (radius / 2), 0, 1)));
+    }
+    homingTarget(origin, angle, hitIds = new Set()) {
+      return this.enemies.filter(e => !e.dead && e.warmup <= 0 && !hitIds.has(e.id) && visible(this, origin, e))
+        .map(e => ({ e, delta: Math.atan2(Math.sin(Math.atan2(e.y - origin.y, e.x - origin.x) - angle), Math.cos(Math.atan2(e.y - origin.y, e.x - origin.x) - angle)) }))
+        .filter(q => Math.abs(q.delta) <= Math.PI / 2)
+        .sort((a, b) => Math.abs(a.delta) * dist(a.e, origin) - Math.abs(b.delta) * dist(b.e, origin) || dist(a.e, origin) - dist(b.e, origin))[0]?.e;
     }
     enemyTick(e, dt) {
       e.hit = Math.max(0, e.hit - dt);
@@ -366,10 +387,10 @@
       for (const id of Object.keys(this.powers)) { this.powers[id] -= dt; if (this.powers[id] <= 0) delete this.powers[id]; }
       this.regenClock += dt; if (this.regenClock >= 4) { p.hp = Math.min(p.maxHp, p.hp + this.rank('regen')); this.regenClock -= 4; }
       this.refreshStats();
-      if (Number.isFinite(input.aimX) && Number.isFinite(input.aimY)) p.angle = Math.atan2(input.aimY - p.y, input.aimX - p.x);
       const len = Math.hypot(input.dx || 0, input.dy || 0); p.walking = len > 0;
       if (p.dashTime > 0) { move(this, p, p.dashX * 940 * dt, p.dashY * 940 * dt); p.dashTime -= dt; }
-      else if (len) move(this, p, (input.dx || 0) / len * p.speed * dt, (input.dy || 0) / len * p.speed * dt);
+      else move(this, p, len ? (input.dx || 0) / len * p.speed * dt : 0, len ? (input.dy || 0) / len * p.speed * dt : 0);
+      Base.aimAt(p, input);
       if (input.shooting && p.fireCooldown <= 0) this.fire();
       if (this.breakTime > 0) { this.breakTime -= dt; if (this.breakTime <= 0) this.beginWave(); }
       else if (this.queue.length && this.enemies.length < 32) {
@@ -385,34 +406,48 @@
         move(this, a, -Math.cos(angle) * push, -Math.sin(angle) * push); move(this, b, Math.cos(angle) * push, Math.sin(angle) * push);
       }
       for (const b of this.bullets) {
-        const step = b.hostile ? enemyDt : dt;
+        const step = Math.min(b.life, b.hostile ? enemyDt : dt);
         if (b.homing && !b.hostile) {
-          const target = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !b.hitIds.has(e.id) && visible(this, b, e)).sort((a, e) => dist(a, b) - dist(e, b))[0];
-          if (target) { const a = Math.atan2(b.vy, b.vx), wanted = Math.atan2(target.y - b.y, target.x - b.x), delta = Math.atan2(Math.sin(wanted - a), Math.cos(wanted - a)), limit = Math.min(Math.PI, b.homing) * dt, turn = clamp(delta, -limit, limit), speed = Math.hypot(b.vx, b.vy); b.vx = Math.cos(a + turn) * speed; b.vy = Math.sin(a + turn) * speed; }
+          const target = this.enemies.find(e => e.id === b.targetId && !e.dead && e.warmup <= 0 && !b.hitIds.has(e.id) && visible(this, b, e)) || this.homingTarget(b, Math.atan2(b.vy, b.vx), b.hitIds);
+          if (target) {
+            b.targetId = target.id;
+            const a = Math.atan2(b.vy, b.vx), wanted = Math.atan2(target.y - b.y, target.x - b.x), delta = Math.atan2(Math.sin(wanted - a), Math.cos(wanted - a));
+            const turn = clamp(delta, -b.homing * dt, b.homing * dt);
+            b.speed ||= Math.hypot(b.vx, b.vy);
+            const speed = b.seekingRank === 4 && Math.abs(delta) > .2 ? Math.min(b.speed, Math.max(180, dist(b, target) * Math.PI * .7)) : b.speed;
+            b.vx = Math.cos(a + turn) * speed; b.vy = Math.sin(a + turn) * speed;
+          }
         }
         const start = { x: b.x, y: b.y }, end = { x: b.x + b.vx * step, y: b.y + b.vy * step };
         let wallT = Infinity;
         for (const o of this.arena.obstacles) { const t = segmentRect(start, end, o, b.r); if (t !== null) wallT = Math.min(wallT, t); }
+        const bounds = this.arena.bounds;
+        for (const [key, size] of [['x', 'w'], ['y', 'h']]) {
+          const lo = bounds[key] + b.r, hi = bounds[key] + bounds[size] - b.r, delta = end[key] - start[key];
+          if (end[key] < lo || end[key] > hi) wallT = Math.min(wallT, delta ? clamp(((delta > 0 ? hi : lo) - start[key]) / delta, 0, 1) : 0);
+        }
         const hits = (b.hostile ? [p] : this.enemies).filter(e => !e.dead && !(e.warmup > 0) && !b.hitIds.has(e.id)).map(e => ({ e, t: segmentCircle(start, end, { ...e, r: e.r + b.r }) })).filter(h => h.t !== null && h.t < wallT).sort((a, e) => a.t - e.t);
         b.x = end.x; b.y = end.y; b.life -= step;
+        let stoppedAtHit = false;
         for (const hit of hits) {
-          if (b.hostile) { this.hurt(b.damage); b.life = 0; break; }
+          if (b.hostile) { this.hurt(b.damage); b.life = 0; stoppedAtHit = true; break; }
           b.hitIds.add(hit.e.id);
-          if (b.explosive || b.cloud) { b.x = start.x + (end.x - start.x) * hit.t; b.y = start.y + (end.y - start.y) * hit.t; b.life = 0; break; }
+          if (b.explosive || b.cloud) { b.x = start.x + (end.x - start.x) * hit.t; b.y = start.y + (end.y - start.y) * hit.t; b.life = 0; stoppedAtHit = true; break; }
           this.damageEnemy(hit.e, b.damage, { poison: b.poison || 0, burn: b.burn || 0 });
           if (b.pierce > 0) { b.pierce--; b.damage *= .85; continue; }
           if (b.bounces > 0) {
             const next = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !b.hitIds.has(e.id) && visible(this, hit.e, e)).sort((a, e) => dist(a, hit.e) - dist(e, hit.e))[0];
-            if (next) { const a = Math.atan2(next.y - hit.e.y, next.x - hit.e.x), speed = Math.hypot(b.vx, b.vy); b.vx = Math.cos(a) * speed; b.vy = Math.sin(a) * speed; b.bounces--; b.damage *= .85; b.x = hit.e.x; b.y = hit.e.y; break; }
+            if (next) { const a = Math.atan2(next.y - hit.e.y, next.x - hit.e.x), speed = Math.hypot(b.vx, b.vy); b.vx = Math.cos(a) * speed; b.vy = Math.sin(a) * speed; b.bounces--; b.damage *= .85; b.x = hit.e.x; b.y = hit.e.y; stoppedAtHit = true; break; }
           }
-          b.life = 0; break;
+          b.life = 0; stoppedAtHit = true; break;
         }
-        if (wallT < Infinity) { b.x = start.x + (end.x - start.x) * wallT; b.y = start.y + (end.y - start.y) * wallT; b.life = 0; }
-        const bounds = this.arena.bounds;
-        if (b.x < bounds.x || b.x > bounds.x + bounds.w || b.y < bounds.y || b.y > bounds.y + bounds.h) b.life = 0;
+        if (!stoppedAtHit && wallT < Infinity) { b.x = start.x + (end.x - start.x) * wallT; b.y = start.y + (end.y - start.y) * wallT; b.life = 0; }
+        if (b.x < bounds.x + b.r || b.x > bounds.x + bounds.w - b.r || b.y < bounds.y + b.r || b.y > bounds.y + bounds.h - b.r) {
+          b.x = clamp(b.x, bounds.x + b.r, bounds.x + bounds.w - b.r); b.y = clamp(b.y, bounds.y + b.r, bounds.y + bounds.h - b.r); b.life = 0;
+        }
         if (b.life <= 0 && !b.hostile) {
           if (b.explosive) this.explode(b);
-          if (b.cloud && this.clouds.length < 12) this.clouds.push({ x: b.x, y: b.y, r: 55, life: 2.5 + .3 * (this.weaponLevels.cacao - 1), damage: 12 * 1.25 ** this.rank('damage'), color: '#c49d7f' });
+          if (b.cloud && this.clouds.length < 12) this.clouds.push({ x: b.x, y: b.y, r: 55, life: 2.5 + .3 * (this.weaponLevels.cacao - 1), damage: b.damage, color: '#c49d7f' });
         }
         if (this.mode !== 'playing') return;
       }
@@ -426,12 +461,14 @@
       this.shockClock -= dt;
       if (this.active('shock') && this.shockClock <= 0) {
         this.shockClock = .5;
-        const linked = [], first = this.enemies.filter(e => !e.dead && e.warmup <= 0 && dist(e, p) < 250).sort((a, b) => dist(a, p) - dist(b, p))[0];
+        const origin = Base.aimAt(p, {});
+        const linked = [], first = this.enemies.filter(e => !e.dead && e.warmup <= 0 && dist(e, origin) < 250 && visible(this, origin, e)).sort((a, b) => dist(a, origin) - dist(b, origin))[0];
         if (first) linked.push(first);
-        while (linked.length && linked.length < 6) {
-          const last = linked.at(-1), next = this.enemies.find(e => !e.dead && e.warmup <= 0 && !linked.includes(e) && dist(e, last) <= 130 && visible(this, last, e));
+        while (linked.length && linked.length < 16) {
+          const last = linked.at(-1), next = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !linked.includes(e) && dist(e, last) <= 130 && visible(this, last, e)).sort((a, b) => dist(a, last) - dist(b, last))[0];
           if (!next) break; linked.push(next);
         }
+        if (linked.length) this.flashes.push({ ...origin, r: 0, kind: 'shock', points: [origin, ...linked.map(e => ({ x: e.x, y: e.y }))], life: .25, color: '#a4bdff' });
         for (const e of linked) { this.flashes.push({ x: e.x, y: e.y, r: 22, life: .2, color: '#a4bdff' }); this.damageEnemy(e, 30); }
       }
       if (this.pendingRhythm) { this.pendingRhythm = false; this.pulse(p, 190, p.damage * .6, '#ffe2a1', true); }
@@ -442,7 +479,7 @@
         if (dist(gem, p) < 22) { this.gainXP(gem.value); gem.collected = true; this.events.push({ type: 'gem' }); }
       }
       this.gems = this.gems.filter(g => !g.collected);
-      for (const d of this.drops) { d.life -= dt; if (d.kind === 'power' && dist(d, p) < 26) { d.life = 0; this.collectPower(d.id); } }
+      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (d.kind === 'power' && dist(d, p) < 26) { d.life = 0; this.collectPower(d.id); } }
       this.drops = this.drops.filter(d => d.life > 0);
       this.flashes = this.flashes.filter(f => { f.life -= dt; return f.life > 0; }).slice(-60);
       this.effects = this.effects.filter(e => { e.life -= dt; e.y -= dt * 22; return e.life > 0; }).slice(-45);

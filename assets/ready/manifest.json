@@ -1,0 +1,4326 @@
+{
+  "version": 1,
+  "weapons": {
+    "slingshot": {
+      "heldAngle": -0.2,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/slingshot/pickup.png",
+      "held": "ready/weapons/slingshot/held.png",
+      "projectile": "ready/weapons/slingshot/projectile.png",
+      "impact": "ready/weapons/slingshot/impact.png"
+    },
+    "bow": {
+      "heldAngle": 0,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/bow/pickup.png",
+      "held": "ready/weapons/bow/held.png",
+      "projectile": "ready/weapons/bow/projectile.png",
+      "impact": "ready/weapons/bow/impact.png"
+    },
+    "dart": {
+      "heldAngle": -0.72,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/dart/pickup.png",
+      "held": "ready/weapons/dart/held.png",
+      "projectile": "ready/weapons/dart/projectile.png",
+      "impact": "ready/weapons/dart/impact.png"
+    },
+    "spear": {
+      "heldAngle": -0.57,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/spear/pickup.png",
+      "held": "ready/weapons/spear/held.png",
+      "projectile": "ready/weapons/spear/projectile.png",
+      "impact": "ready/weapons/spear/impact.png"
+    },
+    "crystal": {
+      "heldAngle": -0.74,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/crystal/pickup.png",
+      "held": "ready/weapons/crystal/held.png",
+      "projectile": "ready/weapons/crystal/projectile.png",
+      "impact": "ready/weapons/crystal/impact.png"
+    },
+    "cacao": {
+      "heldAngle": -0.92,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/cacao/pickup.png",
+      "held": "ready/weapons/cacao/held.png",
+      "projectile": "ready/weapons/cacao/projectile.png",
+      "impact": "ready/weapons/cacao/impact.png"
+    },
+    "drum": {
+      "heldAngle": 0,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/drum/pickup.png",
+      "held": "ready/weapons/drum/held.png",
+      "projectile": "ready/weapons/drum/projectile.png",
+      "impact": "ready/weapons/drum/impact.png"
+    },
+    "claw": {
+      "heldAngle": 0,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/claw/pickup.png",
+      "held": "ready/weapons/claw/held.png",
+      "projectile": "ready/weapons/claw/projectile.png",
+      "impact": "ready/weapons/claw/impact.png"
+    },
+    "feather": {
+      "heldAngle": -0.93,
+      "projectileAngle": -0.5,
+      "pickup": "ready/weapons/feather/pickup.png",
+      "held": "ready/weapons/feather/held.png",
+      "projectile": "ready/weapons/feather/projectile.png",
+      "impact": "ready/weapons/feather/impact.png"
+    },
+    "obsidian": {
+      "heldAngle": -0.49,
+      "projectileAngle": -0.24,
+      "pickup": "ready/weapons/obsidian/pickup.png",
+      "held": "ready/weapons/obsidian/held.png",
+      "projectile": "ready/weapons/obsidian/projectile.png",
+      "impact": "ready/weapons/obsidian/impact.png"
+    },
+    "cohune": {
+      "heldAngle": -0.32,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/cohune/pickup.png",
+      "held": "ready/weapons/cohune/held.png",
+      "projectile": "ready/weapons/cohune/projectile.png",
+      "impact": "ready/weapons/cohune/impact.png",
+      "impactFrames": [
+        "ready/weapons/cohune/explosion-1.png",
+        "ready/weapons/cohune/explosion-2.png",
+        "ready/weapons/cohune/explosion-3.png",
+        "ready/weapons/cohune/explosion-4.png"
+      ]
+    },
+    "staff": {
+      "heldAngle": -1.5707963267948966,
+      "projectileAngle": 0,
+      "pickup": "ready/weapons/staff/pickup.png",
+      "held": "ready/weapons/staff/held.png",
+      "projectile": "ready/weapons/staff/projectile.png",
+      "impact": "ready/weapons/staff/impact.png"
+    }
+  },
+  "powers": {
+    "badman": {
+      "pickup": "ready/powers/badman/pickup.png"
+    },
+    "nuke": {
+      "pickup": "ready/powers/nuke/pickup.png"
+    },
+    "bonusXP": {
+      "pickup": "ready/powers/bonusXP/pickup.png"
+    },
+    "doubleXP": {
+      "pickup": "ready/powers/doubleXP/pickup.png"
+    },
+    "freeze": {
+      "pickup": "ready/powers/freeze/pickup.png"
+    },
+    "heavy": {
+      "pickup": "ready/powers/heavy/pickup.png",
+      "projectile": "ready/powers/heavy/projectile.png"
+    },
+    "shield": {
+      "pickup": "ready/powers/shield/pickup.png",
+      "bubbleFrames": [
+        "ready/powers/shield/bubble-1.png",
+        "ready/powers/shield/bubble-2.png",
+        "ready/powers/shield/bubble-3.png",
+        "ready/powers/shield/bubble-4.png",
+        "ready/powers/shield/bubble-5.png",
+        "ready/powers/shield/bubble-6.png"
+      ]
+    },
+    "shock": {
+      "pickup": "ready/powers/shock/pickup.png",
+      "bolt": "ready/powers/shock/bolt.png"
+    },
+    "evolution": {
+      "pickup": "ready/powers/evolution/pickup.png"
+    }
+  },
+  "sprites": {
+    "joe": {
+      "frames": [
+        "ready/sprites/joe/frame-01.png",
+        "ready/sprites/joe/frame-02.png",
+        "ready/sprites/joe/frame-03.png",
+        "ready/sprites/joe/frame-04.png",
+        "ready/sprites/joe/frame-05.png",
+        "ready/sprites/joe/frame-06.png",
+        "ready/sprites/joe/frame-07.png",
+        "ready/sprites/joe/frame-08.png",
+        "ready/sprites/joe/frame-09.png",
+        "ready/sprites/joe/frame-10.png",
+        "ready/sprites/joe/frame-11.png",
+        "ready/sprites/joe/frame-12.png",
+        "ready/sprites/joe/frame-13.png",
+        "ready/sprites/joe/frame-14.png",
+        "ready/sprites/joe/frame-15.png",
+        "ready/sprites/joe/frame-16.png",
+        "ready/sprites/joe/frame-17.png",
+        "ready/sprites/joe/frame-18.png",
+        "ready/sprites/joe/frame-19.png",
+        "ready/sprites/joe/frame-20.png"
+      ],
+      "pivots": [
+        [
+          55.07,
+          112.0
+        ],
+        [
+          55.43,
+          112.0
+        ],
+        [
+          57.3,
+          112.0
+        ],
+        [
+          54.72,
+          112.0
+        ],
+        [
+          44.31,
+          112.0
+        ],
+        [
+          60.59,
+          112.0
+        ],
+        [
+          54.13,
+          112.0
+        ],
+        [
+          51.8,
+          112.0
+        ],
+        [
+          40.11,
+          112.0
+        ],
+        [
+          42.04,
+          112.0
+        ],
+        [
+          56.71,
+          112.0
+        ],
+        [
+          54.42,
+          112.0
+        ],
+        [
+          57.33,
+          112.0
+        ],
+        [
+          51.94,
+          112.0
+        ],
+        [
+          51.94,
+          112.0
+        ],
+        [
+          56.64,
+          112.0
+        ],
+        [
+          56.83,
+          112.0
+        ],
+        [
+          59.88,
+          112.0
+        ],
+        [
+          58.32,
+          112.0
+        ],
+        [
+          46.02,
+          112.0
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ],
+      "portrait": "ready/sprites/joe/portrait.png"
+    },
+    "minijaguar": {
+      "frames": [
+        "ready/sprites/minijaguar/frame-01.png",
+        "ready/sprites/minijaguar/frame-02.png",
+        "ready/sprites/minijaguar/frame-03.png",
+        "ready/sprites/minijaguar/frame-04.png",
+        "ready/sprites/minijaguar/frame-05.png",
+        "ready/sprites/minijaguar/frame-06.png"
+      ],
+      "pivots": [
+        [
+          56.0,
+          110.96
+        ],
+        [
+          56.0,
+          97.06
+        ],
+        [
+          56.0,
+          101.64
+        ],
+        [
+          56.0,
+          104.55
+        ],
+        [
+          56.0,
+          102.1
+        ],
+        [
+          56.0,
+          88.98
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    },
+    "crab": {
+      "frames": [
+        "ready/sprites/crab/frame-01.png",
+        "ready/sprites/crab/frame-02.png",
+        "ready/sprites/crab/frame-03.png",
+        "ready/sprites/crab/frame-04.png",
+        "ready/sprites/crab/frame-05.png",
+        "ready/sprites/crab/frame-06.png"
+      ],
+      "pivots": [
+        [
+          56.0,
+          89.75
+        ],
+        [
+          56.0,
+          90.08
+        ],
+        [
+          56.0,
+          93.83
+        ],
+        [
+          56.0,
+          106.86
+        ],
+        [
+          56.0,
+          111.44
+        ],
+        [
+          56.0,
+          89.2
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    },
+    "shadow": {
+      "frames": [
+        "ready/sprites/shadow/frame-01.png",
+        "ready/sprites/shadow/frame-02.png",
+        "ready/sprites/shadow/frame-03.png",
+        "ready/sprites/shadow/frame-04.png",
+        "ready/sprites/shadow/frame-05.png",
+        "ready/sprites/shadow/frame-06.png"
+      ],
+      "pivots": [
+        [
+          55.33,
+          112.0
+        ],
+        [
+          55.58,
+          112.0
+        ],
+        [
+          55.92,
+          112.0
+        ],
+        [
+          56.0,
+          104.61
+        ],
+        [
+          56.07,
+          112.0
+        ],
+        [
+          56.0,
+          88.33
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    },
+    "duende": {
+      "frames": [
+        "ready/sprites/duende/frame-01.png"
+      ],
+      "pivots": [
+        [
+          55.53,
+          112.0
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    },
+    "jaguarBoss": {
+      "frames": [
+        "ready/sprites/jaguarBoss/frame-01.png",
+        "ready/sprites/jaguarBoss/frame-02.png",
+        "ready/sprites/jaguarBoss/frame-03.png",
+        "ready/sprites/jaguarBoss/frame-04.png",
+        "ready/sprites/jaguarBoss/frame-05.png",
+        "ready/sprites/jaguarBoss/frame-06.png",
+        "ready/sprites/jaguarBoss/frame-07.png",
+        "ready/sprites/jaguarBoss/frame-08.png"
+      ],
+      "pivots": [
+        [
+          55.63,
+          112.0
+        ],
+        [
+          56.0,
+          92.42
+        ],
+        [
+          56.0,
+          94.65
+        ],
+        [
+          56.0,
+          96.42
+        ],
+        [
+          56.0,
+          89.84
+        ],
+        [
+          56.0,
+          108.21
+        ],
+        [
+          56.0,
+          102.33
+        ],
+        [
+          56.0,
+          90.9
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    },
+    "tommy": {
+      "frames": [
+        "ready/sprites/tommy/frame-01.png",
+        "ready/sprites/tommy/frame-02.png",
+        "ready/sprites/tommy/frame-03.png",
+        "ready/sprites/tommy/frame-04.png",
+        "ready/sprites/tommy/frame-05.png",
+        "ready/sprites/tommy/frame-06.png"
+      ],
+      "pivots": [
+        [
+          55.76,
+          112.0
+        ],
+        [
+          56.0,
+          81.59
+        ],
+        [
+          56.0,
+          79.98
+        ],
+        [
+          56.0,
+          105.39
+        ],
+        [
+          56.0,
+          112.0
+        ],
+        [
+          56.0,
+          75.61
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    },
+    "miniLlorona": {
+      "frames": [
+        "ready/sprites/miniLlorona/frame-01.png",
+        "ready/sprites/miniLlorona/frame-02.png",
+        "ready/sprites/miniLlorona/frame-03.png",
+        "ready/sprites/miniLlorona/frame-04.png",
+        "ready/sprites/miniLlorona/frame-05.png",
+        "ready/sprites/miniLlorona/frame-06.png",
+        "ready/sprites/miniLlorona/frame-07.png",
+        "ready/sprites/miniLlorona/frame-08.png"
+      ],
+      "pivots": [
+        [
+          56.21,
+          112.0
+        ],
+        [
+          56.0,
+          112.0
+        ],
+        [
+          56.02,
+          112.0
+        ],
+        [
+          55.73,
+          112.0
+        ],
+        [
+          56.09,
+          112.0
+        ],
+        [
+          56.23,
+          112.0
+        ],
+        [
+          55.69,
+          112.0
+        ],
+        [
+          55.62,
+          112.0
+        ]
+      ],
+      "frameSize": [
+        112,
+        112
+      ]
+    }
+  },
+  "arenas": {
+    "canyon": {
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "gameSize": [
+        1200,
+        1200
+      ],
+      "liveFile": "canyon-arena.png"
+    },
+    "coast": {
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "gameSize": [
+        1200,
+        1200
+      ],
+      "liveFile": "coast-arena.png"
+    },
+    "maya": {
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "gameSize": [
+        1200,
+        1200
+      ],
+      "liveFile": null
+    },
+    "underworld": {
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "gameSize": [
+        1200,
+        1200
+      ],
+      "liveFile": "underworld-arena.png"
+    }
+  },
+  "exports": [
+    {
+      "id": "slingshot",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        12,
+        112,
+        90,
+        111
+      ],
+      "nativeSize": [
+        90,
+        111
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/slingshot/pickup.png",
+      "sha256": "9e0354af7e2e3b887aac2a115ca4a3392cdc1eece2f66f01d6e3f118640d202c"
+    },
+    {
+      "id": "slingshot",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        113,
+        114,
+        121,
+        104
+      ],
+      "nativeSize": [
+        121,
+        104
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/slingshot/held.png",
+      "sha256": "c1442ea05698c010f0ac1748776202a7634b8d22a69675cde02cbb6d6ec4a4a2"
+    },
+    {
+      "id": "slingshot",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        246,
+        141,
+        41,
+        40
+      ],
+      "nativeSize": [
+        41,
+        40
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/slingshot/projectile.png",
+      "sha256": "f310fd47909cf76995e1890c3e96761c28f0be231acba0c0a3d04cc76a5a3a23"
+    },
+    {
+      "id": "slingshot",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        466,
+        129,
+        82,
+        80
+      ],
+      "nativeSize": [
+        82,
+        80
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Slingshot/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Slingshot/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/slingshot/impact.png",
+      "sha256": "99f33daccd98adb1c84aea37ed188a24acc3097e6ecebb1a4fcaf326a56898fe"
+    },
+    {
+      "id": "bow",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        571,
+        113,
+        94,
+        110
+      ],
+      "nativeSize": [
+        94,
+        110
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/bow/pickup.png",
+      "sha256": "8f3cca875bed2aaff2b745189947c1941690eab26fb9ea9ff2137e07df7b8e2a"
+    },
+    {
+      "id": "bow",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        678,
+        118,
+        114,
+        100
+      ],
+      "nativeSize": [
+        114,
+        100
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/bow/held.png",
+      "sha256": "76c8858d92c6fc1c2d8affb9be42f39a73cadf470469f90418e79f55580f674e"
+    },
+    {
+      "id": "bow",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        804,
+        151,
+        70,
+        26
+      ],
+      "nativeSize": [
+        70,
+        26
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/bow/projectile.png",
+      "sha256": "fdb0daf94524b09607334823798fe16250b96903192656956718e28e0dcfefba"
+    },
+    {
+      "id": "bow",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1021,
+        130,
+        81,
+        76
+      ],
+      "nativeSize": [
+        81,
+        76
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Belize Hardwood Bow/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/bow/impact.png",
+      "sha256": "62359f6a999f609c5826b0250e9636637143f7e731d0090d4467864e9e085f36"
+    },
+    {
+      "id": "dart",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1127,
+        112,
+        94,
+        111
+      ],
+      "nativeSize": [
+        94,
+        111
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/dart/pickup.png",
+      "sha256": "650e4b058ff65e44a8cd4bcc56fdc2afee294d205d9537577005030e194daa46"
+    },
+    {
+      "id": "dart",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1228,
+        114,
+        106,
+        103
+      ],
+      "nativeSize": [
+        106,
+        103
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/dart/held.png",
+      "sha256": "09e3f16d2c4af087be8f7ea59e6e23cb8fbcdcf718394c220bd3727c35275595"
+    },
+    {
+      "id": "dart",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1340,
+        155,
+        76,
+        23
+      ],
+      "nativeSize": [
+        76,
+        23
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/dart/projectile.png",
+      "sha256": "a9a980f98586e1065d0ed6b42e6f9e25aa950a8d2cdf2a1e551f57e9bc8b19f8"
+    },
+    {
+      "id": "dart",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1581,
+        127,
+        74,
+        83
+      ],
+      "nativeSize": [
+        74,
+        83
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Maya Dart Launcher/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/dart/impact.png",
+      "sha256": "46d45f5396bdaeddacfe53bff8dfd32a93fe6168f35e2525c724256c84e9b9c2"
+    },
+    {
+      "id": "spear",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        11,
+        344,
+        96,
+        123
+      ],
+      "nativeSize": [
+        96,
+        123
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/spear/pickup.png",
+      "sha256": "43ed528b4a21d2df4fc45047886bde9414d324f5f66d179a07fd57969e4fe389"
+    },
+    {
+      "id": "spear",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        112,
+        345,
+        128,
+        120
+      ],
+      "nativeSize": [
+        128,
+        120
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/spear/held.png",
+      "sha256": "ccef60670f8e3ca7087e09722ef9e34c9e9ea411ae1637004e6d7258700ae3ec"
+    },
+    {
+      "id": "spear",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        248,
+        394,
+        200,
+        29
+      ],
+      "nativeSize": [
+        200,
+        29
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/spear/projectile.png",
+      "sha256": "30808fa5fdbde13f1bd19abdb9af5936acd4d8efb20e2935b92036e484ecc7b9"
+    },
+    {
+      "id": "spear",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        466,
+        354,
+        84,
+        110
+      ],
+      "nativeSize": [
+        84,
+        110
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Fishing Spear thrower/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/spear/impact.png",
+      "sha256": "56814557eb051cfe759c6139549653634b75860f7066bf3fddfb03111d364b71"
+    },
+    {
+      "id": "crystal",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        574,
+        345,
+        90,
+        124
+      ],
+      "nativeSize": [
+        90,
+        124
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/crystal/pickup.png",
+      "sha256": "d844872f4af214ea31020ef50a26b55deb30cfbd4a1356a9207dc9940f111f08"
+    },
+    {
+      "id": "crystal",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        683,
+        348,
+        107,
+        118
+      ],
+      "nativeSize": [
+        107,
+        118
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/crystal/held.png",
+      "sha256": "d12a491cef36e60338d3c0b3203bf359597658641075299c4724811a03c2535c"
+    },
+    {
+      "id": "crystal",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        803,
+        393,
+        41,
+        33
+      ],
+      "nativeSize": [
+        41,
+        33
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/crystal/projectile.png",
+      "sha256": "81b29c8d1e7ee8e4e909f260b907d1f12a6255fe852e95162516773f9de8bc34"
+    },
+    {
+      "id": "crystal",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1017,
+        357,
+        88,
+        108
+      ],
+      "nativeSize": [
+        88,
+        108
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/crystal/impact.png",
+      "sha256": "6937511ed8bb038284a63df6449c1dfd37cd31bbfe545386b29035cb6562a53d"
+    },
+    {
+      "id": "cacao",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1137,
+        347,
+        83,
+        121
+      ],
+      "nativeSize": [
+        83,
+        121
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/cacao/pickup.png",
+      "sha256": "979b7cbfdd9a22fc80b33090bbc34d3cf7c44c3e6be6a572677986dad7ec681b"
+    },
+    {
+      "id": "cacao",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1236,
+        345,
+        92,
+        119
+      ],
+      "nativeSize": [
+        92,
+        119
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/cacao/held.png",
+      "sha256": "72ae0fa6dfb3f37e783885910a5ec2df76169cfcbe94579b63e42eb0c6c5ba5d"
+    },
+    {
+      "id": "cacao",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1338,
+        383,
+        65,
+        44
+      ],
+      "nativeSize": [
+        65,
+        44
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/cacao/projectile.png",
+      "sha256": "e0493c27d5cad9cb7213256de2ac58105f44f88e8871c9f98431903d2848cfa3"
+    },
+    {
+      "id": "cacao",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1567,
+        363,
+        93,
+        90
+      ],
+      "nativeSize": [
+        93,
+        90
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Staff Of Cacao Smoke/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/cacao/impact.png",
+      "sha256": "79778d325b8156b062906dfb5196a1d0d4f83f031b24d3fa03639584ce85e93b"
+    },
+    {
+      "id": "drum",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        13,
+        587,
+        94,
+        108
+      ],
+      "nativeSize": [
+        94,
+        108
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/drum/pickup.png",
+      "sha256": "2fd0dfabdd64cc73b03b8d01c65ca3cc62a25bdf5c4e394209e012ac51889d24"
+    },
+    {
+      "id": "drum",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        117,
+        588,
+        117,
+        107
+      ],
+      "nativeSize": [
+        117,
+        107
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/drum/held.png",
+      "sha256": "2bdf005f2adb330443efe82ed3f321456bc6fbc395aeebc50d153e4fbb314200"
+    },
+    {
+      "id": "drum",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        240,
+        617,
+        34,
+        57
+      ],
+      "nativeSize": [
+        34,
+        57
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/drum/projectile.png",
+      "sha256": "8dbc2030e376131ab105e52f22ffd982a59336da76e25aeadf169f1ec373519c"
+    },
+    {
+      "id": "drum",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        459,
+        587,
+        89,
+        106
+      ],
+      "nativeSize": [
+        89,
+        106
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Drums OF My Calling/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/drum/impact.png",
+      "sha256": "7f5b4b290d822a9f2ae2196a3c514fdbff8af3172608e5e6f1adf646b313c0df"
+    },
+    {
+      "id": "claw",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        576,
+        584,
+        89,
+        115
+      ],
+      "nativeSize": [
+        89,
+        115
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/claw/pickup.png",
+      "sha256": "119c1f2f4dd464954fe22baaa2af95fb34b7529d2e8009434978011d1062e1b7"
+    },
+    {
+      "id": "claw",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        684,
+        582,
+        105,
+        112
+      ],
+      "nativeSize": [
+        105,
+        112
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/claw/held.png",
+      "sha256": "18cf30d6240eabd630fdb436795c9d4c2b7b19acbe9e90023ff0c83cb55804d5"
+    },
+    {
+      "id": "claw",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        803,
+        598,
+        56,
+        89
+      ],
+      "nativeSize": [
+        56,
+        89
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/claw/projectile.png",
+      "sha256": "38ba1a49ded5fc819b17c35537443e2596bf35e1b405c613f96be4fbf83b494f"
+    },
+    {
+      "id": "claw",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1012,
+        592,
+        96,
+        102
+      ],
+      "nativeSize": [
+        96,
+        102
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Jaguar Spirit Claw/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/claw/impact.png",
+      "sha256": "beed238afe3e255eb0fa268b39ed3a185003af8d4b39271c30279694f306202d"
+    },
+    {
+      "id": "feather",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1127,
+        586,
+        90,
+        110
+      ],
+      "nativeSize": [
+        90,
+        110
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/feather/pickup.png",
+      "sha256": "1976100770575f26ac04dda3251165db2d0c8f1b305c5b47a66b7386b0ed7290"
+    },
+    {
+      "id": "feather",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1230,
+        584,
+        97,
+        112
+      ],
+      "nativeSize": [
+        97,
+        112
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/feather/held.png",
+      "sha256": "7c6603ec1d2f92991612212ce084a4f4058fb022b60de06a98ab4d493e03c317"
+    },
+    {
+      "id": "feather",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1338,
+        590,
+        54,
+        102
+      ],
+      "nativeSize": [
+        54,
+        102
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/feather/projectile.png",
+      "sha256": "35bc01db4a5f7e643373304db690baabfdd4d477bcc7775152f3837cb0fc225d"
+    },
+    {
+      "id": "feather",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1575,
+        590,
+        83,
+        108
+      ],
+      "nativeSize": [
+        83,
+        108
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Kukulkan Feather Cast/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/feather/impact.png",
+      "sha256": "5afbaa8d6072d09fecf203aca9eaca483fbfacadad858fe6eefe28560cf54f19"
+    },
+    {
+      "id": "obsidian",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        12,
+        820,
+        75,
+        103
+      ],
+      "nativeSize": [
+        75,
+        103
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/obsidian/pickup.png",
+      "sha256": "92e463a487cf8dcb079f56a8b56fa730ddf62c1634c97da96f4dcbef37e27d50"
+    },
+    {
+      "id": "obsidian",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        115,
+        819,
+        124,
+        107
+      ],
+      "nativeSize": [
+        124,
+        107
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/obsidian/held.png",
+      "sha256": "8d72690138471a77859e53081835b736e32df6beb91285e57bef718f8ca316fa"
+    },
+    {
+      "id": "obsidian",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        248,
+        849,
+        86,
+        47
+      ],
+      "nativeSize": [
+        86,
+        47
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/obsidian/projectile.png",
+      "sha256": "082b110e2282d9516d60064b0d5d4014d6c25dd508d5949e39e12b8226e4ae7f"
+    },
+    {
+      "id": "obsidian",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        500,
+        815,
+        99,
+        110
+      ],
+      "nativeSize": [
+        99,
+        110
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Obsidian Spirit Shards/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/obsidian/impact.png",
+      "sha256": "f602487713f295a67f68751d2adb7006cfecec8f9530e3c178afd58dae13e5e6"
+    },
+    {
+      "id": "cohune",
+      "role": "pickup",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        635,
+        816,
+        85,
+        108
+      ],
+      "nativeSize": [
+        85,
+        108
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/cohune/pickup.png",
+      "sha256": "35a65d44c1cf0172435048ec2c0f2c08ca83c4c671523c1552a681015f44af05"
+    },
+    {
+      "id": "cohune",
+      "role": "held",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        744,
+        819,
+        157,
+        107
+      ],
+      "nativeSize": [
+        157,
+        107
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/cohune/held.png",
+      "sha256": "96d10c2eb8cec369bad3fcab30ee88905dc368b2126b45f2ffd87e809764749f"
+    },
+    {
+      "id": "cohune",
+      "role": "projectile",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        916,
+        842,
+        102,
+        67
+      ],
+      "nativeSize": [
+        102,
+        67
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/cohune/projectile.png",
+      "sha256": "4736878b201cb58fd9b4c234ae5183cac754c0c0577c5184d1e0467fe4d1109a"
+    },
+    {
+      "id": "cohune",
+      "role": "impact",
+      "source": "Assets/Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "sourceRect": [
+        1191,
+        859,
+        49,
+        47
+      ],
+      "nativeSize": [
+        49,
+        47
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/cohune/impact.png",
+      "sha256": "7622cfcca643f68867d2ecc766905277f79cbaed9b5f954459def1ebdd7675e6"
+    },
+    {
+      "id": "staff",
+      "role": "pickup",
+      "source": "Assets/Weapons/Duende Staff/Duende Staff Design Concept.png",
+      "sourceRect": [
+        742,
+        207,
+        164,
+        154
+      ],
+      "nativeSize": [
+        164,
+        154
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/weapons/staff/pickup.png",
+      "sha256": "26288383da602f981640375491a2d7d17a8890f01331468a1f994b5dc19ee0ee"
+    },
+    {
+      "id": "staff",
+      "role": "held",
+      "source": "Assets/Weapons/Duende Staff/Duende Staff Design Concept.png",
+      "sourceRect": [
+        22,
+        153,
+        164,
+        670
+      ],
+      "nativeSize": [
+        164,
+        670
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/held.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/held.png",
+      "file": "ready/weapons/staff/held.png",
+      "sha256": "1b5ff8b9dacdf4669e4d8f9e3f1d85be0270b672d98f19e0b3eb7ef406e85518"
+    },
+    {
+      "id": "staff",
+      "role": "projectile",
+      "source": "Assets/Weapons/Duende Staff/Duende Staff projectile fram.png",
+      "sourceRect": [
+        352,
+        213,
+        140,
+        87
+      ],
+      "nativeSize": [
+        140,
+        87
+      ],
+      "displaySize": [
+        32,
+        24
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/weapons/staff/projectile.png",
+      "sha256": "37bd6841ed05cf6ea4b724d83fb5edabacf409b8ab7afc06b3b1cb1206ae9be1"
+    },
+    {
+      "id": "staff",
+      "role": "impact",
+      "source": "Assets/Weapons/Duende Staff/Duende Staff projectile fram.png",
+      "sourceRect": [
+        288,
+        1062,
+        144,
+        133
+      ],
+      "nativeSize": [
+        144,
+        133
+      ],
+      "displaySize": [
+        96,
+        96
+      ],
+      "fullResolution": "Assets/Weapons/Duende Staff/Game Ready/Full Resolution/impact.png",
+      "gameResolution": "Assets/Weapons/Duende Staff/Game Ready/Game Resolution/impact.png",
+      "file": "ready/weapons/staff/impact.png",
+      "sha256": "3f765113c2f0c738cecce39176bbf6220204e43ad710a3be5a1f70e2ee66eecb"
+    },
+    {
+      "id": "cohune",
+      "role": "explosion-1",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-4.png",
+      "sourceRect": [
+        611,
+        419,
+        210,
+        161
+      ],
+      "nativeSize": [
+        210,
+        161
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/explosion-1.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/explosion-1.png",
+      "file": "ready/weapons/cohune/explosion-1.png",
+      "sha256": "65c5811242356224c3219152c869140b6e50466b87a0f80d90dea99d83fa3820"
+    },
+    {
+      "id": "cohune",
+      "role": "explosion-2",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-4.png",
+      "sourceRect": [
+        820,
+        419,
+        171,
+        161
+      ],
+      "nativeSize": [
+        171,
+        161
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/explosion-2.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/explosion-2.png",
+      "file": "ready/weapons/cohune/explosion-2.png",
+      "sha256": "f85e120298a110bb3bcf1e12aff2bc017c4b1a099f6e1442522d335a8abf9d5b"
+    },
+    {
+      "id": "cohune",
+      "role": "explosion-3",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-4.png",
+      "sourceRect": [
+        994,
+        419,
+        178,
+        160
+      ],
+      "nativeSize": [
+        178,
+        160
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/explosion-3.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/explosion-3.png",
+      "file": "ready/weapons/cohune/explosion-3.png",
+      "sha256": "f365002ea28bfb15247e60cab22c2a587ade7b7b4050226c3aa873abf85ba10c"
+    },
+    {
+      "id": "cohune",
+      "role": "explosion-4",
+      "source": "Assets/Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-4.png",
+      "sourceRect": [
+        1187,
+        439,
+        175,
+        141
+      ],
+      "nativeSize": [
+        175,
+        141
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Full Resolution/explosion-4.png",
+      "gameResolution": "Assets/Weapons/Cohune Bomb Launcher/Game Ready/Game Resolution/explosion-4.png",
+      "file": "ready/weapons/cohune/explosion-4.png",
+      "sha256": "00294da65e57b01e1e6fe8f50e723055e08e41934f3205d652611c714d1e7df0"
+    },
+    {
+      "id": "badman",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Badman/Badman.png",
+      "sourceRect": [
+        54,
+        275,
+        129,
+        116
+      ],
+      "nativeSize": [
+        129,
+        116
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Badman/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Badman/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/badman/pickup.png",
+      "sha256": "56482267428102c1c7acda33e5f5c95d27d0db8c5d9e58b25e3879ba730e593a"
+    },
+    {
+      "id": "nuke",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Big Bomb/Nuke.png",
+      "sourceRect": [
+        39,
+        318,
+        145,
+        148
+      ],
+      "nativeSize": [
+        145,
+        148
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Big Bomb/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Big Bomb/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/nuke/pickup.png",
+      "sha256": "e2e20cb2b5d6d66f37942d7327787c38375094e652e9865c0ade7f2c36763a93"
+    },
+    {
+      "id": "bonusXP",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Bonus XP/Bonus XP.png",
+      "sourceRect": [
+        35,
+        295,
+        181,
+        193
+      ],
+      "nativeSize": [
+        181,
+        193
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Bonus XP/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Bonus XP/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/bonusXP/pickup.png",
+      "sha256": "2178c9c4770bb67e7ffc6fd8ecdfdcfe3701932f49fc724d07dbdf80915159e3"
+    },
+    {
+      "id": "doubleXP",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Double XP/Double Xp.png",
+      "sourceRect": [
+        42,
+        270,
+        202,
+        200
+      ],
+      "nativeSize": [
+        202,
+        200
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Double XP/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Double XP/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/doubleXP/pickup.png",
+      "sha256": "47e0aa7d22f2433ef97aaba6a3040b6fa41debd32eb2f5b1d9ca0bbf4b2d2007"
+    },
+    {
+      "id": "freeze",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Freeze/Freeze.png",
+      "sourceRect": [
+        51,
+        274,
+        122,
+        129
+      ],
+      "nativeSize": [
+        122,
+        129
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Freeze/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Freeze/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/freeze/pickup.png",
+      "sha256": "6218b8fd7c57c006e6c5c238bf0eabfa1ad1670e9cc1e295bee8406671b4a177"
+    },
+    {
+      "id": "heavy",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Heavy Bullets/Heavy Bullets.png",
+      "sourceRect": [
+        51,
+        294,
+        155,
+        150
+      ],
+      "nativeSize": [
+        155,
+        150
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Heavy Bullets/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Heavy Bullets/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/heavy/pickup.png",
+      "sha256": "0c283f600254bee0269f0aef64d305e914a06490f7ac08f62d5e79fcc46336f1"
+    },
+    {
+      "id": "shield",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        47,
+        308,
+        158,
+        158
+      ],
+      "nativeSize": [
+        158,
+        158
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/shield/pickup.png",
+      "sha256": "5bfc2404051baedc4a152f52bda7e4bf6c1749a3f406e44f435ba66366293a0e"
+    },
+    {
+      "id": "shock",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Shock/Shock.png",
+      "sourceRect": [
+        48,
+        342,
+        126,
+        130
+      ],
+      "nativeSize": [
+        126,
+        130
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Shock/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Shock/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/shock/pickup.png",
+      "sha256": "2d3a7bb9ecfc25532ebf8cd5ec6f40b1f14905c6ef636ae450b05e42157d946b"
+    },
+    {
+      "id": "evolution",
+      "role": "pickup",
+      "source": "Assets/Pickups/Power Ups/Weapon Power Up/Weapon Power Up.png",
+      "sourceRect": [
+        50,
+        235,
+        164,
+        158
+      ],
+      "nativeSize": [
+        164,
+        158
+      ],
+      "displaySize": [
+        48,
+        48
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Weapon Power Up/Game Ready/Full Resolution/pickup.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Weapon Power Up/Game Ready/Game Resolution/pickup.png",
+      "file": "ready/powers/evolution/pickup.png",
+      "sha256": "9c3e0b04ea7461aa06138a2a9c5ca58fc582c847ddaba429c82525aea59f5387"
+    },
+    {
+      "id": "shield",
+      "role": "bubble-1",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        27,
+        650,
+        112,
+        135
+      ],
+      "nativeSize": [
+        112,
+        135
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/bubble-1.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/bubble-1.png",
+      "file": "ready/powers/shield/bubble-1.png",
+      "sha256": "885724d399cd11bcf8831e677d48a5caebf01e60e7b58e2608c03d1cbb75c738"
+    },
+    {
+      "id": "shield",
+      "role": "bubble-2",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        145,
+        650,
+        112,
+        135
+      ],
+      "nativeSize": [
+        112,
+        135
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/bubble-2.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/bubble-2.png",
+      "file": "ready/powers/shield/bubble-2.png",
+      "sha256": "3b65a2273f6521fa9a7bca13fc741571e36424c18b6709b811813da8ee21b8b7"
+    },
+    {
+      "id": "shield",
+      "role": "bubble-3",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        263,
+        650,
+        112,
+        135
+      ],
+      "nativeSize": [
+        112,
+        135
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/bubble-3.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/bubble-3.png",
+      "file": "ready/powers/shield/bubble-3.png",
+      "sha256": "297cb50065292aa81c22c035f2afec5062c84d2e71da8f46e6c16b6f3509efe9"
+    },
+    {
+      "id": "shield",
+      "role": "bubble-4",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        387,
+        650,
+        112,
+        135
+      ],
+      "nativeSize": [
+        112,
+        135
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/bubble-4.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/bubble-4.png",
+      "file": "ready/powers/shield/bubble-4.png",
+      "sha256": "e698ca0d23b6605421a68558e5e1c4b48ff23af348deacd5eddaa480d9d8f56c"
+    },
+    {
+      "id": "shield",
+      "role": "bubble-5",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        510,
+        650,
+        112,
+        135
+      ],
+      "nativeSize": [
+        112,
+        135
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/bubble-5.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/bubble-5.png",
+      "file": "ready/powers/shield/bubble-5.png",
+      "sha256": "bfec0641e793bf2fd6cf4c88516a887c679419f7442bd050074f5de7201d882e"
+    },
+    {
+      "id": "shield",
+      "role": "bubble-6",
+      "source": "Assets/Pickups/Power Ups/Sheild/Shield.png",
+      "sourceRect": [
+        645,
+        650,
+        112,
+        135
+      ],
+      "nativeSize": [
+        112,
+        135
+      ],
+      "displaySize": [
+        128,
+        128
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Full Resolution/bubble-6.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Sheild/Game Ready/Game Resolution/bubble-6.png",
+      "file": "ready/powers/shield/bubble-6.png",
+      "sha256": "86055517fc9464b005c1c9cf9e5da867668b6bb2af8a458462b954fbcc88ba33"
+    },
+    {
+      "id": "shock",
+      "role": "bolt",
+      "source": "Assets/Pickups/Power Ups/Shock/Shock.png",
+      "sourceRect": [
+        585,
+        980,
+        112,
+        175
+      ],
+      "nativeSize": [
+        112,
+        175
+      ],
+      "displaySize": [
+        48,
+        96
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Shock/Game Ready/Full Resolution/bolt.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Shock/Game Ready/Game Resolution/bolt.png",
+      "file": "ready/powers/shock/bolt.png",
+      "sha256": "fd1c9acc5358e65d74e605b61fb0aa256a4b6b19dfa11523c187d1cf8606f5a1"
+    },
+    {
+      "id": "heavy",
+      "role": "projectile",
+      "source": "Assets/Pickups/Power Ups/Heavy Bullets/Heavy Bullets.png",
+      "sourceRect": [
+        211,
+        575,
+        220,
+        145
+      ],
+      "nativeSize": [
+        220,
+        145
+      ],
+      "displaySize": [
+        64,
+        32
+      ],
+      "fullResolution": "Assets/Pickups/Power Ups/Heavy Bullets/Game Ready/Full Resolution/projectile.png",
+      "gameResolution": "Assets/Pickups/Power Ups/Heavy Bullets/Game Ready/Game Resolution/projectile.png",
+      "file": "ready/powers/heavy/projectile.png",
+      "sha256": "39619fe15a56b29d7a94b420ac12a57db7f6a732ab2109c220ab610b6ee4f927"
+    },
+    {
+      "id": "joe",
+      "role": "frame-01",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        134,
+        41,
+        154,
+        236
+      ],
+      "nativeSize": [
+        154,
+        236
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/joe/frame-01.png",
+      "sha256": "8c287f7cd0762deef2cb6a3da13926bfacf85cef13d38329d61b24bf01c909fa"
+    },
+    {
+      "id": "joe",
+      "role": "frame-02",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        384,
+        35,
+        145,
+        253
+      ],
+      "nativeSize": [
+        145,
+        253
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/joe/frame-02.png",
+      "sha256": "7cb98b9769f78ebeefe7ccedcd67632a440bd5ebf7991567ff168c9c8cffbbf5"
+    },
+    {
+      "id": "joe",
+      "role": "frame-03",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        627,
+        35,
+        147,
+        259
+      ],
+      "nativeSize": [
+        147,
+        259
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/joe/frame-03.png",
+      "sha256": "cc9cf9185c6931782956e643c357e851afe04038da1a237034b47df4b98f5a2e"
+    },
+    {
+      "id": "joe",
+      "role": "frame-04",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        886,
+        51,
+        145,
+        243
+      ],
+      "nativeSize": [
+        145,
+        243
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/joe/frame-04.png",
+      "sha256": "64f06b077ba9391293cb3c3010bdec52d29e56a02147927369c7f82edf94d525"
+    },
+    {
+      "id": "joe",
+      "role": "frame-05",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        1128,
+        59,
+        194,
+        235
+      ],
+      "nativeSize": [
+        194,
+        235
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/joe/frame-05.png",
+      "sha256": "7113951b9d7bde07cab6da6e21393b9f944e07ed219bb268f96390d71cef5bfc"
+    },
+    {
+      "id": "joe",
+      "role": "frame-06",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        127,
+        319,
+        116,
+        249
+      ],
+      "nativeSize": [
+        116,
+        249
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/joe/frame-06.png",
+      "sha256": "0dc0c00c65108866a76a8bd632f6b90f956d11af75dd50ec2217acacb05be481"
+    },
+    {
+      "id": "joe",
+      "role": "frame-07",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        380,
+        318,
+        146,
+        244
+      ],
+      "nativeSize": [
+        146,
+        244
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-07.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-07.png",
+      "file": "ready/sprites/joe/frame-07.png",
+      "sha256": "a8df7d9f5e380f688cd44a2e675f24384c358c7668f3128c16b35e21f3957eea"
+    },
+    {
+      "id": "joe",
+      "role": "frame-08",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        620,
+        319,
+        156,
+        239
+      ],
+      "nativeSize": [
+        156,
+        239
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-08.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-08.png",
+      "file": "ready/sprites/joe/frame-08.png",
+      "sha256": "819d2b6915b2edf32e4b6ddba8b3b5c8f6d0a8007add78e1ee6da1d359811a34"
+    },
+    {
+      "id": "joe",
+      "role": "frame-09",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        863,
+        329,
+        199,
+        230
+      ],
+      "nativeSize": [
+        199,
+        230
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-09.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-09.png",
+      "file": "ready/sprites/joe/frame-09.png",
+      "sha256": "6a6030cad8d948343243bd8e0c9f46cce96893272214ca36f3c06634a8ddf271"
+    },
+    {
+      "id": "joe",
+      "role": "frame-10",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        1118,
+        336,
+        193,
+        227
+      ],
+      "nativeSize": [
+        193,
+        227
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-10.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-10.png",
+      "file": "ready/sprites/joe/frame-10.png",
+      "sha256": "48f9a4ccc26424b9a399e5bd60c28060477f00755546f91c43343caa36747c28"
+    },
+    {
+      "id": "joe",
+      "role": "frame-11",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        149,
+        590,
+        116,
+        238
+      ],
+      "nativeSize": [
+        116,
+        238
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-11.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-11.png",
+      "file": "ready/sprites/joe/frame-11.png",
+      "sha256": "9ebbfc79c14c4723fca934cff5cd9dcb0e476b471e42ec8a2955528e018d428f"
+    },
+    {
+      "id": "joe",
+      "role": "frame-12",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        384,
+        589,
+        152,
+        234
+      ],
+      "nativeSize": [
+        152,
+        234
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-12.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-12.png",
+      "file": "ready/sprites/joe/frame-12.png",
+      "sha256": "f20b21745a3ba46c787e2d2d2a487a748e23cd590cb77e6b08c1b769d6128ef3"
+    },
+    {
+      "id": "joe",
+      "role": "frame-13",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        621,
+        589,
+        149,
+        234
+      ],
+      "nativeSize": [
+        149,
+        234
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-13.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-13.png",
+      "file": "ready/sprites/joe/frame-13.png",
+      "sha256": "eabd238b154b8be6c195dc4495c4876cf71383e49c54db064cf75c2fc28f962a"
+    },
+    {
+      "id": "joe",
+      "role": "frame-14",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        866,
+        595,
+        193,
+        235
+      ],
+      "nativeSize": [
+        193,
+        235
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-14.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-14.png",
+      "file": "ready/sprites/joe/frame-14.png",
+      "sha256": "097ffe47c0e54517d667d5054c747090b988350fcf73289a1d377c086cf91526"
+    },
+    {
+      "id": "joe",
+      "role": "frame-15",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        1122,
+        600,
+        194,
+        235
+      ],
+      "nativeSize": [
+        194,
+        235
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-15.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-15.png",
+      "file": "ready/sprites/joe/frame-15.png",
+      "sha256": "02ce12e78d46ed8f528e3eb19549823eaaaf5ed2fab2410103893cf1b38ed149"
+    },
+    {
+      "id": "joe",
+      "role": "frame-16",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        129,
+        850,
+        154,
+        229
+      ],
+      "nativeSize": [
+        154,
+        229
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-16.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-16.png",
+      "file": "ready/sprites/joe/frame-16.png",
+      "sha256": "3b46410d14c0466593b3618545a62307aa41c89147f50c4ca4b84dc9f80a45fb"
+    },
+    {
+      "id": "joe",
+      "role": "frame-17",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        383,
+        844,
+        145,
+        245
+      ],
+      "nativeSize": [
+        145,
+        245
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-17.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-17.png",
+      "file": "ready/sprites/joe/frame-17.png",
+      "sha256": "0298824cd3d560b405b2eff1a530777731a1fcc1c7b04a505b58deccf8515b97"
+    },
+    {
+      "id": "joe",
+      "role": "frame-18",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        623,
+        843,
+        144,
+        246
+      ],
+      "nativeSize": [
+        144,
+        246
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-18.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-18.png",
+      "file": "ready/sprites/joe/frame-18.png",
+      "sha256": "a6d907a89510b3b0d343c1479861703705c45e85f7bd9d5f83cc363d034c3c48"
+    },
+    {
+      "id": "joe",
+      "role": "frame-19",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        876,
+        851,
+        146,
+        228
+      ],
+      "nativeSize": [
+        146,
+        228
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-19.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-19.png",
+      "file": "ready/sprites/joe/frame-19.png",
+      "sha256": "adaf2ebebf52266d24918d9bf7b9cfbc7e02094a83489111c5159cce6a4bbae5"
+    },
+    {
+      "id": "joe",
+      "role": "frame-20",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        1138,
+        852,
+        184,
+        227
+      ],
+      "nativeSize": [
+        184,
+        227
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/frame-20.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/frame-20.png",
+      "file": "ready/sprites/joe/frame-20.png",
+      "sha256": "66f70a505b03d7eebd9c7a3b3fcd60d9fecde7a5b17c10fc62716352008af9e3"
+    },
+    {
+      "id": "joe",
+      "role": "portrait",
+      "source": "Assets/Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "sourceRect": [
+        151,
+        34,
+        135,
+        140
+      ],
+      "nativeSize": [
+        135,
+        140
+      ],
+      "displaySize": [
+        64,
+        64
+      ],
+      "fullResolution": "Assets/Main Character/Joe Grind/Game Ready/Full Resolution/portrait.png",
+      "gameResolution": "Assets/Main Character/Joe Grind/Game Ready/Game Resolution/portrait.png",
+      "file": "ready/sprites/joe/portrait.png",
+      "sha256": "a2c58c61cfcbd05729cda0bf0341d912c5d3f267b889f3467d070bd5d8fe89bc"
+    },
+    {
+      "id": "minijaguar",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Betas/mini-jaguar.png",
+      "sourceRect": [
+        22,
+        4,
+        165,
+        162
+      ],
+      "nativeSize": [
+        165,
+        162
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/minijaguar/frame-01.png",
+      "sha256": "ee99aa4672f68bf1fe9035f06e3a4c92f7e80b57ad2167019be7d45e3e916f0e"
+    },
+    {
+      "id": "minijaguar",
+      "role": "frame-02",
+      "source": "Assets/Mobs/Betas/mini-jaguar.png",
+      "sourceRect": [
+        214,
+        18,
+        202,
+        148
+      ],
+      "nativeSize": [
+        202,
+        148
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/minijaguar/frame-02.png",
+      "sha256": "cbf8cd9472d6a410087455b76ee361ef6df40aadbf3b5ca2329d2fc2083bc539"
+    },
+    {
+      "id": "minijaguar",
+      "role": "frame-03",
+      "source": "Assets/Mobs/Betas/mini-jaguar.png",
+      "sourceRect": [
+        426,
+        4,
+        198,
+        162
+      ],
+      "nativeSize": [
+        198,
+        162
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/minijaguar/frame-03.png",
+      "sha256": "c27c4cc9e12bd0f8e3da82773bf3ec9ff95525f0ebfeb9a52034c09f19a1e935"
+    },
+    {
+      "id": "minijaguar",
+      "role": "frame-04",
+      "source": "Assets/Mobs/Betas/mini-jaguar.png",
+      "sourceRect": [
+        642,
+        4,
+        186,
+        162
+      ],
+      "nativeSize": [
+        186,
+        162
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/minijaguar/frame-04.png",
+      "sha256": "1c101251fbc47abf3fb49a4aa033d1147e02540617e6985439e25c67adf1a64f"
+    },
+    {
+      "id": "minijaguar",
+      "role": "frame-05",
+      "source": "Assets/Mobs/Betas/mini-jaguar.png",
+      "sourceRect": [
+        846,
+        4,
+        197,
+        162
+      ],
+      "nativeSize": [
+        197,
+        162
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/minijaguar/frame-05.png",
+      "sha256": "340acb696e7f6ea9effb82dce24d9fa85cfc87766f70ed90ddac6e17eeed1222"
+    },
+    {
+      "id": "minijaguar",
+      "role": "frame-06",
+      "source": "Assets/Mobs/Betas/mini-jaguar.png",
+      "sourceRect": [
+        1054,
+        47,
+        202,
+        119
+      ],
+      "nativeSize": [
+        202,
+        119
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Mobs/Betas/minijaguar/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/minijaguar/frame-06.png",
+      "sha256": "54eee3fa8069fec5d79ab82948b1c25533c8ede3604435c7b717353d110295cb"
+    },
+    {
+      "id": "crab",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Betas/cave-crab-v1.png",
+      "sourceRect": [
+        15,
+        46,
+        101,
+        62
+      ],
+      "nativeSize": [
+        101,
+        62
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/crab/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Betas/crab/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/crab/frame-01.png",
+      "sha256": "d623bf3212c795902c711445d6c91f7d9f2f6373df4f71735a33ca52d7743a57"
+    },
+    {
+      "id": "crab",
+      "role": "frame-02",
+      "source": "Assets/Mobs/Betas/cave-crab-v1.png",
+      "sourceRect": [
+        144,
+        46,
+        102,
+        62
+      ],
+      "nativeSize": [
+        102,
+        62
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/crab/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Mobs/Betas/crab/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/crab/frame-02.png",
+      "sha256": "648ba0a0e668ad6b8af53d2ebe46193bc5321c91052b1cc4b76066eba5c2eb8f"
+    },
+    {
+      "id": "crab",
+      "role": "frame-03",
+      "source": "Assets/Mobs/Betas/cave-crab-v1.png",
+      "sourceRect": [
+        273,
+        46,
+        96,
+        65
+      ],
+      "nativeSize": [
+        96,
+        65
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/crab/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Mobs/Betas/crab/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/crab/frame-03.png",
+      "sha256": "347a05f424e17b31abb0bab5c858722e85a449b9df1fcc538d102b07f1084573"
+    },
+    {
+      "id": "crab",
+      "role": "frame-04",
+      "source": "Assets/Mobs/Betas/cave-crab-v1.png",
+      "sourceRect": [
+        23,
+        137,
+        98,
+        90
+      ],
+      "nativeSize": [
+        98,
+        90
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/crab/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Mobs/Betas/crab/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/crab/frame-04.png",
+      "sha256": "b50e9060b5889da54f01bbe46e49093ad62000fe4fef3c218b364feeef6a922b"
+    },
+    {
+      "id": "crab",
+      "role": "frame-05",
+      "source": "Assets/Mobs/Betas/cave-crab-v1.png",
+      "sourceRect": [
+        157,
+        154,
+        72,
+        71
+      ],
+      "nativeSize": [
+        72,
+        71
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/crab/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Mobs/Betas/crab/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/crab/frame-05.png",
+      "sha256": "7adb6ba54f403cb4c7bb3b337b0544e652dc1037fecca9dec3041751390e6cd3"
+    },
+    {
+      "id": "crab",
+      "role": "frame-06",
+      "source": "Assets/Mobs/Betas/cave-crab-v1.png",
+      "sourceRect": [
+        276,
+        174,
+        85,
+        51
+      ],
+      "nativeSize": [
+        85,
+        51
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/crab/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Mobs/Betas/crab/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/crab/frame-06.png",
+      "sha256": "8fe5e29e67057bc4c2846b5ba19cf870665e973354a167a49d62242d0b8785bf"
+    },
+    {
+      "id": "shadow",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Betas/cave-shadow-v1.png",
+      "sourceRect": [
+        35,
+        17,
+        70,
+        105
+      ],
+      "nativeSize": [
+        70,
+        105
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/shadow/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Betas/shadow/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/shadow/frame-01.png",
+      "sha256": "1a71bd2f388157eccf07877020972e237c654ce1505dec129fda768da07dc36c"
+    },
+    {
+      "id": "shadow",
+      "role": "frame-02",
+      "source": "Assets/Mobs/Betas/cave-shadow-v1.png",
+      "sourceRect": [
+        156,
+        20,
+        75,
+        101
+      ],
+      "nativeSize": [
+        75,
+        101
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/shadow/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Mobs/Betas/shadow/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/shadow/frame-02.png",
+      "sha256": "615e3a1e179203e9461892bfb7d1326c9adf3f6699e4990fa6787182b3b93153"
+    },
+    {
+      "id": "shadow",
+      "role": "frame-03",
+      "source": "Assets/Mobs/Betas/cave-shadow-v1.png",
+      "sourceRect": [
+        279,
+        26,
+        77,
+        96
+      ],
+      "nativeSize": [
+        77,
+        96
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/shadow/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Mobs/Betas/shadow/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/shadow/frame-03.png",
+      "sha256": "0feb483bb75685f937dcfed272f470e681d4e0b7b83e1beee60fb8efe7605dcd"
+    },
+    {
+      "id": "shadow",
+      "role": "frame-04",
+      "source": "Assets/Mobs/Betas/cave-shadow-v1.png",
+      "sourceRect": [
+        25,
+        145,
+        109,
+        95
+      ],
+      "nativeSize": [
+        109,
+        95
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/shadow/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Mobs/Betas/shadow/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/shadow/frame-04.png",
+      "sha256": "13c5cf259e00ef48f156a511751a53bb02ba6e65241e8bef936024b9f10a2488"
+    },
+    {
+      "id": "shadow",
+      "role": "frame-05",
+      "source": "Assets/Mobs/Betas/cave-shadow-v1.png",
+      "sourceRect": [
+        162,
+        158,
+        66,
+        82
+      ],
+      "nativeSize": [
+        66,
+        82
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/shadow/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Mobs/Betas/shadow/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/shadow/frame-05.png",
+      "sha256": "242c3519347af4c9651bdb9a743808f035b66f99d6981201b10ad0615540af11"
+    },
+    {
+      "id": "shadow",
+      "role": "frame-06",
+      "source": "Assets/Mobs/Betas/cave-shadow-v1.png",
+      "sourceRect": [
+        269,
+        187,
+        96,
+        56
+      ],
+      "nativeSize": [
+        96,
+        56
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/shadow/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Mobs/Betas/shadow/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/shadow/frame-06.png",
+      "sha256": "ff3ad9083bee88326a35addff69b7790d86f71a67ed8a45ede02282aecf5bd3a"
+    },
+    {
+      "id": "duende",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Boss/duende-v1.png",
+      "sourceRect": [
+        25,
+        175,
+        342,
+        440
+      ],
+      "nativeSize": [
+        342,
+        440
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/duende/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Boss/duende/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/duende/frame-01.png",
+      "sha256": "beb32a43c9b87f0cd693379c082ad0ddb987c39e6e34786bc249f71a62bec1bb"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        24,
+        77,
+        311,
+        344
+      ],
+      "nativeSize": [
+        311,
+        344
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/jaguarBoss/frame-01.png",
+      "sha256": "92be50b9ecf1f4d16b4a9bb96d13beffea0fec220ed92e8a78ffbff3ea778621"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-02",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        426,
+        165,
+        389,
+        255
+      ],
+      "nativeSize": [
+        389,
+        255
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/jaguarBoss/frame-02.png",
+      "sha256": "76ecd8a7cf699895dc36e43215c2c3d3fb9ea784e1bdb52c0490d1e34c530c7f"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-03",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        879,
+        169,
+        356,
+        250
+      ],
+      "nativeSize": [
+        356,
+        250
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/jaguarBoss/frame-03.png",
+      "sha256": "ee56264f7f52fc2dbc6c68de78284b03647ca6ef007e5747be505fb2c2fb4fe4"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-04",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        1307,
+        84,
+        454,
+        326
+      ],
+      "nativeSize": [
+        454,
+        326
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/jaguarBoss/frame-04.png",
+      "sha256": "9a6b454424ae0f1d037e42b19bbb5f0b1d9f20b5e27ffdeecd6a887e70f6d94a"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-05",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        31,
+        559,
+        410,
+        252
+      ],
+      "nativeSize": [
+        410,
+        252
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/jaguarBoss/frame-05.png",
+      "sha256": "897a8e281cc4846fead204eda90c95a101d1a6c27f1addab2252b35c1a1ee525"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-06",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        463,
+        469,
+        388,
+        361
+      ],
+      "nativeSize": [
+        388,
+        361
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/jaguarBoss/frame-06.png",
+      "sha256": "1c113a56d54887f6f57d2b9de081dcfc6159dff2597a74010b75eb55b34595c0"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-07",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        897,
+        527,
+        336,
+        280
+      ],
+      "nativeSize": [
+        336,
+        280
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-07.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-07.png",
+      "file": "ready/sprites/jaguarBoss/frame-07.png",
+      "sha256": "abe098b6b76917a1bf629708d26a182f5aeeeb666f5c6f728f4f4e4f75ca9696"
+    },
+    {
+      "id": "jaguarBoss",
+      "role": "frame-08",
+      "source": "Assets/Mobs/Boss/jaguar-spirit.png",
+      "sourceRect": [
+        1303,
+        537,
+        439,
+        274
+      ],
+      "nativeSize": [
+        439,
+        274
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Full Resolution/frame-08.png",
+      "gameResolution": "Assets/Mobs/Boss/jaguarBoss/Game Ready/Game Resolution/frame-08.png",
+      "file": "ready/sprites/jaguarBoss/frame-08.png",
+      "sha256": "cda8ead11e20576718db40990f374148c560e47f1aa1a167419573744dd8c103"
+    },
+    {
+      "id": "tommy",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "sourceRect": [
+        38,
+        252,
+        243,
+        291
+      ],
+      "nativeSize": [
+        243,
+        291
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/tommy/frame-01.png",
+      "sha256": "884068600554af8fe219702ce6f672fa7d5baee7feb3f9325b802e4243c5891d"
+    },
+    {
+      "id": "tommy",
+      "role": "frame-02",
+      "source": "Assets/Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "sourceRect": [
+        304,
+        328,
+        394,
+        185
+      ],
+      "nativeSize": [
+        394,
+        185
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/tommy/frame-02.png",
+      "sha256": "a53da34885804cd76972e5a786a711b58260e8f9557140b2ca6acf4b717f9973"
+    },
+    {
+      "id": "tommy",
+      "role": "frame-03",
+      "source": "Assets/Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "sourceRect": [
+        701,
+        350,
+        407,
+        178
+      ],
+      "nativeSize": [
+        407,
+        178
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/tommy/frame-03.png",
+      "sha256": "aac19e746761d18e36740393631d7a1f4ed615f6a6bb6319785261560c8fd5aa"
+    },
+    {
+      "id": "tommy",
+      "role": "frame-04",
+      "source": "Assets/Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "sourceRect": [
+        1148,
+        257,
+        321,
+        282
+      ],
+      "nativeSize": [
+        321,
+        282
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/tommy/frame-04.png",
+      "sha256": "2806bb47c18a20a1d50c058cab634f64a5bbad74eebdcdcc3c2f619113018f45"
+    },
+    {
+      "id": "tommy",
+      "role": "frame-05",
+      "source": "Assets/Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "sourceRect": [
+        1487,
+        233,
+        258,
+        301
+      ],
+      "nativeSize": [
+        258,
+        301
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/tommy/frame-05.png",
+      "sha256": "42701aefdfd012575ddbf8b84f2c2675c6a832c5cafc80ff02415999e5951062"
+    },
+    {
+      "id": "tommy",
+      "role": "frame-06",
+      "source": "Assets/Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "sourceRect": [
+        1784,
+        419,
+        353,
+        128
+      ],
+      "nativeSize": [
+        353,
+        128
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Mobs/Betas/Tommy Goff/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/tommy/frame-06.png",
+      "sha256": "fb8df8e02f454c1a6febc126038ecf29e6eb61e1f5ecf25e10f4a02a60571f7f"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-01",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        24,
+        46,
+        107,
+        149
+      ],
+      "nativeSize": [
+        107,
+        149
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-01.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-01.png",
+      "file": "ready/sprites/miniLlorona/frame-01.png",
+      "sha256": "bbc91304ec670bb3236fb7c1a708fa6ec6f2e3446c1fbb3e28127aad12e64661"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-02",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        160,
+        26,
+        102,
+        168
+      ],
+      "nativeSize": [
+        102,
+        168
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-02.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-02.png",
+      "file": "ready/sprites/miniLlorona/frame-02.png",
+      "sha256": "bb911189766690172234ed045b340bcd6f853e743e287a2c37112d66da915b84"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-03",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        294,
+        32,
+        110,
+        162
+      ],
+      "nativeSize": [
+        110,
+        162
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-03.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-03.png",
+      "file": "ready/sprites/miniLlorona/frame-03.png",
+      "sha256": "1267482b737064ba594682e8a930cf0878c7aa392cbde9c2a7de261457b14655"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-04",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        433,
+        32,
+        104,
+        163
+      ],
+      "nativeSize": [
+        104,
+        163
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-04.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-04.png",
+      "file": "ready/sprites/miniLlorona/frame-04.png",
+      "sha256": "1f3b437cdaa4c8e1a67b0f7a956f099d33542ed4d6aeb65acb1dabbd71508839"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-05",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        29,
+        230,
+        102,
+        154
+      ],
+      "nativeSize": [
+        102,
+        154
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-05.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-05.png",
+      "file": "ready/sprites/miniLlorona/frame-05.png",
+      "sha256": "a9ff52421cb1ec478dd97d13098d181cd364c49c959fb5e40e97bed2f7984aab"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-06",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        148,
+        228,
+        126,
+        156
+      ],
+      "nativeSize": [
+        126,
+        156
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-06.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-06.png",
+      "file": "ready/sprites/miniLlorona/frame-06.png",
+      "sha256": "563691a32bdc9f2eee4a4ca54d7c8e497f21bfa0832375b6ca2807b5ed7a9c03"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-07",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        298,
+        228,
+        105,
+        156
+      ],
+      "nativeSize": [
+        105,
+        156
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-07.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-07.png",
+      "file": "ready/sprites/miniLlorona/frame-07.png",
+      "sha256": "5358b3be47bd452c6ac83d0a8779d72e6502bbe7898089cf6a0ecfbaaa8f0f3a"
+    },
+    {
+      "id": "miniLlorona",
+      "role": "frame-08",
+      "source": "Assets/Mobs/Betas/Mini Llorona/llorona.png",
+      "sourceRect": [
+        440,
+        228,
+        102,
+        156
+      ],
+      "nativeSize": [
+        102,
+        156
+      ],
+      "displaySize": [
+        112,
+        112
+      ],
+      "fullResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Full Resolution/frame-08.png",
+      "gameResolution": "Assets/Mobs/Betas/Mini Llorona/Game Ready/Game Resolution/frame-08.png",
+      "file": "ready/sprites/miniLlorona/frame-08.png",
+      "sha256": "b2c6775de4f21bbda5dcb4d4079edac36d02df812e92f504a39195f13e09469c"
+    }
+  ],
+  "sourceInventory": [
+    {
+      "file": "Arenas/Ancient Forest Canyon Arena.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "ce3c5f8fd8398117dc5b36353321da48da238d68c39fa77d837ba09472152753"
+    },
+    {
+      "file": "Arenas/Hopkins Beach Concept.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "f7aad0e631b9fd2f112c9fa9c68a264089789ce38e38d1d7612eacdc13d18661"
+    },
+    {
+      "file": "Arenas/Maya Arena Concept.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "0edf85f1b9334ea7d7e56d4f54b2d4cbe1d632430a9ab2e9bd7f98c9b8fa95a3"
+    },
+    {
+      "file": "Arenas/Underworld Corrupted Maya Arena Concept.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "7a8e4b390ca0ff2c2428650187b4e21d16f4c2977b9df4e8e5a3f67b4df1f871"
+    },
+    {
+      "file": "Main Character/Teenage-Joe-Sprite-Slingshot.png",
+      "size": [
+        1402,
+        1122
+      ],
+      "mode": "RGBA",
+      "sha256": "54de290a0305352929c3cebd0840eb42d021ad36b78e7e35bb2e873598e78abb"
+    },
+    {
+      "file": "Mobs/Betas/cave-crab-v1.png",
+      "size": [
+        384,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "b7775c86529c96305c85e50b489e89bdba128995c65c2654bebe85ebba5eeb7f"
+    },
+    {
+      "file": "Mobs/Betas/cave-shadow-v1.png",
+      "size": [
+        384,
+        256
+      ],
+      "mode": "RGBA",
+      "sha256": "8d8220cc2310dee1b051f1c9b9a407c2cce090817319f6c1d4b5e5c883834be1"
+    },
+    {
+      "file": "Mobs/Betas/Mini Llorona/llorona.png",
+      "size": [
+        577,
+        433
+      ],
+      "mode": "RGBA",
+      "sha256": "d77a48fb73b5166ad8f994b4eb45bdd80262978a80b9a8a20d766099a4dfdd34"
+    },
+    {
+      "file": "Mobs/Betas/mini-jaguar.png",
+      "size": [
+        1260,
+        170
+      ],
+      "mode": "RGBA",
+      "sha256": "227994a1541077804388a245affc24cdfbb1e4be8c14d10fc8e43efea202fdc9"
+    },
+    {
+      "file": "Mobs/Betas/Tommy Goff/tommy-goff-v2.png",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "sha256": "aad14373a1397b620d161bcd00eea033ddecc329f83a0d51a37b5600841cf274"
+    },
+    {
+      "file": "Mobs/Boss/duende-v1.png",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "sha256": "db524ae8750c71d8a6b851c03e0e193d7d59d01659c6b0351904e9c1caece910"
+    },
+    {
+      "file": "Mobs/Boss/jaguar-spirit.png",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "67fa948eda799ae82acb323c3009efa08ceed0a3c232e476c7bda42995eb8a40"
+    },
+    {
+      "file": "Pickups/Power Ups/Badman/Badman.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "1ee520d3d5a7efc8886fd053a02430c205e4f6ffa23b80ddd180736bdeeadfd5"
+    },
+    {
+      "file": "Pickups/Power Ups/Big Bomb/Nuke.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "a620b3aa8dc162cab7f23519b93a33fbd1dd7192627c6bba8191ce975162b499"
+    },
+    {
+      "file": "Pickups/Power Ups/Bonus XP/Bonus XP.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "3d737a314e5c8f6dbcf435608efe6a9b7e2a682758aab821c4431e38625a1aa4"
+    },
+    {
+      "file": "Pickups/Power Ups/Double XP/Double Xp.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "5bfe5eb378ee4f808572c8422710b2eac8b8b1354cd4b3c2a04b4ccfc2cc97ab"
+    },
+    {
+      "file": "Pickups/Power Ups/Freeze/Freeze.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "2e78c4f62fcbb1cfcb4095447586348dabd7f0b1feaf86737c97c41b2a01b60e"
+    },
+    {
+      "file": "Pickups/Power Ups/Heavy Bullets/Heavy Bullets.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "0e61d4d8273686e1ea207a78266aa000670611d175f82e359447299da38b5627"
+    },
+    {
+      "file": "Pickups/Power Ups/Sheild/Shield.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "acd0ada55ddfd4c2112626e1a3bf0c1b13123d749fb557e849ddc4b8e84c62a1"
+    },
+    {
+      "file": "Pickups/Power Ups/Shock/Shock.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "0f7e6aa3fc90c5e6481a058c0c7dc14cc4873de2a824c050bf7c5e763408034e"
+    },
+    {
+      "file": "Pickups/Power Ups/Weapon Power Up/Weapon Power Up.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "5bb023cc6daa549d87e952bc6fb7464515e6f5ebe01d4b0ded8e8c29a97503e1"
+    },
+    {
+      "file": "Weapons/Belize Hardwood Bow/Belize Hardwood Bow Concept Design.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "dca04293fb5886c296cefbc41671a7c83ad4eeea5f2268eeec9336263a80f9e8"
+    },
+    {
+      "file": "Weapons/Belize Hardwood Bow/Belize Hardwood Bow impact.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "9ced352dd01bb41db6e65ecdfbd9e6837db2f0df843ce6ba382f374d63a5111b"
+    },
+    {
+      "file": "Weapons/Belize Hardwood Bow/Belize Hardwood Bow Projectile ammo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "284646ba85235a3afb65662c967f76e6997d5b3dd9ae8e88164f57c0c07f98d3"
+    },
+    {
+      "file": "Weapons/Belize Hardwood Bow/Belize Hardwood Bow Projectile.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "6a51d6a8316af37afbc4aafbd2085ba8ffea60e5fedb8c09873f79c5cb66c845"
+    },
+    {
+      "file": "Weapons/Belize Hardwood Bow/Joe Holding Belize Hardwood Bow.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "38206e77ecae3db7997681fe09a7c40bcdb994234e62e19c79bc39494eb0d4b3"
+    },
+    {
+      "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Concept Sheet-5.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "7c895a422bd1e4ac3f2cbbc27cdb8ebbb1b8656034fc276557820ef3d24f5c12"
+    },
+    {
+      "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Design Sheet-3.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "c31c366dc2de1370af35ccd877b970c43c55b03758b819912c601d7e0709cddf"
+    },
+    {
+      "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "b920f6c4ad5d60f6aeaff0e4b343e72262def89e8a7f47438aff9c88379f0bf3"
+    },
+    {
+      "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-2.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "b1615a7c2ab81fe4b6f4fe730199287fa1b1d2331f7cfd99f54ce37eb403b560"
+    },
+    {
+      "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet-4.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "cf611bb01aac2308e5294db8b9e483f57dcce9b7f2f3bc738e7623a243415c29"
+    },
+    {
+      "file": "Weapons/Cohune Bomb Launcher/Cohune Bomb Launcher Sprite Sheet.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "b920f6c4ad5d60f6aeaff0e4b343e72262def89e8a7f47438aff9c88379f0bf3"
+    },
+    {
+      "file": "Weapons/Crystal Staff/Crystal Staff Concerpt Art Regular  - Powered Ammo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "1068f58535a383ff62e742f7ca17fae4ed80a29e984fd0f96a019b09f4b19523"
+    },
+    {
+      "file": "Weapons/Crystal Staff/Crystal Staff Concerpt Art Regular  - Powered impact.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "441ed739f5d51e9b89c6053d940005dea469fc1b7d7afe38e721a680446321a8"
+    },
+    {
+      "file": "Weapons/Crystal Staff/Crystal Staff Concerpt Art Regular  - Powered Joe Holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "cebba73e769c6021232e130da506d4d6cc93363ae30fab10642421a2aa70e2dc"
+    },
+    {
+      "file": "Weapons/Crystal Staff/Crystal Staff Concerpt Art Regular  - Powered Projectile Frames.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "217437d49482e9340e17d0f3d85df6ea87cfa1c361dd1494c03e0ac4acd8d520"
+    },
+    {
+      "file": "Weapons/Crystal Staff/Crystal Staff Concerpt Art Regular  - Powered.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "61970c4251875a61e8e3166ec196e635532cb96a8ec8a9896a3310bb50776dec"
+    },
+    {
+      "file": "Weapons/Drums OF My Calling/Drum of Calling Asset Atlas-2.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "559525d8b1c038a7fe98e82f9b4b33fceb298e0d1053e0e7820f1a92912f1cdd"
+    },
+    {
+      "file": "Weapons/Drums OF My Calling/Drum of Calling Game Asset Concept Sheet-3.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "5a24c004b448eca2b3386b70e4c51e7607e62e8f82e5aa387b5ec98205828232"
+    },
+    {
+      "file": "Weapons/Drums OF My Calling/Drum of Calling Game Asset Sheet-4.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "d28bf7177fe20075f6314f757b38626283f3f2babe5a8bbe0b391a5b07f38812"
+    },
+    {
+      "file": "Weapons/Drums OF My Calling/Drum of Calling_ Spirit Wave Sprite Sheet-1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "c2fb066a88e935d946c50af8fad8047f0fa5a9e1174a57b3ce145c176a69a6d2"
+    },
+    {
+      "file": "Weapons/Duende Staff/Duende Staff  Holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "67158e90a67ec40c65b35fa15821738bc0f1f8bc70f0298dac810c618acd8936"
+    },
+    {
+      "file": "Weapons/Duende Staff/Duende Staff Attack.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "169ce22a32f4672d9a40c6d942ec51bbe32aaa1be5714ca8fc95b9a72db42147"
+    },
+    {
+      "file": "Weapons/Duende Staff/Duende Staff Design Concept.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "d4379f4dacbd2b9878168f2c916e10ef336162aebb88a5e69cd320d238d60228"
+    },
+    {
+      "file": "Weapons/Duende Staff/Duende Staff Impact and Ammo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "e3c2cf2879dea9c31dde99629558b5edc720a03cec99cfbf51834c5ab89b4f8b"
+    },
+    {
+      "file": "Weapons/Duende Staff/Duende Staff projectile fram.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "44949c1ddd0c83227d6b0b32b20eae0f5ef8442f08a191ed59eb87346cf395bb"
+    },
+    {
+      "file": "Weapons/Fishing Spear thrower/Fishing Spear Thrower Ammo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "cbeeabf491a1ec0a8c95abf1d5a3673aab99cfbd814d8e1a67ca3ec33790dbff"
+    },
+    {
+      "file": "Weapons/Fishing Spear thrower/Fishing Spear Thrower Concept Art.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "46f5991778702fbc08cb0195b83f4b001a84652c5ea108fdedf937f0effa6f72"
+    },
+    {
+      "file": "Weapons/Fishing Spear thrower/Fishing Spear Thrower Impact frame.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "26b61367801d4218267ff3dc47bf91540fe248f524819da802b99995e9e6d042"
+    },
+    {
+      "file": "Weapons/Fishing Spear thrower/Fishing Spear Thrower Joe Holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "5734f320fa7a090210faf31c4663ca4f33f75aba8d5b05d5c0438476c5fcf198"
+    },
+    {
+      "file": "Weapons/Fishing Spear thrower/Fishing Spear Thrower Projectile Frame.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "6b1e9d29a6c5a1ec4e784e902e6458a01842a0c2668dbd9d2f39412d805d30e4"
+    },
+    {
+      "file": "Weapons/Jaguar Spirit Claw/Jaguar Spirit Claw Attack Frames.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "b52b18f5a6d9c7b1018abcad724b8973ba0e6f2dd740c87d9c6edaa83823b85d"
+    },
+    {
+      "file": "Weapons/Jaguar Spirit Claw/Jaguar Spirit Claw Impact VFX Sheet.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "976669672dc274a537ca4e50993f42278ff8fbfa2f7da4c1b180a778ca9c96dc"
+    },
+    {
+      "file": "Weapons/Jaguar Spirit Claw/Jaguar Spirit Claw Joe Holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "3b1ad193355a3e6daf7ee6b31da87e29f9470f86e6c63055705ffcce4548c6fd"
+    },
+    {
+      "file": "Weapons/Jaguar Spirit Claw/Jaguar Spirit Claw Projectiles.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "29a382020c758e5da840c31d14ad6dab11afabf0faf01e2d81ce1b6ed7dd5d43"
+    },
+    {
+      "file": "Weapons/Jaguar Spirit Claw/Jaguar Spirit Claw Weapon Concept Art.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "409a2eca1a8bdcf170ffd27c6fcce45f888ad96ced9933895c377bceca4a40eb"
+    },
+    {
+      "file": "Weapons/Kukulkan Feather Cast/Kukulkan Feather Cast Attack shots.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "c90b44354a620fe4011d1f6ab0213849da5f430bad988cb33b4e225d51e7f3ab"
+    },
+    {
+      "file": "Weapons/Kukulkan Feather Cast/Kukulkan Feather Cast Impact.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "e0a1d5f6347c792498c77079afef6011da1bf6e564c910d2fbf270de25494bb3"
+    },
+    {
+      "file": "Weapons/Kukulkan Feather Cast/Kukulkan Feather Cast Joe Holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "d859b2c8dd86454657a59578f09dbb63149db2d30edb895d2eeb6b20c18ae254"
+    },
+    {
+      "file": "Weapons/Kukulkan Feather Cast/Kukulkan Feather Cast Projectile Varients.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "bb594b28a8a177c6a71d35c11a6ddf29c9e71fc8f954f41745785f7a1718b96f"
+    },
+    {
+      "file": "Weapons/Kukulkan Feather Cast/Kukulkan Feather Cast Weapon Design.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "dcabdea099389f135fc74002160e00ad7f1ff69109dc7175f57514a4da53b2d0"
+    },
+    {
+      "file": "Weapons/Maya Dart Launcher/Joe Maya Dart Launcher Held.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "52b03b0f24f763cb3727e9fe4f7f31681b9965810282e17772e5fbc707b29c52"
+    },
+    {
+      "file": "Weapons/Maya Dart Launcher/Maya Dart Launcher Ammo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "b30e55a2b62c3e1db4b5e0940eb7dc4d41e8cd29368649c2d3100561f941f429"
+    },
+    {
+      "file": "Weapons/Maya Dart Launcher/Maya Dart Launcher Concept Design.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "e1e41d3219d90f83617a2a5d819bd39b83e05ae88f1089b91af6d287c15a8301"
+    },
+    {
+      "file": "Weapons/Maya Dart Launcher/Maya Dart Launcher Impact.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "1c6b77abc6fa9beaab648095bb3ec1aa4efb9df3983e22bd3f9542551d23c862"
+    },
+    {
+      "file": "Weapons/Maya Dart Launcher/Maya Dart Launcher Projectile.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "bcddf6754697d29a1a885960a0a6f817564770f99e31f34c760a13888a5a354d"
+    },
+    {
+      "file": "Weapons/Mesoamerican Fantasy Weapon Sprite Sheet.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "sha256": "d7065174765897493a1b30cd5e15f5b2565e031681bc9507e7dde2e82d2cb5ff"
+    },
+    {
+      "file": "Weapons/Obsidian Spirit Shards/Obsidian Spirit Shards Ammo and frames.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "12863a137b45b50db6cba0b3bad5a511c0326014c57e9a80202980ff2e99a5af"
+    },
+    {
+      "file": "Weapons/Obsidian Spirit Shards/Obsidian Spirit Shards Impacts.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "e948d0fb008063280185566fb05930f00d4fa0f921b3f96e57354e87410b2e77"
+    },
+    {
+      "file": "Weapons/Obsidian Spirit Shards/Obsidian Spirit Shards Joe Holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "2e12859628e4b20ffaf745905ca0961b755a591aadad16c15e5a2bd863f13280"
+    },
+    {
+      "file": "Weapons/Obsidian Spirit Shards/Obsidian Spirit Shards Projectiles.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "b798865a7f4082cc30042551f3e2e218898401fe8a9cf6e9173f14683564378d"
+    },
+    {
+      "file": "Weapons/Obsidian Spirit Shards/Obsidian Spirit Shards Weapon design.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "6ccd744bd3886429225af4853e57f80667b243e7ac330dc03b59d448ab6f3fb2"
+    },
+    {
+      "file": "Weapons/Slingshot/Pixel Art Slingshot Sprite Sheet.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "sha256": "52659ecfa3fdab20c0d5da22cc9ce0f53124774343bf2bccce8fa11b4afe0156"
+    },
+    {
+      "file": "Weapons/Slingshot/Slingshot Impact Sprite Sheet.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "bb3382b516adebe67706a17ccc6c747ed1699f2b6d46411f4e0afd10c51c6cf5"
+    },
+    {
+      "file": "Weapons/Slingshot/Slingshot Projectile Sprite Sheet.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "c3b4bb083978136b052493329fd8bcda39057df5b3ab1082ba60f69d3ccd5c04"
+    },
+    {
+      "file": "Weapons/Staff Of Cacao Smoke/Staff Of Cacao Smoke Concept Design Regular - Powered up - Joe holding.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "3cd501ff97339bf71d9a2668ca4df520d086792df20d7e59b2688d020cac53a6"
+    },
+    {
+      "file": "Weapons/Staff Of Cacao Smoke/Staff Of Cacao Smoke Concept Design Regular - Powered up Impact.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "628252330fe50131720f4ddef6870d7381fb7b1e76d6f1393065dc9f7ccae1c6"
+    },
+    {
+      "file": "Weapons/Staff Of Cacao Smoke/Staff Of Cacao Smoke Concept Design Regular - Powered up projectile ammo.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "282e8781a963f52df50491fb81479421728c15c5b493c3de21b45a164952ab61"
+    },
+    {
+      "file": "Weapons/Staff Of Cacao Smoke/Staff Of Cacao Smoke Concept Design Regular - Powered up Projectile.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "0715412be62be2dd1c36e1977b1c4c9af4a581b8b8b4fa71bd35e5ce5f02d858"
+    },
+    {
+      "file": "Weapons/Staff Of Cacao Smoke/Staff Of Cacao Smoke Concept Design Regular - Powered up.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "sha256": "bf0737995e85f603a4843a680478c4ea1b8cbe3c0343c01774fdc913dfd5a690"
+    }
+  ],
+  "missing": [
+    "Reflex Boost pickup art",
+    "Food pickups",
+    "Arena hazards",
+    "Enemy spawn effects",
+    "Perk icons",
+    "Mobile control artwork",
+    "Full directional held-weapon animations matching canonical teenage Joe"
+  ]
+}

@@ -2,6 +2,14 @@
 (function (root) {
   'use strict';
   const W = 1200, H = 800;
+  const AIM_HEIGHT = 32;
+  function aimAt(player, input = {}) {
+    const origin = { x: player.x, y: player.y - AIM_HEIGHT };
+    const dx = input.relativeAim ? input.aimDX : input.aimX - origin.x;
+    const dy = input.relativeAim ? input.aimDY : input.aimY - origin.y;
+    if (Number.isFinite(dx) && Number.isFinite(dy) && Math.hypot(dx, dy) > .0001) player.angle = Math.atan2(dy, dx);
+    return origin;
+  }
   const BOUNDS = { x: 135, y: 155, w: 930, h: 485 };
   const OBSTACLES = [
     { x: 270, y: 250, w: 160, h: 88 }, { x: 770, y: 250, w: 160, h: 88 },
@@ -65,12 +73,12 @@
     const t = (-qb - Math.sqrt(disc)) / (2 * qa);
     return t >= 0 && t <= 1 ? t : null;
   }
-  function move(entity, dx, dy) {
+  function move(entity, dx, dy, topClearance = 0) {
     const n = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 6));
     for (let i = 0; i < n; i++) {
       let x = clamp(entity.x + dx / n, BOUNDS.x + entity.r, BOUNDS.x + BOUNDS.w - entity.r);
       if (!OBSTACLES.some(o => circleRect(x, entity.y, entity.r, o))) entity.x = x;
-      let y = clamp(entity.y + dy / n, BOUNDS.y + entity.r, BOUNDS.y + BOUNDS.h - entity.r);
+      let y = clamp(entity.y + dy / n, BOUNDS.y + entity.r + topClearance, BOUNDS.y + BOUNDS.h - entity.r);
       if (!OBSTACLES.some(o => circleRect(entity.x, y, entity.r, o))) entity.y = y;
     }
   }
@@ -192,13 +200,14 @@
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
       const p = this.player;
       p.invincible = Math.max(0, p.invincible - dt); p.fireCooldown -= dt; p.dashCooldown = Math.max(0, p.dashCooldown - dt);
-      if (Number.isFinite(input.aimX) && Number.isFinite(input.aimY)) p.angle = Math.atan2(input.aimY - p.y, input.aimX - p.x);
       const len = Math.hypot(input.dx || 0, input.dy || 0); p.walking = len > 0;
-      if (p.dashTime > 0) { move(p, p.dashX * 940 * dt, p.dashY * 940 * dt); p.dashTime -= dt; }
-      else if (len) move(p, (input.dx || 0) / len * p.speed * dt, (input.dy || 0) / len * p.speed * dt);
+      // Keep Joe's raised muzzle inside the north wall, including during a dash.
+      if (p.dashTime > 0) { move(p, p.dashX * 940 * dt, p.dashY * 940 * dt, AIM_HEIGHT); p.dashTime -= dt; }
+      else move(p, len ? (input.dx || 0) / len * p.speed * dt : 0, len ? (input.dy || 0) / len * p.speed * dt : 0, AIM_HEIGHT);
       this.collectStaff();
+      const muzzle = aimAt(p, input);
       if (input.shooting && p.fireCooldown <= 0) {
-        this.shot(p.x + Math.cos(p.angle) * 24, p.y + Math.sin(p.angle) * 24 - 8, p.angle, false, p.damage, p.weapon === 'staff' ? 800 : 735);
+        this.shot(muzzle.x + Math.cos(p.angle) * 24, muzzle.y + Math.sin(p.angle) * 24, p.angle, false, p.damage, p.weapon === 'staff' ? 800 : 735);
         p.fireCooldown = p.interval; this.events.push({ type: 'shot' });
       }
       if (this.breakTime > 0) { this.breakTime -= dt; if (this.breakTime <= 0) this.beginWave(); }
@@ -302,7 +311,7 @@
       }
     }
   }
-  const api = { Game, W, H, BOUNDS, OBSTACLES, TYPES, WAVES, UPGRADES, circleRect, segmentRect, segmentCircle, move, waypoint };
+  const api = { Game, W, H, BOUNDS, OBSTACLES, TYPES, WAVES, UPGRADES, AIM_HEIGHT, aimAt, circleRect, segmentRect, segmentCircle, move, waypoint };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.ArenaCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
