@@ -2,6 +2,18 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## iPhone sprite repair — 0.3.2
+
+The user’s Safari screenshot was reproduced exactly: Hostinger CDN serves the 1402 × 1122 Joe sheet as an **800 × 640 WebP** to an iPhone Safari user agent. The original crop coordinates then select fragments or neighboring poses; the HUD samples a whole small character rather than Joe’s face. Earlier Chromium mobile-layout tests used Chrome’s image delivery and missed this CDN variation.
+
+The shared asset loader now restores every cropped sheet to its authored pixel grid when its decoded size differs, using one ordinary transparent HTML Canvas per affected source. This fixes Joe, his portrait, mobs, ruin crops, weapon icons and pickup icons together. Full-image backgrounds need no normalization. Native-sized images are reused directly; conversion errors flow into the existing artwork-load error handler. Source files are unchanged.
+
+Joe now matches the active Legends of Belize renderer: 30 pixels tall on a 320-pixel-wide logical view, or **9.375% of arena width**. Each pose scales by its own crop height so Joe keeps a constant height and stable feet. Collision radius, movement, weapons, saves and combat balance are unchanged. All three pages version both shared scripts as 0.3.2.
+
+`npm test` includes the actual 800 × 640 mismatch, authored-dimension validation, native-image reuse and Legends size. Browser testing used installed Edge/Playwright with an **iPhone Safari user agent and the real Hostinger CDN image responses**, not only local images. Twenty movement/firing states were visibly rendered, with at least 4,405 changed player pixels in the phone backing store. Portrait, cover/hurt, controls and all four Survival maps passed without app console errors. This is not an actual Safari engine or physical iPhone test. The original Legends renderer used for the size comparison is src/graphics.js:1088, and its logical canvas is 320 × 240.
+
+Open https://bsa.authenticallybelize.com/?v=0.3.2 to request the updated page without clearing saved progress.
+
 ## Story opening and mobile edition — 0.3.1
 
 Launch **story.html** for the main menu and canon prologue, **survival.html** for the four-arena test, or **index.html** for the preserved classic game. `npm start` serves this checkout on port 4180 (use `$env:PORT=4181` if another preview is running). Hostinger's DirectoryIndex serves story.html at the site root.

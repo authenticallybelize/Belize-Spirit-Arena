@@ -9,13 +9,13 @@
   const game = new Game(), canvas = document.getElementById('arena'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id), overlay = $('overlay'), content = $('dialogContent');
   const startButton = $('startButton');
-  let canvasScale = 1, joeHeight = 62;
+  let canvasScale = 1;
+  const joeHeight = W * ArenaArt.playerHeightRatio;
   function sizeCanvas() {
     const width = canvas.getBoundingClientRect().width || W;
     canvasScale = Math.max(1, Math.min(2, width * (window.devicePixelRatio || 1) / W));
     canvas.width = Math.round(W * canvasScale); canvas.height = Math.round(H * canvasScale);
     canvasScale = canvas.width / W;
-    joeHeight = Math.max(62, Math.min(112, 32 * W / width));
   }
   new ResizeObserver(sizeCanvas).observe(canvas);
   window.addEventListener('resize', sizeCanvas); sizeCanvas();
@@ -129,7 +129,7 @@
     let frame = row * 5 + (p.walking ? 1 + Math.floor(t * 9) % 2 : 0), flip = false;
     if (firing && p.weapon === 'slingshot') { frame = (row === 2 ? 1 : row) * 5 + (p.fireCooldown > p.interval - .07 ? 4 : 3); flip = row === 2; }
     const alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
-    const art = ARENA_SPRITES.joe, rect = art.frames[frame], scale = joeHeight / 260;
+    const art = ARENA_SPRITES.joe, rect = art.frames[frame], scale = joeHeight / rect[3];
     function pose(x, y, opacity) {
       ctx.save(); ctx.globalAlpha = opacity; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
       ctx.shadowColor = '#d8ffed'; ctx.shadowBlur = 2;
@@ -307,7 +307,12 @@
   const files = [...new Set([...Object.entries(ARENA_SPRITES).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).map(([,a]) => a.file), 'jungle-arena.png', 'limestone-ruins.png',
     ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', 'weapon-sheet.png', ...Object.values(SurvivalUI.powerArt).map(a => a.file)] : [])])];
   Promise.all(files.map(file => new Promise((resolve, reject) => {
-    const image = new Image(); image.onload = resolve; image.onerror = () => reject(new Error(`Missing artwork: assets/${file}`)); image.src = `assets/${file}`; images[file] = image;
+    const image = new Image();
+    image.onload = () => {
+      try { images[file] = ArenaArt.sourceGrid(image, file); resolve(); }
+      catch (error) { reject(error); }
+    };
+    image.onerror = () => reject(new Error(`Missing artwork: assets/${file}`)); image.src = `assets/${file}`; images[file] = image;
   }))).then(() => {
     ready = true; startButton.disabled = false; startButton.textContent = 'Enter the arena';
     if (window.TouchControls) touch = TouchControls.attach({ game, input, canvas, togglePause });

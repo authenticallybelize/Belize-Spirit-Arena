@@ -65,4 +65,19 @@ for (const asset of Object.values(window.ARENA_SPRITES)) {
   for (const [x, y, fw, fh] of asset.frames) assert(x >= 0 && y >= 0 && x + fw <= w && y + fh <= h, `Invalid crop: ${asset.file}`);
 }
 assert.equal(window.ARENA_SPRITES.joe.frames.length, 20); assert.equal(window.ARENA_SPRITES.joe.file, 'teenage-joe.png');
+const draws = [], sheet = { getContext() { return { drawImage(...args) { draws.push(args); } }; } };
+vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../assets/sprites.js'), 'utf8'), { window, document: { createElement() { return sheet; } } });
+for (const [file, [width, height]] of Object.entries(window.ArenaArt.sourceSizes)) {
+  const png = fs.readFileSync(path.join(__dirname, '../assets', file));
+  assert.equal(png.readUInt32BE(16), width); assert.equal(png.readUInt32BE(20), height);
+}
+const originalJoe = { naturalWidth: 1402, naturalHeight: 1122 };
+assert.equal(window.ArenaArt.sourceGrid(originalJoe, 'teenage-joe.png'), originalJoe);
+const mobileJoe = { naturalWidth: 800, naturalHeight: 640 };
+assert.equal(window.ArenaArt.sourceGrid(mobileJoe, 'teenage-joe.png'), sheet);
+assert.equal(sheet.width, 1402); assert.equal(sheet.height, 1122);
+assert.deepEqual(draws[0], [mobileJoe, 0, 0, 1402, 1122]);
+assert.equal(window.ArenaArt.sourceGrid(mobileJoe, 'jungle-arena.png'), mobileJoe, 'Whole backgrounds need no crop normalization');
+assert.equal(window.ArenaArt.playerHeightRatio * 320, 30, 'Joe size differs from the active Legends renderer');
 console.log('PASS: physics, combat, XP/perks, ten waves, slingshot, dropped staff/pickup/perk preservation, Jaguar charge/volleys, victory/restart, and sprite crops.');
+console.log('PASS: Safari/CDN-sized sheets return to authored crop grid; native images are reused; Joe matches Legends size.');
