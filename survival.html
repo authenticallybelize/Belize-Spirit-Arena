@@ -7,17 +7,19 @@
   <title>Belize: Spirit Arena — Canyon & Survival</title>
   <link rel="icon" href="assets/teenage-joe.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="touch.css">
   <link rel="stylesheet" href="survival.css">
   <script defer src="core.js"></script>
   <script defer src="assets/sprites.js"></script>
   <script defer src="survival.js"></script>
   <script defer src="survival-ui.js"></script>
+  <script defer src="touch.js"></script>
   <script defer src="game.js"></script>
 </head>
 <body class="survival-edition">
   <main class="shell">
     <header class="masthead">
-      <a class="brand" href="./index.html" aria-label="Belize: Spirit Arena home"><span>BELIZE</span><i></i><small>SPIRIT ARENA</small></a>
+      <a class="brand" href="./story.html" aria-label="Belize: Spirit Arena home"><span>BELIZE</span><i></i><small>SPIRIT ARENA</small></a>
       <nav aria-label="Game settings">
         <button id="helpButton" class="text-button">How to play</button>
         <button id="soundButton" class="icon-button" aria-label="Enable sound" aria-pressed="false" title="Sound off">♫</button>
@@ -25,10 +27,11 @@
       </nav>
     </header>
     <section class="intro">
+      <p><a href="story.html" style="color:var(--mint)">Story Mode · canon prologue ↗</a></p>
       <h1>The canyon calls.</h1>
-      <p>Two arenas. Forty waves. Find your build.</p>
+      <p>Four arenas. Forty waves. Find your build.</p>
     </section>
-    <div class="survival-layout"><aside class="expedition" id="config"><h2>Choose your expedition</h2><label for="arenaSelect">Arena</label><select id="arenaSelect"><option value="canyon">Ancient Forest Canyon</option><option value="jungle">Jungle Ruins</option></select><label for="modeSelect">Edition</label><select id="modeSelect"><option value="survival">Survival · 40 waves</option><option value="run">Arena Run · 10 waves</option></select><label for="starterWeapon">Starting weapon</label><select id="starterWeapon"></select><p class="setup-note">All twelve starters are available for testing. XP level and wave count are separate.</p><a class="classic-link" href="./index.html">Original ten-wave game ↗</a><div class="build"><h2>Your build</h2><strong id="buildWeapon">Joe’s Sling I</strong><p id="buildStats"></p><p id="arenaName"></p><p id="activePowers">No temporary powers active</p><p id="buildEmpty">Collect gems to grow your build.</p><ul id="buildPerks"></ul></div></aside><section class="game-frame" aria-label="Belize: Spirit Arena game">
+    <div class="survival-layout"><aside class="expedition" id="config"><h2>Choose your expedition</h2><label for="arenaSelect">Arena</label><select id="arenaSelect"><option value="canyon">Ancient Forest Canyon</option><option value="jungle">Jungle Ruins</option><option value="underworld">The Corrupted Underworld</option><option value="coast">Spirit Coast · Hopkins</option></select><label for="modeSelect">Edition</label><select id="modeSelect"><option value="survival">Survival · 40 waves</option><option value="run">Arena Run · 10 waves</option></select><label for="starterWeapon">Starting weapon</label><select id="starterWeapon"></select><p class="setup-note">All twelve starters are available for testing. XP level and wave count are separate.</p><a class="classic-link" href="./index.html">Original ten-wave game ↗</a><div class="build"><h2>Your build</h2><strong id="buildWeapon">Joe’s Sling I</strong><p id="buildStats"></p><p id="arenaName"></p><p id="activePowers">No temporary powers active</p><p id="buildEmpty">Collect gems to grow your build.</p><ul id="buildPerks"></ul></div></aside><section class="game-frame" aria-label="Belize: Spirit Arena game">
       <div class="hud">
         <div class="hero"><canvas class="joe-portrait" width="64" height="64" aria-label="Teenage Joe Grind"></canvas><div><strong>JOE GRIND</strong><span id="levelLabel">LEVEL 1</span></div></div>
         <div class="meter health"><div class="meter-label"><span>HEALTH</span><b id="healthLabel">100 / 100</b></div><div class="track" id="healthMeter" role="progressbar" aria-label="Health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="healthFill"></i></div></div>
@@ -58,7 +61,7 @@
       <span><kbd>SPACE</kbd> Dash</span><span><kbd>E</kbd> Weapon</span><span><kbd>ESC</kbd> Pause</span>
     </div>
     <footer><span>Inspired by Belizean folklore. Made for the arena.</span><span>SURVIVAL TEST EDITION</span></footer>
-    <p class="mobile-note">This prototype uses a keyboard and mouse. Play on a desktop or laptop.</p>
+    <p class="mobile-note">Touch: left stick moves; right stick aims and fires. Dash and weapon pickup have touch buttons.</p>
     <noscript>Please enable JavaScript to enter the arena.</noscript>
   </main>
 </body>

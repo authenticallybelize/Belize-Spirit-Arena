@@ -3,6 +3,17 @@
   'use strict';
   const { WEAPONS, PERKS, POWERS } = SurvivalCore;
   const $ = id => document.getElementById(id);
+  const powerArt = {
+    badman: { file: 'powers/badman.png', rect: [54, 275, 129, 116] },
+    nuke: { file: 'powers/nuke.png', rect: [39, 318, 145, 148] },
+    bonusXP: { file: 'powers/bonusXP.png', rect: [35, 295, 181, 193] },
+    doubleXP: { file: 'powers/doubleXP.png', rect: [42, 270, 202, 200] },
+    freeze: { file: 'powers/freeze.png', rect: [51, 274, 144, 129] },
+    heavy: { file: 'powers/heavy.png', rect: [51, 294, 155, 150] },
+    shield: { file: 'powers/shield.png', rect: [47, 308, 158, 158] },
+    shock: { file: 'powers/shock.png', rect: [48, 342, 126, 130] },
+    evolution: { file: 'powers/evolution.png', rect: [50, 235, 164, 158] }
+  };
   $('starterWeapon').innerHTML = WEAPONS.map(w => '<option value="' + w.id + '">' + w.name + '</option>').join('');
   function icon(ctx, image, w, x, y, height) {
     if (!w.art) return;
@@ -10,6 +21,7 @@
     ctx.drawImage(image, ...w.art, x - width / 2, y - height / 2, width, height);
   }
   window.SurvivalUI = {
+    powerArt,
     options() { return { arena: $('arenaSelect').value, mode: $('modeSelect').value, weapon: $('starterWeapon').value }; },
     draw(game, ctx, images) {
       for (const c of game.clouds) { ctx.save(); ctx.globalAlpha = .2; ctx.fillStyle = c.color; ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
@@ -23,7 +35,10 @@
         const w = SurvivalCore.weapon(d.id), color = d.kind === 'power' ? POWERS[d.id].color : '#ffe199';
         ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(d.x, d.y + 9, 25, 12, 0, 0, Math.PI * 2); ctx.stroke();
         if (d.kind === 'weapon' && w.art) icon(ctx, images['weapon-sheet.png'], w, d.x, d.y - 14, 40);
-        else { ctx.fillStyle = color; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center'; ctx.fillText(d.kind === 'power' ? '✦' : '♜', d.x, d.y); }
+        else if (d.kind === 'power' && powerArt[d.id]) {
+          const art = powerArt[d.id]; ctx.save(); ctx.globalCompositeOperation = 'screen';
+          ctx.drawImage(images[art.file], ...art.rect, d.x - 24, d.y - 36 + Math.sin(game.time * 3 + d.x) * 3, 48, 48); ctx.restore();
+        } else { ctx.fillStyle = color; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center'; ctx.fillText(d.kind === 'power' ? '✦' : '♜', d.x, d.y); }
         const nearby = Math.hypot(d.x - game.player.x, d.y - game.player.y) <= 50;
         if (nearby || d.boss) {
           const text = d.kind === 'power' ? POWERS[d.id].name : (nearby ? 'E · ' : '') + w.name;

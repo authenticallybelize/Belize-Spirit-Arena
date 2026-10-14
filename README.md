@@ -2,6 +2,32 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Story opening and mobile edition — 0.3.0
+
+Launch **story.html** for the main menu and canon prologue, **survival.html** for the four-arena test, or **index.html** for the preserved classic game. `npm start` serves this checkout on port 4180 (use `$env:PORT=4181` if another preview is running). Hostinger's DirectoryIndex serves story.html at the site root.
+
+Joe is sixteen, seven years after Legends of Belize. The five-scene prologue covers Grandma's errand, the obsidian discovery, her warning, sleep and the Spirit Layer awakening. Four original generated illustrated frames are included; the fifth scene reveals the actual jungle arena with Joe's existing sprite. Static frames pan gently, fade, pulse and use dialogue overlays. Reduced motion follows the OS setting. Birdlike tones, distant bass, heartbeat and wordless whisper texture are synthesized, not recorded voice acting.
+
+Tap the scene / Continue or press Enter to advance. Skip prologue / Space skips every scene; Escape and Pause pause it. Sound starts muted; the sound button works during the prologue. Story menu offers New Story, Continue and Replay. Replay does not initialize a run or erase checkpoints.
+
+Story uses the unchanged classic jungle physics, first five wave queues, four perks, enemies and Sling baseline: HP 100, damage 19, firing interval 0.24 seconds, movement 218. Clearing wave five and collecting the Duende Staff completes the first trial. The campaign stops honestly there: Hollow Keeper / Tide Warden encounters and connected arena transitions are not implemented. No fake victories or premature Chapter I / Survival unlocks. Existing unlocked Survival flags are preserved. A separate clearly labeled Survival test remains accessible as before.
+
+Story saves use only `belize-spirit-arena.story` in this site's localStorage, with schema version 1. Tracked fields: watched/skipped prologue, Story started, arena/wave, completed arenas, unlocked weapons, Story completion and Survival unlock. Continue restarts a saved wave with its starting player build, HP, XP and perks; it is not an exact mid-wave save. Unknown versions, corrupt data or concurrent tab changes are preserved instead of overwritten. There was no prior Spirit Arena save system to migrate. No Legends of Belize save keys are accessed. Storage failure is reported; gameplay remains available for the session. Saves are browser/origin-specific, so localhost progress does not automatically transfer to the hosted domain.
+
+Touch controls appear on phones/tablets: left stick moves and faces Joe; right stick aims and fires automatically while pushed. Both work simultaneously, have a dead zone and reset on release, cancellation, pause or focus loss. Dash, pickup and pause have touch buttons; upgrades and menus use ordinary taps. Keyboard/mouse remains supported. This is a responsive browser edition, not a native app.
+
+The Survival/Arena Run test now has Jungle Ruins, Ancient Forest Canyon, The Corrupted Underworld and Spirit Coast (Hopkins), with solid bounds and mapped major rock collision. The supplied Maya Arena Concept is retained in the user's source folder; it was not added as a fifth selectable map. Decorative geometry is not all collidable; crystal, tide and rockfall hazards are future systems.
+
+Two added ordinary mobs use copied Legends assets: Tommy Goff (52 HP, speed 90, radius 16, damage 13, XP 9; 0.5-second warned strike at speed 300 for 0.3 seconds every 3.5 seconds) and Mini Llorona (58 HP, speed 68, radius 16, contact damage 10, XP 12; three 7-damage spirit shots at speed 190 every 3.1 seconds). They use the existing Survival scaling and cover collision. Tommy replaces some scheduled mobs from wave 4; Mini Llorona joins from wave 7. Total enemy counts and existing boss schedule remain unchanged. Mini Llorona is an ordinary ranged variant, not a full boss or the future Crying Echo Mini Boss.
+
+Nine supplied Power Ups sheets provide measured pickup-icon crops: Badman, Nuke, Bonus XP, Double XP, Freeze, Heavy Bullets, Shield, Shock and Weapon Power Up. Runtime Canvas cropping with screen blending uses the intact source files. Their effects retain the existing code rules; printed sheet durations/rewards are concept annotations, not new mechanics. Reflex Boost keeps its clearly generic star pending art.
+
+Changed surfaces: story.js (save and cinematic state, Story game adapter), story-ui.js (menu/dialogue/presentation), story.html/story.css, touch.js/touch.css, shared game.js hooks, Survival arena/enemy definitions, power pickup rendering, sprite metadata, supplied/generated asset copies, tests and hosting DirectoryIndex. core.js is byte-for-byte unchanged.
+
+Validation: `npm test` passes classic, expanded Survival and Story checks. Browser plugin not available; installed Playwright / Edge used instead, with no new dependency. Browser QA at 1440×1080, tablet 820×1180, phone 390×844 and 844×390 verified page identity, nonblank screens, watch/skip at every scene, cinematic input isolation, sound toggle, movement/shooting/dash/pause, replay/checkpoint/reload, first-trial completion fixtures, all four maps/mob/pickup rendering, game over/restart and simultaneous touch sticks. No page/console/resource errors. A model stress fixture ran 32 enemies / 150 initial hostile shots for ten simulated seconds in each map without invalid coordinates; this is not a real-device frame-rate result. Existing forty-wave progression fixtures still pass; the new mob balance has not had a fresh full human Survival playtest.
+
+Remaining limits: later Story encounters and transition scenes, online leaderboard, final voiced/recorded ambient audio, Reflex pickup art, real iOS/Android hardware and Safari QA, exact mid-wave/cloud saves, hazards and final mobile performance/balance. See [assets/PROLOGUE-ASSETS.md](assets/PROLOGUE-ASSETS.md) for art/audio requirements and provenance.
+
 ## Play
 
 **Canyon & Survival edition (0.2.0):** open [survival.html](survival.html), or visit **http://127.0.0.1:4180/survival.html** while the local server is running. Select Ancient Forest Canyon or Jungle Ruins, then a ten-wave Arena Run or forty-wave Survival test. The original game remains available at index.html.

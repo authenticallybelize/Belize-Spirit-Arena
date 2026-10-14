@@ -2,19 +2,22 @@
 (() => {
   'use strict';
   const extended = !!window.SurvivalCore;
-  const { Game, W, H } = extended ? SurvivalCore : ArenaCore;
+  const story = !!window.StoryCore;
+  const { Game } = story ? StoryCore : extended ? SurvivalCore : ArenaCore;
+  const { W, H } = extended ? SurvivalCore : ArenaCore;
   const { OBSTACLES, WAVES } = ArenaCore;
   const game = new Game(), canvas = document.getElementById('arena'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id), overlay = $('overlay'), content = $('dialogContent');
   const startButton = $('startButton');
   canvas.width = W; canvas.height = H;
-  if (extended) window.spiritArena = game;
+  if (extended || story) window.spiritArena = game;
   const keys = new Set(), input = { dx: 0, dy: 0, shooting: false, aimX: 920, aimY: 350 };
   const images = {}, particles = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  $('waveDots').innerHTML = (extended ? Array(8).fill(0) : WAVES).map(() => '<i></i>').join('');
+  $('waveDots').innerHTML = (story ? Array(5).fill(0) : extended ? Array(8).fill(0) : WAVES).map(() => '<i></i>').join('');
   let ready = false, previousMode = '', last = 0, lastHud = 0, shake = 0, helpOpen = false, helpMode = 'menu';
   let soundOn = false, audio = null;
-  function clearInput() { keys.clear(); input.dx = input.dy = 0; input.shooting = false; }
+  let touch = null;
+  function clearInput() { keys.clear(); input.dx = input.dy = 0; input.shooting = false; touch?.reset(); }
   function movement() {
     input.dx = Number(keys.has('d') || keys.has('ArrowRight')) - Number(keys.has('a') || keys.has('ArrowLeft'));
     input.dy = Number(keys.has('s') || keys.has('ArrowDown')) - Number(keys.has('w') || keys.has('ArrowUp'));
@@ -35,6 +38,14 @@
       const a = Math.random() * Math.PI * 2, speed = 25 + Math.random() * 85;
       particles.push({ x, y, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, color, life: .3 + Math.random() * .25 });
     }
+  }
+  function whisper() {
+    if (!soundOn || !audio) return;
+    const buffer = audio.createBuffer(1, Math.ceil(audio.sampleRate * .5), audio.sampleRate), data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / data.length);
+    const source = audio.createBufferSource(), filter = audio.createBiquadFilter(), gain = audio.createGain();
+    source.buffer = buffer; filter.type = 'bandpass'; filter.frequency.value = 1300; filter.Q.value = 1.8; gain.gain.value = .012;
+    source.connect(filter); filter.connect(gain); gain.connect(audio.destination); source.start();
   }
   function handleEvents() {
     for (const event of game.events.splice(0)) {
@@ -89,9 +100,9 @@
       ctx.save(); ctx.strokeStyle = '#f29477'; ctx.lineWidth = 3; ctx.setLineDash([9, 8]);
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + enemy.rushX * 190, y + enemy.rushY * 190); ctx.stroke(); ctx.restore();
     }
-    const height = { crab: 39, jaguar: 43, shadow: 57, duende: 96, jaguarBoss: 112 }[type];
+    const height = { crab: 39, jaguar: 43, shadow: 57, duende: 96, jaguarBoss: 112, tommy: 45, miniLlorona: 54 }[type];
     const index = type === 'duende' ? 0 : type === 'jaguarBoss' ? enemy.hit > 0 ? 6 : enemy.casting ? 5 : enemy.rushTime > 0 ? 3 : 1 + Math.floor(t * 7) % 2 : enemy.hit > 0 ? 4 : enemy.casting ? 3 : Math.floor(t * (type === 'jaguar' ? 9 : 5)) % 3;
-    drawSprite(type, index, x, y + 13 + (type === 'shadow' ? Math.sin(t * 3 + enemy.id) * 3 : 0), height, ['jaguar', 'jaguarBoss'].includes(type) && game.player.x < x, 1, enemy.hit > 0);
+    drawSprite(type, index, x, y + 13 + (['shadow', 'miniLlorona'].includes(type) ? Math.sin(t * 3 + enemy.id) * 3 : 0), height, ['jaguar', 'jaguarBoss', 'tommy'].includes(type) && game.player.x < x, 1, enemy.hit > 0);
     if (!enemy.boss) {
       const w = enemy.r * 2 + 9;
       ctx.fillStyle = '#102416'; ctx.fillRect(x - w / 2 - 1, y - height - 2, w + 2, 6);
@@ -123,7 +134,7 @@
     ctx.save();
     if (shake > 0 && !reducedMotion) ctx.translate(Math.sin(t * 175) * 3, Math.cos(t * 150) * 3);
     ctx.imageSmoothingEnabled = false; ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
-    const drawables = (extended ? game.arenaId === 'canyon' ? [] : game.arena.obstacles : OBSTACLES).map(o => ({ y: o.y + o.h, draw: () => {
+    const drawables = (extended ? game.arenaId === 'jungle' ? game.arena.obstacles : [] : OBSTACLES).map(o => ({ y: o.y + o.h, draw: () => {
       shadow(o.x + o.w / 2, o.y + o.h - 15, o.w * .44, .17);
       const width = o.w + 16, height = width * 642 / 1059;
       ctx.drawImage(images['limestone-ruins.png'], 304, 180, 1059, 642, o.x - 8, o.y + o.h + 4 - height, width, height);
@@ -173,7 +184,7 @@
     $('healthMeter').setAttribute('aria-valuenow', Math.ceil(p.hp)); $('healthMeter').setAttribute('aria-valuemax', p.maxHp);
     $('levelLabel').textContent = `LEVEL ${game.level}`; $('xpLabel').textContent = `${game.xp} / ${game.xpNeeded}`;
     $('xpFill').style.width = `${game.xp / game.xpNeeded * 100}%`; $('xpMeter').setAttribute('aria-valuenow', game.xp); $('xpMeter').setAttribute('aria-valuemax', game.xpNeeded);
-    $('waveLabel').textContent = `WAVE ${Math.max(1, game.wave)} / ${extended ? game.totalWaves : WAVES.length}`;
+    $('waveLabel').textContent = `WAVE ${Math.max(1, game.wave)} / ${story ? 5 : extended ? game.totalWaves : WAVES.length}`;
     [...$('waveDots').children].forEach((dot, index) => { const current = extended ? Math.ceil(Math.max(1, game.wave) / 5) : Math.max(1, game.wave); dot.className = index + 1 < current ? 'done' : index + 1 === current ? 'active' : ''; });
     $('killsLabel').textContent = `${game.kills} spirit${game.kills === 1 ? '' : 's'} released`;
     $('dashLabel').textContent = p.dashCooldown > 0 ? `SPACE · DASH ${p.dashCooldown.toFixed(1)}s` : 'SPACE · DASH READY';
@@ -184,24 +195,30 @@
     if (boss) { $('bossFill').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`; $('bossName').textContent = boss.name.toUpperCase(); }
     $('waveBanner').hidden = game.bannerTime <= 0 || game.mode !== 'playing' || helpOpen;
     $('waveBanner').textContent = game.banner;
-    $('pauseButton').disabled = !['playing', 'paused'].includes(game.mode) || helpOpen;
+    $('pauseButton').disabled = !['playing', 'paused', 'cinematic'].includes(game.mode) || helpOpen;
     $('pauseButton').textContent = game.mode === 'paused' ? '▷' : 'Ⅱ';
     $('pauseButton').setAttribute('aria-label', game.mode === 'paused' ? 'Resume game' : 'Pause game');
   }
-  function start() { if (!ready) return; clearInput(); particles.length = 0; game.start(extended ? SurvivalUI.options() : undefined); previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus(); }
-  function togglePause() { clearInput(); if (game.mode === 'playing') game.pause(); else game.resume(); syncOverlay(); }
+  function start() { if (!ready) return; if (story) { StoryUI.restart(); return; } clearInput(); particles.length = 0; game.start(extended ? SurvivalUI.options() : undefined); previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus(); }
+  function startStory(store, resume) {
+    clearInput(); particles.length = 0; game.startStory(store, resume); previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus();
+  }
+  function togglePause() { clearInput(); if (story && StoryUI.active) { StoryUI.key({ key: 'Escape', preventDefault() {} }); return; } if (game.mode === 'playing') game.pause(); else game.resume(); syncOverlay(); }
   function choose(index) { if (game.choose(index)) { clearInput(); previousMode = ''; syncOverlay(); if (game.mode === 'playing') canvas.focus(); } }
   function syncOverlay() {
     if (helpOpen || previousMode === game.mode) return;
-    previousMode = game.mode; overlay.hidden = game.mode === 'playing'; document.body.classList.toggle('paused', game.mode !== 'playing'); updateHud();
+    previousMode = game.mode; overlay.hidden = ['playing', 'cinematic'].includes(game.mode); document.body.classList.toggle('paused', game.mode !== 'playing'); updateHud();
     if (game.mode === 'playing' || game.mode === 'menu') return;
+    if (story && game.mode === 'cinematic') return;
     clearInput();
+    if (story && StoryUI.overlay(game)) return;
     if (game.mode === 'upgrade') {
       content.innerHTML = `<h2 id="overlayTitle">Your spirit grows.</h2><p>Level ${game.level} · Choose one upgrade.<br>The jungle can wait.</p><div class="choices">${game.choices.map((choice, index) => `<button class="choice" data-choice="${index}"><span class="choice-icon" aria-hidden="true">${choice.icon}</span><span><strong>${choice.name}</strong><small>${choice.detail}</small></span><kbd>${index + 1}</kbd></button>`).join('')}</div><span class="small-note">Choose with your mouse or the numbered keys.</span>`;
       content.querySelectorAll('[data-choice]').forEach(button => button.onclick = () => choose(Number(button.dataset.choice)));
     } else if (game.mode === 'paused') {
       content.innerHTML = '<h2 id="overlayTitle">Take a breath.</h2><p>Your run is paused. Nothing moves until you return.</p><button id="resumeButton" class="primary">Back to the jungle</button><br><button id="restartButton" class="secondary">Restart run</button><span class="small-note">Esc to resume · Switching tabs pauses automatically</span>';
       $('resumeButton').onclick = togglePause; $('restartButton').onclick = start;
+      if (story) { const back = document.createElement('button'); back.className = 'secondary'; back.textContent = 'Story menu'; back.onclick = StoryUI.menu; content.append(back); }
     } else {
       const won = game.mode === 'victory', seconds = Math.floor(game.time);
       content.innerHTML = `<canvas class="joe-portrait menu-portrait" width="64" height="64" aria-hidden="true"></canvas><h2 id="overlayTitle">${won ? 'The jungle is yours.' : 'The spirits prevailed.'}</h2><p>${won ? (extended ? game.totalWaves + ' waves survived. Guardians defeated.<br>Joe Grind lives to tell the story.' : 'Ten waves survived. Both bosses released.<br>Joe Grind lives to tell the story.') : 'Every run makes you wiser.<br>Gather light, use cover, and keep moving.'}</p><div class="run-stats"><div><b>${game.kills}</b><span>SPIRITS RELEASED</span></div><div><b>${game.level}</b><span>LEVEL</span></div><div><b>${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}</b><span>RUN TIME</span></div></div><button id="restartButton" class="primary">Play again</button><span class="small-note">${won ? `VICTORY · ${extended ? game.totalWaves : WAVES.length} / ${extended ? game.totalWaves : WAVES.length} waves` : `Reached wave ${game.wave} / ${extended ? game.totalWaves : WAVES.length}`}</span>`;
@@ -227,6 +244,7 @@
     helpMode = game.mode; game.pause(); clearInput(); helpOpen = true; savedContent = [...content.childNodes]; overlay.hidden = false;
     content.innerHTML = '<h2 id="overlayTitle">Know the jungle.</h2><div class="instructions"><p><strong>Move</strong> with WASD or arrow keys. Aim with your mouse and hold left-click to fire your slingshot.</p><p><strong>Dash</strong> with Space. It grants brief protection and recharges in 1.65 seconds.</p><p><strong>Gather mint gems</strong> to level up. Combat pauses while you choose an upgrade.</p><p><strong>Use the ruins</strong> as cover. They block movement and shots. Purple rings warn you before enemies appear.</p><p><strong>Wave 5: Tata Duende.</strong> Defeat him and walk over his dropped staff. It grants +60% damage and 15% faster firing, keeping your perks. Collect it to continue to wave six.</p><p><strong>Wave 10: Corrupted Jaguar Spirit.</strong> Dodge its marked charge and spirit volleys to win.</p><p><strong>Rest between waves:</strong> recover 15 health and gather remaining gems. Esc pauses; switching tabs pauses too.</p></div><button id="closeHelpButton" class="primary">Got it</button><span class="small-note">Folklore-inspired fiction. Combat abilities are original game rules.</span>';
     if (extended) content.innerHTML = SurvivalUI.help;
+    if (story) content.innerHTML = '<h2 id="overlayTitle">The first trial.</h2><div class="instructions"><p><strong>Desktop:</strong> WASD / arrows move; mouse aims; hold left-click to fire. Space dashes; Escape pauses.</p><p><strong>Touch:</strong> left stick moves and faces Joe; right stick aims and fires while pushed. Dash and Pause have buttons. Walk over gems and the dropped Duende Staff.</p><p><strong>Prologue:</strong> tap the scene or Continue, or press Enter. Skip prologue / Space skips the whole opening. Escape pauses it. Replay is available in the Story menu.</p><p><strong>The Jungle Remembers:</strong> five waves, ending with Tata Duende. Purify his manifestation, release the remaining creatures and collect his staff to complete this trial.</p><p><strong>Progress:</strong> Continue restarts the saved wave with its starting build. The other three Story encounters are still in development. Production Survival unlocks after all four trials.</p></div><button id="closeHelpButton" class="primary">Got it</button>';
     $('closeHelpButton').onclick = closeHelp; $('closeHelpButton').focus(); updateHud();
   };
   canvas.addEventListener('pointermove', event => {
@@ -247,6 +265,7 @@
       const buttons = [...content.querySelectorAll('button:not(:disabled)')];
       if (buttons.length) { const i = buttons.indexOf(document.activeElement); buttons[(i + (event.shiftKey ? -1 : 1) + buttons.length) % buttons.length].focus(); event.preventDefault(); } return;
     }
+    if (story && !helpOpen && StoryUI.key(event)) return;
     if (key === 'Escape') { event.preventDefault(); if (!event.repeat) { if (helpOpen) closeHelp(); else togglePause(); } return; }
     if (helpOpen) return;
     if (game.mode === 'upgrade' && /^[1234]$/.test(key) && !event.repeat) { event.preventDefault(); choose(Number(key) - 1); return; }
@@ -256,22 +275,30 @@
     keys.add(key); movement(); if (key === ' ' && !event.repeat) game.dash(input);
   });
   window.addEventListener('keyup', event => { keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key); movement(); });
-  function loseFocus() { clearInput(); if (game.pause()) syncOverlay(); }
+  function loseFocus() { clearInput(); if (story) StoryUI.loseFocus(); if (game.pause()) syncOverlay(); }
   window.addEventListener('blur', loseFocus); document.addEventListener('visibilitychange', () => { if (document.hidden) loseFocus(); last = performance.now(); });
   function frame(now) {
     const dt = last ? Math.min((now - last) / 1000, .05) : 0; last = now;
     if (ready) {
-      game.update(dt, input); handleEvents(); syncOverlay();
+      touch?.update(); game.update(dt, input); handleEvents(); syncOverlay();
+      if (story) StoryUI.update(dt, reducedMotion);
       if (game.mode === 'playing') for (const p of particles) { p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
       for (let i = particles.length - 1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i, 1);
       shake = Math.max(0, shake - dt); if (now - lastHud > 80) { updateHud(); lastHud = now; }
     }
     render(game.mode === 'menu' ? now / 1000 : game.time); requestAnimationFrame(frame);
   }
-  const files = [...new Set([...Object.values(ARENA_SPRITES).map(a => a.file), 'jungle-arena.png', 'limestone-ruins.png', ...(extended ? ['canyon-arena.png', 'weapon-sheet.png'] : [])])];
+  const files = [...new Set([...Object.entries(ARENA_SPRITES).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).map(([,a]) => a.file), 'jungle-arena.png', 'limestone-ruins.png',
+    ...(extended ? ['canyon-arena.png', 'underworld-arena.png', 'coast-arena.png', 'weapon-sheet.png', ...Object.values(SurvivalUI.powerArt).map(a => a.file)] : []),
+    ...(story ? StoryCore.SCENES.filter(s => s.id !== 'arena').map(s => s.art) : [])])];
   Promise.all(files.map(file => new Promise((resolve, reject) => {
     const image = new Image(); image.onload = resolve; image.onerror = () => reject(new Error(`Missing artwork: assets/${file}`)); image.src = `assets/${file}`; images[file] = image;
-  }))).then(() => { ready = true; startButton.disabled = false; startButton.textContent = 'Enter the arena'; updateHud(); paintPortraits(); })
+  }))).then(() => {
+    ready = true; startButton.disabled = false; startButton.textContent = 'Enter the arena';
+    if (window.TouchControls) touch = TouchControls.attach({ game, input, canvas, togglePause });
+    if (story) StoryUI.init({ game, clearInput, startStory, tone, whisper, images });
+    updateHud(); paintPortraits();
+  })
     .catch(error => { startButton.textContent = 'Artwork could not load'; content.querySelector('p').textContent = `${error.message}. Keep the assets folder beside index.html.`; console.error(error); });
   requestAnimationFrame(frame);
 })();

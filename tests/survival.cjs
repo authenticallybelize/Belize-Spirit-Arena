@@ -17,9 +17,9 @@ for (const w of WEAPONS) {
   for (let i = 0; i < 180; i++) g.update(1 / 120);
   assert(e.hp < 1000, w.name + ' did not damage target');
 }
-for (const arena of ['canyon', 'jungle']) {
+for (const arena of ['canyon', 'jungle', 'underworld', 'coast']) {
   const g = playing('slingshot', arena);
-  for (const type of ['crab', 'jaguar', 'shadow', 'duende', 'jaguarBoss']) {
+  for (const type of ['crab', 'jaguar', 'shadow', 'duende', 'jaguarBoss', 'tommy', 'miniLlorona']) {
     assert(g.spawn(type)); const e = g.enemies.at(-1);
     assert(Math.hypot(e.x - g.player.x, e.y - g.player.y) > 230);
     assert(!g.arena.obstacles.some(o => circleRect(e.x, e.y, e.r, o)));
@@ -83,4 +83,15 @@ progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equa
 progression.level = 40; progression.xp = 99999; assert(!progression.levelUp());
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
 for (const w of WEAPONS.filter(w => w.art)) { const [x, y, ww, hh] = w.art; assert(x >= 0 && y >= 0 && x + ww <= width && y + hh <= height); }
-console.log('PASS: 12 weapons, both arenas, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 40-wave progression, XP cap and restart.');
+console.log('PASS: 12 weapons, all four arenas, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 40-wave progression, XP cap and restart.');
+
+const snake = playing(); snake.spawn('tommy'); const striker = snake.enemies.at(-1);
+Object.assign(striker, { x: 650, y: 575, warmup: 0, rushTimer: 0, routeTimer: 99 });
+snake.enemyTick(striker, 1 / 120); assert(striker.rushWindup > 0); assert.equal(striker.rushTime, 0);
+for (let i = 0; i < 62; i++) snake.enemyTick(striker, 1 / 120);
+assert(striker.rushTime > 0, 'Tommy strike failed after warning');
+const spirit = playing(); spirit.spawn('miniLlorona'); const echo = spirit.enemies.at(-1);
+Object.assign(echo, { x: 710, y: 575, warmup: 0, shotTimer: 0, routeTimer: 99 });
+spirit.enemyTick(echo, 1 / 120); assert.equal(spirit.bullets.filter(b => b.hostile).length, 3);
+assert.equal(echo.boss, undefined, 'Mini Llorona incorrectly counts as a full boss');
+console.log('PASS: Tommy warned strike and Mini Llorona ranged fan; neither changes Story enemy definitions.');
