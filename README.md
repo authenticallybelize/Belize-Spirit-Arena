@@ -38,7 +38,9 @@ Remaining limits: physical iOS/Android and real Safari are untested; generated u
 
 Changed files: game.js (animation/rendering/terrain/fullscreen button), viewport.js (visible extent), survival.js (140 waves/spawn/scaling/cap), survival-ui.js/survival.html (labels/Endurance), touch.js/touch.css (desktop viewport/fullscreen reuse), index.html/story.html (version/motion script), assets/sprites.js (original gait/grips), assets/joe-motion.js (generated geometry), two ready Crystal PNGs plus manifests, tools/export-assets.py/tools/build-joe-motion.py, three existing test files, new tests/survival-endurance.cjs, package.json and release/asset notes.
 
-Rollback: backup-before-0.5.0 preserves d8a9dcb (0.4.2). Full pre-edit archive: Backups/Build_before_0.5.0_20261014_074625.zip. Original Legends of Belize and its saves remain untouched. Publishing and remote verification are recorded below once completed.
+Rollback: backup-before-0.5.0 preserves d8a9dcb (0.4.2). Full pre-edit archive: Backups/Build_before_0.5.0_20261014_074625.zip. Original Legends of Belize and its saves remain untouched. 
+
+Published and verified 2026-10-14: implementation 5635952 is on GitHub features and deployed at https://bsa.authenticallybelize.com/. Live Edge checks passed desktop and mobile/touch/tablet regression, all supplied maps, Story progress preservation, the scrolling 2400 world, all twelve carried weapons/eight firing directions and wave-100 arrival cadence, with no application errors. Live desktop stress began with 96 enemies/350 shots and measured 16.7ms median / 16.8ms p95 over 90 frames. Existing Hostinger initial browser challenges produced 403 responses and an initial favicon 404; those transport errors remain recorded separately and were not discarded as game errors. This is Edge emulation, not physical iOS/Android or Safari-engine testing. Static package: Backups/Build_20261014_135849.zip (285 files). Local and live evidence: Backups/QA_0.5.0 and its Live subfolder. Backup tag backup-before-0.5.0 was also pushed. Main/drafting/next-launch were not moved.
 
 ## Mobile controls and fullscreen — 0.4.2
 
