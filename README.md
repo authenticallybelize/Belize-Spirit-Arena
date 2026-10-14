@@ -4,7 +4,7 @@ A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No 
 
 ## Combat, mobile and asset audit — 0.4.0
 
-This release candidate repairs the audited weapon/input problems and expands all four Survival maps to a **1024 × 1024 playable box**, inside the existing 1200 × 1200 logical world. It is tested locally; GitHub publication and the hosted release are pending verification. Earlier sections below record their own versions and are retained as history.
+This release repairs the audited weapon/input problems and expands all four Survival maps to a **1024 × 1024 playable box**, inside the existing 1200 × 1200 logical world. It is published on GitHub features and deployed at https://bsa.authenticallybelize.com/. Both local and hosted browser interaction checks passed. Earlier sections below record their own versions and are retained as history.
 
 - Mouse and mobile stick attacks share a hand/muzzle origin. Aim is calculated after movement; Joe faces the active aim and the isolated held weapon rotates to it. Projectile artwork preserves its shape, orientation and collision center. Claw uses the same origin for its aimed arc. A 32-unit north clearance keeps Joe's muzzle inside the boundary; his collision radius remains 13.
 - Landscape gameplay fills the available viewport with corner sticks, centered Dash / Pick Up / Pause, a compact fixed HP/XP/level HUD and safe-area-aware settings. The camera preserves world proportions, follows smoothly outside a central dead zone, and translates mouse positions into world coordinates. Survival has **Show entire arena** in setup and pause; its static view uses letterboxing.
@@ -146,3 +146,11 @@ The official repository is https://github.com/authenticallybelize/Belize-Spirit-
 All four branches begin with the same 0.2.0 prototype. Merge reviewed changes between branches; release from `main` after validation. Branch names do not enforce protections or deploy the game automatically.
 
 From any local checkout, run `npm test` to check game logic and `npm start` to launch the local server. Open `http://127.0.0.1:4180/survival.html` for Canyon and Survival, or `http://127.0.0.1:4180/` for the classic game.
+
+## Published release verification — 2026-10-14
+
+Implementation commit: ba2723e on GitHub features. The backup-before-0.4.0 tag is pushed and resolves to e735fa9. Public launch: https://bsa.authenticallybelize.com/survival.html?v=0.4.0. Story root: https://bsa.authenticallybelize.com/?v=0.4.0.
+
+Hostinger accepted and extracted Build_20261014_000608.zip (168 static files; 57,688,425 bytes). Server/CDN cache was cleared. The public-site interaction suite passed on installed Edge/Playwright, including Safari-user-agent touch delivery, twelve weapon representations, movement/aim, dual touch, mobile buttons, upgrades, powers, restart, and Story prologue skip. There were zero application console/page errors. Hostinger's existing browser-verification page briefly returns HTTP 403 before the game loads; it completed normally and is recorded separately from game errors. Security settings were unchanged.
+
+Evidence is outside the vault at C:/Users/holis/.codex/visualizations/2026/10/13/01a135d1-9a29-7451-b9cd-9e448290d45b/qa-0.4.0-live-results.json, qa-0.4.0-results.json and qa-stress-0.4.0-results.json, with screenshot files alongside. These are emulated layouts and real hosted image delivery, not physical iPhone Safari or a full human forty-wave run.
