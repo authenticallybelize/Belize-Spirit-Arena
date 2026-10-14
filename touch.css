@@ -54,3 +54,13 @@
  .touch-enabled.in-game .touch-controls{visibility:hidden;pointer-events:none}
  .touch-enabled .touch-controls{gap:6px;padding:8px}.touch-enabled .stick{width:min(var(--stick-size,112px),28vw);height:min(var(--stick-size,112px),28vw)}
 }
+/* Desktop battle fills the window; camera cropping keeps artwork proportional. */
+#fullscreenButton{font-size:11px;min-width:100px;margin:0;padding:8px 12px}.touch-enabled #fullscreenButton{display:none}
+.in-game:not(.touch-enabled){overflow:hidden;overscroll-behavior:none}
+.in-game:not(.touch-enabled) .shell{max-width:none;padding:0}.in-game:not(.touch-enabled) .intro,.in-game:not(.touch-enabled) footer,.in-game:not(.touch-enabled) .expedition,.in-game:not(.touch-enabled) .controls{display:none!important}
+.in-game:not(.touch-enabled) .survival-layout{display:block;margin:0;max-width:none}.in-game:not(.touch-enabled) .game-frame{position:fixed;inset:0;width:100vw!important;height:100dvh!important;border:0;min-width:0;max-width:none;box-shadow:none;border-radius:0}
+.in-game:not(.touch-enabled) .arena-wrap{position:absolute;inset:0;aspect-ratio:auto!important}.in-game:not(.touch-enabled) #arena{width:100%;height:100%}
+.in-game:not(.touch-enabled) .masthead{height:0;border:0}.in-game:not(.touch-enabled) .brand,.in-game:not(.touch-enabled) #helpButton{display:none}
+.in-game:not(.touch-enabled) .masthead nav{position:fixed;z-index:8;top:12px;right:16px}.in-game:not(.touch-enabled) .icon-button{background:#081e16d9}
+.in-game:not(.touch-enabled) .hud{position:absolute;z-index:3;top:12px;left:16px;right:235px;width:auto;height:66px;padding:8px 14px;display:flex;gap:18px;background:#081a15bf;border:1px solid #91a87877;border-radius:8px;pointer-events:none}
+.in-game:not(.touch-enabled) .wave>div{display:none}.in-game:not(.touch-enabled) .boss-hud{top:90px;left:33%;width:34%}.in-game:not(.touch-enabled) .wave-banner{top:95px}.in-game:not(.touch-enabled) .overlay{z-index:10}.in-game:not(.touch-enabled) .dialog{max-width:600px;max-height:90dvh}.in-game:not(.touch-enabled) .arena-status{bottom:20px;left:24px;right:24px}

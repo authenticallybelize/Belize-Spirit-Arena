@@ -4,12 +4,12 @@
   const extended = !!window.SurvivalCore;
   const story = !!window.StoryCore;
   const { Game } = story ? StoryCore : extended ? SurvivalCore : ArenaCore;
-  const { W, H } = extended ? SurvivalCore : ArenaCore;
+  let { W, H } = extended ? SurvivalCore : ArenaCore;
   const { OBSTACLES, WAVES } = ArenaCore;
   const game = new Game(), canvas = document.getElementById('arena'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id), overlay = $('overlay'), content = $('dialogContent');
   const startButton = $('startButton');
-  const joeHeight = W * ArenaArt.playerHeightRatio;
+  const joeHeight = 1200 * ArenaArt.playerHeightRatio;
   let view = { x: 0, y: 0, w: W, h: H }, mouse = null, mousePointer = null;
   function sizeCanvas() {
     const rect = canvas.getBoundingClientRect(), width = rect.width || W, height = rect.height || H;
@@ -22,7 +22,7 @@
   if (extended || story) window.spiritArena = game;
   const keys = new Set(), input = { dx: 0, dy: 0, shooting: false, aimX: 920, aimY: 350 };
   const images = {}, particles = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  $('waveDots').innerHTML = (story ? Array(5).fill(0) : extended ? Array(8).fill(0) : WAVES).map(() => '<i></i>').join('');
+  $('waveDots').innerHTML = (story ? Array(5).fill(0) : extended ? Array(28).fill(0) : WAVES).map(() => '<i></i>').join('');
   let ready = false, previousMode = '', last = 0, lastHud = 0, shake = 0, helpOpen = false, helpMode = 'menu';
   let soundOn = false, audio = null;
   let touch = null;
@@ -113,29 +113,94 @@
       ctx.fillStyle = '#e86b52'; ctx.fillRect(x - w / 2, y - height - 1, w * Math.max(0, enemy.hp / enemy.maxHp), 4);
     }
   }
+  const legFrames=new Map(), raisedFrames=new Map(); let raisedWeapon='';
+  function polygons(paint, shapes) {
+    paint.beginPath();
+    for(const polygon of shapes) { polygon.forEach(([x,y],i)=>i ? paint.lineTo(x,y) : paint.moveTo(x,y)); paint.closePath(); }
+  }
+  function legs(frame) {
+    if(!legFrames.has(frame)) {
+      const art=ARENA_READY.sprites.joe, image=images[art.frames[frame]], layer=document.createElement('canvas');
+      layer.width=layer.height=224; layer.nativeFrame=frame;
+      const paint=layer.getContext('2d'); paint.scale(2,2); polygons(paint,ARENA_JOE_MOTION.nativeLegs[frame].polygons); paint.clip('evenodd'); paint.drawImage(image,0,0,112,112);
+      legFrames.set(frame,layer);
+    }
+    return legFrames.get(frame);
+  }
+  function raised(weapon,index) {
+    if(raisedWeapon!==weapon) { raisedFrames.clear(); raisedWeapon=weapon; }
+    if(!raisedFrames.has(index)) {
+      const image=images[ARENA_READY.holding[weapon].frames[index]], layer=document.createElement('canvas'); layer.width=layer.height=320;
+      const paint=layer.getContext('2d'); paint.scale(2,2); paint.drawImage(image,0,0,160,160); paint.globalCompositeOperation='destination-out';
+      polygons(paint,ARENA_JOE_MOTION.holding[weapon][index].polygons); paint.fill('evenodd'); raisedFrames.set(index,layer);
+    }
+    return raisedFrames.get(index);
+  }
   function drawJoe(t) {
-    const p = game.player;
+    const p = game.player, firing = input.shooting && game.mode === 'playing';
+    const direction = firing || !p.walking ? p.angle : Math.atan2(input.dy,input.dx);
+    const frame = ArenaArt.nativeJoeFrame(direction, p.walking, t), native = ARENA_SPRITES.joe;
+    const rect = native.frames[frame], scale = joeHeight / rect[3], anchor = (native.anchors[frame] - rect[0]) * scale;
+    const row = Math.floor(frame / 5), alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
+    const art = ARENA_READY.holding[p.weapon], held = ArenaArt.holdingPose(art, p.angle, joeHeight);
     shadow(p.x, p.y, p.r);
     ctx.strokeStyle = p.dashTime > 0 ? '#b8ffe3' : '#a8e7c28c'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.ellipse(p.x, p.y + 4, 22, 11, 0, 0, Math.PI * 2); ctx.stroke();
-    const firing = input.shooting && game.mode === 'playing';
-    const direction = input.aiming || firing || !p.walking ? p.angle : Math.atan2(input.dy, input.dx);
-    const art = ARENA_READY.holding[p.weapon], held = ArenaArt.holdingPose(art, direction, joeHeight);
-    const alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
+    function body() { ctx.drawImage(images[native.file], ...rect, -anchor, -joeHeight, rect[2] * scale, joeHeight); }
     function pose(x, y, opacity) {
-      ctx.save(); ctx.globalAlpha = opacity; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-      ctx.shadowColor = '#d8ffed'; ctx.shadowBlur = 2;
-      ctx.translate(x, y + 13);
-      ctx.rotate(held.turn);
-      const step = !reducedMotion && p.walking ? 1 + Math.sin(t * 18) * .01 : 1;
-      ctx.scale(held.scale, held.scale * step);
-      ctx.drawImage(images[held.file], -held.pivot[0], -held.pivot[1], ...art.frameSize); ctx.restore();
+      ctx.save(); ctx.globalAlpha = opacity; ctx.translate(x, y + 13);
+      if (!firing) {
+        body();
+        const [hx,hy,rx,ry,rw,rh] = ArenaArt.carryHands[frame], weapon = ARENA_READY.weapons[p.weapon], grip = ArenaArt.carryGrips[p.weapon];
+        const size = ['spear','staff','crystal'].includes(p.weapon) ? 68 : p.weapon === 'claw' ? 34 : 48;
+        const carryAngle = ['spear','staff','crystal','cacao','feather','obsidian'].includes(p.weapon) ? -Math.PI / 2 : row === 2 ? 2 : 1.14;
+        ctx.save(); ctx.translate((hx-rect[0])*scale-anchor,(hy-rect[1])*scale-joeHeight); ctx.rotate(carryAngle-weapon.heldAngle);
+        ctx.drawImage(images[weapon.held],-grip[0]*size/64,-grip[1]*size/64,size,size); ctx.restore();
+        // The original moving fist occludes the handle at its measured grip keyframe.
+        ctx.drawImage(images[native.file],rx,ry,rw,rh,(rx-rect[0])*scale-anchor,(ry-rect[1])*scale-joeHeight,rw*scale,rh*scale);
+      } else {
+        const base=ARENA_READY.sprites.joe, baseScale=joeHeight/112, pivot=base.pivots[frame], nativeWaist=ARENA_JOE_MOTION.nativeLegs[frame].waist;
+        const waist=[(nativeWaist[0]-pivot[0])*baseScale,(nativeWaist[1]-pivot[1])*baseScale];
+        ctx.drawImage(legs(frame),-pivot[0]*baseScale,-pivot[1]*baseScale,112*baseScale,112*baseScale);
+        const aimRow=Math.floor(ArenaArt.nativeJoeFrame(p.angle,false,t)/5);
+        if(p.weapon==='slingshot' && (aimRow===1 || aimRow===2)) {
+          const shotFrame=5+(p.fireCooldown>p.interval-.07 ? 4 : 3), crop=native.frames[shotFrame], shotScale=joeHeight/crop[3];
+          const shotWaist=ARENA_JOE_MOTION.nativeWaists[shotFrame];
+          ctx.save(); ctx.translate(...waist); if(aimRow===2)ctx.scale(-1,1); ctx.rotate(aimRow===2 ? Math.PI-p.angle : p.angle);
+          ctx.beginPath(); ctx.rect(-joeHeight*2,-joeHeight*2,joeHeight*4,joeHeight*2+2); ctx.clip();
+          ctx.drawImage(images[native.file],...crop,-(shotWaist[0]-crop[0])*shotScale,-(shotWaist[1]-crop[1])*shotScale,crop[2]*shotScale,joeHeight); ctx.restore();
+        } else {
+          const joint=ARENA_JOE_MOTION.holding[p.weapon][held.index].waist;
+          // Overlap the shirt hem with the native belt so the cropped layers stay connected.
+          ctx.save(); ctx.translate(waist[0],waist[1]+4); ctx.rotate(held.turn); ctx.scale(held.scale,held.scale);
+          ctx.drawImage(raised(p.weapon,held.index),-joint[0],-joint[1],...art.frameSize); ctx.restore();
+        }
+      }
+      ctx.restore();
     }
-    if (p.dashTime > 0) for (let i = 3; i > 0; i--) pose(p.x - p.dashX * i * 15, p.y - p.dashY * i * 15, .1);
-    const recoil = !reducedMotion && firing && p.fireCooldown > p.interval - .06 ? 1.5 : 0;
-    pose(p.x - Math.cos(p.angle) * recoil, p.y - Math.sin(p.angle) * recoil, alpha);
+    if (p.dashTime > 0) for (let i = 3; i > 0; i--) pose(p.x-p.dashX*i*15,p.y-p.dashY*i*15,.1);
+    pose(p.x,p.y,alpha);
+  }
+  let groundPattern = null;
+  function drawOpenGround() {
+    const image = images[game.arena.image], ratio = image.naturalWidth / 1200;
+    if (!groundPattern) {
+      const tile = document.createElement('canvas'); tile.width = tile.height = 1500;
+      const paint = tile.getContext('2d');
+      for (let y=0;y<2;y++) for (let x=0;x<2;x++) {
+        paint.save(); paint.translate(x ? 1500 : 0,y ? 1500 : 0); paint.scale(x ? -1 : 1,y ? -1 : 1);
+        paint.drawImage(image,225*ratio,225*ratio,750*ratio,750*ratio,0,0,750,750); paint.restore();
+      }
+      groundPattern = ctx.createPattern(tile,'repeat');
+    }
+    ctx.fillStyle=groundPattern; ctx.fillRect(0,0,W,H);
+    const edge=(sx,sy,w,h,x,y)=>ctx.drawImage(image,sx*ratio,sy*ratio,w*ratio,h*ratio,x,y,w,h);
+    for (let x=88;x<W-88;x+=1024) { const width=Math.min(1024,W-88-x); edge(88,0,width,88,x,0); edge(88,1112,width,88,x,H-88); }
+    for (let y=88;y<H-88;y+=1024) { const height=Math.min(1024,H-88-y); edge(0,88,88,height,0,y); edge(1112,88,88,height,W-88,y); }
+    for (const x of [0,W-88]) for (const y of [0,H-88]) edge(x ? 1112 : 0,y ? 1112 : 0,88,88,x,y);
   }
   function render(t) {
+    if (extended) { W=game.arena.width; H=game.arena.height; }
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#081811'; ctx.fillRect(0, 0, canvas.width, canvas.height); if (!ready) return;
     const zoom = canvas.width / view.w;
@@ -143,7 +208,7 @@
     ctx.save();
     if (shake > 0 && !reducedMotion) ctx.translate(Math.sin(t * 175) * 3, Math.cos(t * 150) * 3);
     ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
+    if (extended && game.arenaId === 'open') drawOpenGround(); else ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
     if (extended && game.arenaId === 'open') {
       const b = game.arena.bounds;
       ctx.save(); ctx.strokeStyle = '#c2cf91aa'; ctx.lineWidth = 5; ctx.setLineDash([14, 10]); ctx.strokeRect(b.x, b.y, b.w, b.h); ctx.restore();
@@ -270,6 +335,11 @@
     paintPortraits(); content.querySelector('button')?.focus();
   }
   startButton.onclick = start; $('pauseButton').onclick = togglePause;
+  const fullscreenButton=document.createElement('button'); fullscreenButton.id='fullscreenButton'; fullscreenButton.className='secondary'; fullscreenButton.textContent='Full screen';
+  fullscreenButton.onclick=()=>document.fullscreenElement ? document.exitFullscreen() : touch?.enterGameplay();
+  document.querySelector('.masthead nav').prepend(fullscreenButton);
+  document.addEventListener('fullscreenchange',()=>{fullscreenButton.textContent=document.fullscreenElement ? 'Window view' : 'Full screen';});
+
   $('soundButton').onclick = () => {
     soundOn = !soundOn; $('soundButton').setAttribute('aria-pressed', String(soundOn));
     $('soundButton').setAttribute('aria-label', soundOn ? 'Mute sound' : 'Enable sound'); $('soundButton').title = soundOn ? 'Sound on' : 'Sound off';
@@ -328,7 +398,9 @@
     const dt = last ? Math.min((now - last) / 1000, .05) : 0; last = now;
     if (ready) {
       const rect = canvas.getBoundingClientRect();
-      view = ArenaViewport.follow(game.player, { w: W, h: H }, rect.width / rect.height, extended && !!$('entireArena')?.checked, view, game.mode === 'playing' ? dt : 0);
+      if (extended) { W=game.arena.width; H=game.arena.height; }
+      view = ArenaViewport.follow(game.player, { w: W, h: H }, rect.width / rect.height, extended && !!$('entireArena')?.checked, view, game.mode === 'playing' ? dt : 0, extended && game.arenaId === 'open' ? 1200 : 0);
+      if (extended) game.view = view;
       if (mouse && !input.relativeAim) { const target = ArenaViewport.point(view, rect, mouse.x, mouse.y); input.aimX = target.x; input.aimY = target.y; }
       touch?.update(); game.update(dt, input); handleEvents(); syncOverlay();
       if (story) StoryUI.update(dt, reducedMotion);
@@ -340,10 +412,10 @@
     requestAnimationFrame(frame);
   }
   const weaponIds = extended ? Object.keys(ARENA_READY.weapons) : ['slingshot', 'staff'];
-  const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
+  const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.held, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
   const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
-  const files = [...new Set([...spriteFiles, ...holdingFiles, extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+  const files = [...new Set([...spriteFiles, ...holdingFiles, ...Object.keys(ArenaArt.carryHands).map(i=>ARENA_READY.sprites.joe.frames[i]), 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
     ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
@@ -354,7 +426,7 @@
         try { if (image.decode) await image.decode(); images[file] = ArenaArt.sourceGrid(image, file); clearTimeout(timeout); resolve(); }
         catch { fail(); }
       };
-      image.onerror = fail; image.src = `assets/${file}`;
+      image.onerror = fail; image.src = `assets/${file}?v=0.5.0`;
     }).catch(error => { loads.delete(file); throw error; }));
     return loads.get(file);
   }

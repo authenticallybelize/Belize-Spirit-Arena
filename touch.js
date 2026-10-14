@@ -52,13 +52,12 @@
     dialog.addEventListener('input', () => { prefs = settings({ size: Number($('touchSize').value), opacity: Number($('touchOpacity').value), deadZone: Number($('touchDeadZone').value), dashPosition: $('dashPosition').value, leftHanded: $('leftHanded').checked }); save(); });
     $('touchDefaults').onclick = () => { prefs = settings(); save(); };
     async function enterGameplay() {
-      if (!mobile) return;
       try {
         if (!document.fullscreenElement) {
           if (!document.documentElement.requestFullscreen) { $('touchSaveStatus').textContent = 'Browser fullscreen is unavailable; gameplay still fills the viewport.'; return; }
           await document.documentElement.requestFullscreen();
         }
-        try { await screen.orientation?.lock?.('landscape'); } catch { /* The rotate prompt covers browsers that do not allow orientation locks. */ }
+        try { if (mobile) await screen.orientation?.lock?.('landscape'); } catch { /* The rotate prompt covers browsers that do not allow orientation locks. */ }
       } catch { $('touchSaveStatus').textContent = 'Fullscreen was unavailable. Gameplay still fills the viewport.'; }
     }
     $('touchFullscreen').onclick = enterGameplay;

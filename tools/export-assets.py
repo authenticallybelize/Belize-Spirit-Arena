@@ -210,6 +210,10 @@ for spec in json.loads((BUILD / "tools" / "holding-source-map.json").read_text()
         # Overlapping extraction regions preserve long weapon tips; detached neighboring pixels are excluded.
         left, top = max(0,round((col-.25)*width/4)), max(0,round((row-.2)*height/2))
         right, bottom = min(width,round((col+1.25)*width/4)), min(height,round((row+1.2)*height/2))
+        if spec["id"] == "crystal" and index == 2:
+            bottom = min(bottom, 410)
+        if spec["id"] == "crystal" and index == 6:
+            top = max(top, 411)
         actor = sheet.crop((left,top,right,bottom))
         connected = largest_component(actor.getchannel("A").point(lambda a: 255 if a > 32 else 0)).filter(ImageFilter.MaxFilter(9))
         alpha = actor.getchannel("A")
@@ -222,6 +226,7 @@ for spec in json.loads((BUILD / "tools" / "holding-source-map.json").read_text()
         pixels, aw, ah = actor.load(), actor.width, actor.height
         shoes = [(x,y) for y in range(ah//2,ah) for x in range(aw)
                  if pixels[x,y][3] > 220 and pixels[x,y][0] >= 160 and pixels[x,y][1] >= 140 and pixels[x,y][2] >= 105
+                 and pixels[x,y][0]+8 >= pixels[x,y][1] and pixels[x,y][1]+4 >= pixels[x,y][2]
                  and max(pixels[x,y][:3])-min(pixels[x,y][:3]) < 65]
         assert shoes, (spec["id"], index, "No shoe anchor")
         foot_y = min(ah, max(y for x,y in shoes)+6)

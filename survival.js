@@ -7,20 +7,20 @@
     tommy: { name: 'Tommy Goff', hp: 52, speed: 90, r: 16, damage: 13, xp: 9 },
     miniLlorona: { name: 'Mini Llorona', hp: 58, speed: 68, r: 16, damage: 10, xp: 12 }
   };
-  const W = 1200, H = 1200, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const W = 2400, H = 2400, SURVIVAL_WAVES = 140, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
-    open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', bounds: { x: 88, y: 88, w: 1024, h: 1024 }, obstacles: [], spawn: { x: 600, y: 600 } },
-    underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
+    open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', width: W, height: H, bounds: { x: 88, y: 88, w: 2224, h: 2224 }, obstacles: [], spawn: { x: 1200, y: 1200 } },
+    underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', width: 1200, height: 1200, bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 518, y: 252, w: 85, h: 48 }, { x: 333, y: 345, w: 75, h: 70 }, { x: 808, y: 337, w: 95, h: 65 }, { x: 480, y: 521, w: 93, h: 65 }, { x: 713, y: 648, w: 87, h: 65 }, { x: 210, y: 677, w: 77, h: 56 }],
       spawn: { x: 610, y: 575 } },
-    coast: { name: 'Spirit Coast · Hopkins', image: 'coast-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
+    coast: { name: 'Spirit Coast · Hopkins', image: 'coast-arena.png', width: 1200, height: 1200, bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 540, y: 268, w: 100, h: 60 }, { x: 772, y: 392, w: 106, h: 57 }, { x: 623, y: 645, w: 96, h: 65 }, { x: 337, y: 580, w: 69, h: 61 }],
       spawn: { x: 610, y: 575 } },
-    canyon: { name: 'Ancient Forest Canyon', image: 'canyon-arena.png', bounds: { x: 180, y: 145, w: 835, h: 685 },
+    canyon: { name: 'Ancient Forest Canyon', image: 'canyon-arena.png', width: 1200, height: 1200, bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 524, y: 237, w: 78, h: 49 }, { x: 358, y: 311, w: 81, h: 82 }, { x: 451, y: 461, w: 122, h: 75 }, { x: 695, y: 611, w: 111, h: 73 }, { x: 854, y: 459, w: 101, h: 73 }],
       spawn: { x: 610, y: 575 } },
-    jungle: { name: 'Jungle Ruins', image: 'jungle-arena.png', bounds: { x: 135, y: 232, w: 930, h: 728 },
+    jungle: { name: 'Jungle Ruins', image: 'jungle-arena.png', width: 1200, height: 1200, bounds: { x: 135, y: 232, w: 930, h: 728 },
       obstacles: Base.OBSTACLES.map(o => ({ ...o, y: o.y * 1.5, h: o.h * 1.5 })), spawn: { x: 600, y: 645 } }
   };
   const WEAPONS = [
@@ -125,26 +125,29 @@
   class Game extends Base.Game {
     reset() {
       super.reset();
-      this.arenaId = this.arenaId || 'open'; this.arena = ARENAS[this.arenaId]; this.totalWaves = this.totalWaves || 40;
+      this.arenaId = this.arenaId || 'open'; this.arena = ARENAS[this.arenaId]; this.totalWaves = this.totalWaves || SURVIVAL_WAVES;
       Object.assign(this.player, this.arena.spawn); this.player.weapon = 'slingshot';
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.attackCount = 0;
       this.navigation = {};
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
+      this.spawnInterval = .882; this.enemyLimit = 32; this.view = null;
       this.refreshStats();
     }
     start(options = {}) {
       this.arenaId = Object.hasOwn(ARENAS, options.arena) ? options.arena : this.arenaId || 'open';
-      this.totalWaves = options.mode === 'run' ? 10 : options.mode === 'survival' ? 40 : this.totalWaves || 40;
+      this.totalWaves = options.mode === 'run' ? 10 : options.mode === 'survival' ? SURVIVAL_WAVES : this.totalWaves || SURVIVAL_WAVES;
       this.reset(); this.player.weapon = weapon(options.weapon).id; this.refreshStats(); this.mode = 'playing'; this.beginWave();
     }
     rank(id) { return this.ranks[id] || 0; }
     active(id) { return (this.powers[id] || 0) > 0; }
+    powerPool() { return Object.keys(POWERS).filter(id => this.level < 40 || id !== 'doubleXP' && id !== 'bonusXP'); }
     refreshStats() {
       const p = this.player, w = weapon(p.weapon), enhancement = 1 + .15 * (this.weaponLevels[w.id] - 1);
+      this.enduranceBonus = this.totalWaves > 10 ? clamp(this.wave - 40 + (this.finishedWave ? 1 : 0), 0, 100) * .01 : 0;
       const boss = this.enemies.some(e => e.boss && !e.dead), low = p.hp < p.maxHp * .35 && this.rank('second');
-      p.damage = w.damage * enhancement * 1.25 ** this.rank('damage') * (1 + .05 * this.trophyBosses) *
+      p.damage = w.damage * enhancement * 1.25 ** this.rank('damage') * (1 + .05 * this.trophyBosses) * (1 + this.enduranceBonus) *
         (this.commitWeapon ? 1.4 : 1) * (boss && this.rank('courage') ? 1.1 : 1) * (low ? 1.1 : 1) *
         (this.active('heavy') ? 2 : 1) * (this.active('evolution') ? 1.5 : 1) * (w.explosive ? 1 + .15 * this.rank('blast') : 1);
       const normalFloor = Math.max(.065, 1 / w.rate * .45);
@@ -154,22 +157,41 @@
     }
     beginWave() {
       this.wave++; this.finishedWave = false; this.breakTime = 0;
-      const count = 6 + Math.floor(this.wave * 1.25);
+      const late = this.totalWaves > 10 ? Math.max(0, this.wave - 10) : 0;
+      const count = 6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5);
+      this.spawnInterval = late ? Math.max(.1, .72 - .62 * late / 90) : Math.max(.32, .9 - .018 * this.wave);
+      this.enemyLimit = 32 + Math.min(64, Math.floor(late * 64 / 90));
       this.queue = Array.from({ length: count }, (_, i) => this.wave < 3 ? i % 3 === 0 ? 'jaguar' : 'crab' : ['crab', 'jaguar', 'shadow'][i % 3]);
       if (this.wave >= 4) this.queue = this.queue.map((type, i) => i % 7 === 3 ? 'tommy' : this.wave >= 7 && i % 7 === 6 ? 'miniLlorona' : type);
       if (this.wave % 5 === 0) this.queue.unshift(this.wave % 10 === 5 ? 'duende' : 'jaguarBoss');
       this.spawnTimer = 1.3; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
       for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
+      this.refreshStats();
       this.events.push({ type: 'wave' });
     }
     spawn(type) {
       const spec = TYPES[type], b = this.arena.bounds;
       for (let i = 0; i < 40; i++) {
-        const side = Math.floor(this.random() * 4), t = .08 + this.random() * .84;
-        const point = { x: side < 2 ? b.x + b.w * t : b.x + (side === 2 ? spec.r + 8 : b.w - spec.r - 8), y: side >= 2 ? b.y + b.h * t : b.y + (side === 0 ? spec.r + 8 : b.h - spec.r - 8) };
+        let point;
+        if (this.arenaId === 'open') {
+          const view = this.view, margin = spec.boss ? 120 : 70;
+          // A clamped square camera can hide the normal ring near corners; widen later retries.
+          const extra = view && i >= 20 ? Math.hypot(this.player.x - view.x - view.w / 2, this.player.y - view.y - view.h / 2) : 0;
+          const angle = this.random() * Math.PI * 2, radius = 450 + this.random() * (400 + extra);
+          point = { x: this.player.x + Math.cos(angle) * radius, y: this.player.y + Math.sin(angle) * radius };
+          const entire = view && view.x <= b.x && view.y <= b.y && view.x + view.w >= b.x + b.w && view.y + view.h >= b.y + b.h;
+          if (view && !entire && point.x > view.x - margin && point.x < view.x + view.w + margin && point.y > view.y - margin && point.y < view.y + view.h + margin) continue;
+          if (point.x < b.x + spec.r + 8 || point.x > b.x + b.w - spec.r - 8 || point.y < b.y + spec.r + 8 || point.y > b.y + b.h - spec.r - 8) continue;
+        } else {
+          const side = Math.floor(this.random() * 4), t = .08 + this.random() * .84;
+          point = { x: side < 2 ? b.x + b.w * t : b.x + (side === 2 ? spec.r + 8 : b.w - spec.r - 8), y: side >= 2 ? b.y + b.h * t : b.y + (side === 0 ? spec.r + 8 : b.h - spec.r - 8) };
+        }
         if (dist(point, this.player) < 230 || this.arena.obstacles.some(o => circleRect(point.x, point.y, spec.r, o)) || this.enemies.some(e => dist(e, point) < e.r + spec.r + 6)) continue;
-        const scale = spec.boss ? 1 + .035 * (this.wave - 5) : 1 + .065 * (this.wave - 1);
-        this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * (1 + .012 * (this.wave - 1)),
+        const late = this.totalWaves > 10 ? Math.max(0, this.wave - 40) : 0, early = this.wave - late;
+        const scale = spec.boss ? 1 + .035 * (early - 5) + .025 * late : 1 + .065 * (early - 1) + .03 * late;
+        const damageScale = 1 + .012 * (early - 1) + .006 * late;
+        this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
+          shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
           type, id: this.nextId++, warmup: spec.boss ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {} });
         return true;
       }
@@ -202,6 +224,10 @@
     levelUp() {
       if (this.level >= 40 || this.xp < this.xpNeeded) return false;
       this.xp -= this.xpNeeded; this.level++; this.xpNeeded = 25 + (this.level - 1) * 13;
+      if (this.level === 40) {
+        this.gems = []; delete this.powers.doubleXP;
+        this.drops = this.drops.filter(d => d.kind !== 'power' || d.id !== 'doubleXP' && d.id !== 'bonusXP');
+      }
       let available = PERKS.filter(p => this.eligible(p)); this.choices = [];
       const n = this.rank('grandma') ? 4 : 3;
       for (let i = 0; i < n; i++) {
@@ -250,13 +276,16 @@
     }
     defeat(e, reducedXP = false) {
       if (e.dead) return;
-      e.dead = true; this.kills++; this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
+      e.dead = true; this.kills++;
+      if (this.level < 40) this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
       this.events.push({ type: 'defeat', x: e.x, y: e.y, boss: e.boss });
       if (e.boss) {
         this.bossesDefeated++; this.addDrop(e.type === 'duende' ? 'staff' : 'claw', e.x, e.y, 'weapon', true);
         if (this.rank('trophy')) { this.trophyBosses++; this.player.maxHp += 10; this.player.hp += 10; }
         if (this.rank('sacred')) { this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * .35); this.addDrop('evolution', e.x + 30, e.y, 'power', true); }
-      } else if (this.random() < .035) this.addDrop(Object.keys(POWERS)[Math.floor(this.random() * 10)], e.x, e.y, 'power');
+      } else if (this.random() < .035) {
+        const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.random() * pool.length)], e.x, e.y, 'power');
+      }
       const rhythm = this.rank('rhythm');
       if (rhythm && this.kills % (30 - 5 * rhythm) === 0) this.pendingRhythm = true;
     }
@@ -284,7 +313,7 @@
       else if (id === 'nuke') {
         for (const e of [...this.enemies]) if (!e.dead) { e.hp = 0; this.defeat(e, true); }
         this.enemies = []; this.bullets = this.bullets.filter(b => !b.hostile);
-        this.flashes.push({ x: this.player.x, y: this.player.y, r: 1450, kind: 'nuke', color: '#ffcf8f', life: .7 });
+        this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
       } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
       if (id === 'shock') this.shockClock = 0;
       this.banner = POWERS[id].name + ' collected'; this.bannerTime = 2; this.refreshStats();
@@ -370,16 +399,16 @@
       const aim = Math.atan2(this.player.y - e.y, this.player.x - e.x);
       if (e.type === 'shadow' && visible(this, e, this.player, 6)) { this.shot(e.x, e.y, aim, true, e.damage, 205); e.shotTimer = 2.35; }
       if (e.type === 'miniLlorona' && visible(this, e, this.player, 6)) {
-        for (const offset of [-.13, 0, .13]) this.shot(e.x, e.y, aim + offset, true, 7 * (1 + .012 * (this.wave - 1)), 190);
+        for (const offset of [-.13, 0, .13]) this.shot(e.x, e.y, aim + offset, true, e.damage * .7, 190);
         e.shotTimer = 3.1;
       }
       if (e.type === 'duende') {
         const count = e.hp < e.maxHp / 2 ? 12 : 9;
-        for (let i = 0; i < count; i++) this.shot(e.x, e.y, this.time * .23 + i * Math.PI * 2 / count, true, 13, 170);
-        for (const a of [-.14, 0, .14]) this.shot(e.x, e.y, aim + a, true, 13, 225);
+        for (let i = 0; i < count; i++) this.shot(e.x, e.y, this.time * .23 + i * Math.PI * 2 / count, true, 13 * (e.shotScale || 1), 170);
+        for (const a of [-.14, 0, .14]) this.shot(e.x, e.y, aim + a, true, 13 * (e.shotScale || 1), 225);
         e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.55;
       }
-      if (e.type === 'jaguarBoss') { for (const a of (e.hp < e.maxHp / 2 ? [-.3, -.15, 0, .15, .3] : [-.2, 0, .2])) this.shot(e.x, e.y, aim + a, true, 14, 245); e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.8; }
+      if (e.type === 'jaguarBoss') { for (const a of (e.hp < e.maxHp / 2 ? [-.3, -.15, 0, .15, .3] : [-.2, 0, .2])) this.shot(e.x, e.y, aim + a, true, 14 * (e.shotScale || 1), 245); e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.8; }
     }
     tick(dt, input) {
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
@@ -394,9 +423,13 @@
       Base.aimAt(p, input);
       if (input.shooting && p.fireCooldown <= 0) this.fire();
       if (this.breakTime > 0) { this.breakTime -= dt; if (this.breakTime <= 0) this.beginWave(); }
-      else if (this.queue.length && this.enemies.length < 32) {
+      else if (this.queue.length && this.enemies.length < this.enemyLimit) {
         this.spawnTimer -= dt;
-        if (this.spawnTimer <= 0) { if (this.spawn(this.queue[0])) { this.queue.shift(); this.spawnTimer = Math.max(.32, .9 - .018 * this.wave); } else this.spawnTimer = .2; }
+        let attempts = 0;
+        while (this.spawnTimer <= 1e-8 && this.queue.length && this.enemies.length < this.enemyLimit && attempts++ < 4) {
+          if (!this.spawn(this.queue[0])) { this.spawnTimer = Math.min(.2, this.spawnInterval); break; }
+          this.queue.shift(); this.spawnTimer += this.spawnInterval;
+        }
       }
       const enemyDt = dt * (this.active('reflex') ? .5 : 1);
       for (const e of this.enemies) { if (!e.dead) this.enemyTick(e, enemyDt); if (this.mode !== 'playing') return; }
@@ -487,16 +520,17 @@
       if (this.levelUp()) return;
       if (!this.queue.length && !this.enemies.length && !this.finishedWave && this.breakTime <= 0) {
         this.finishedWave = true; this.bullets = [];
+        this.refreshStats();
         if (this.wave === this.totalWaves) { this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
         p.hp = Math.min(p.maxHp, p.hp + 15 + 10 * this.rank('recovery'));
         const offered = WEAPONS.filter(w => !['claw', 'staff'].includes(w.id));
         const reward = this.wave % 3 === 0 ? p.weapon : offered[Math.floor((this.wave - 1) / 2) % offered.length].id;
         this.addDrop(reward, p.x + 25, p.y);
-        if (this.wave % 2 === 0) this.addDrop(Object.keys(POWERS)[Math.floor(this.wave / 2 - 1) % 10], p.x - 30, p.y, 'power');
+        if (this.wave % 2 === 0) { const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.wave / 2 - 1) % pool.length], p.x - 30, p.y, 'power'); }
         this.breakTime = 4; this.banner = 'Wave cleared · +15 HP · E to claim weapon'; this.bannerTime = 4;
       }
     }
   }
-  const api = { Game, W, H, ARENAS, TYPES, WEAPONS, PERKS, POWERS, weapon, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, WEAPONS, PERKS, POWERS, weapon, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

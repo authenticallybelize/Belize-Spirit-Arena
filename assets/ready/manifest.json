@@ -763,8 +763,8 @@
           156.49
         ],
         [
-          82.09,
-          147.57
+          79.16,
+          151.58
         ],
         [
           48.22,
@@ -779,8 +779,8 @@
           156.35
         ],
         [
-          79.57,
-          156.56
+          80.2,
+          156.13
         ],
         [
           66.4,
@@ -790,11 +790,11 @@
       "bodyHeights": [
         140.15,
         152.99,
-        145.02,
+        148.21,
         152.57,
         151.89,
         137.72,
-        102.7,
+        115.34,
         136.04
       ],
       "frameSize": [
@@ -1249,15 +1249,15 @@
           145.84
         ],
         [
-          76.9,
+          70.48,
           150.52
         ],
         [
-          93.62,
-          149.42
+          80.29,
+          145.19
         ],
         [
-          88.45,
+          88.69,
           156.13
         ],
         [
@@ -1280,7 +1280,7 @@
       "bodyHeights": [
         131.3,
         145.71,
-        146.03,
+        141.8,
         152.75,
         124.36,
         134.47,
@@ -5050,11 +5050,11 @@
         989,
         30,
         226,
-        502
+        380
       ],
       "nativeSize": [
         226,
-        502
+        380
       ],
       "displaySize": [
         160,
@@ -5063,7 +5063,7 @@
       "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-3.png",
       "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-3.png",
       "file": "ready/holding/crystal/aim-3.png",
-      "sha256": "466b47094322de54fd602449a59d82575c4d95d494473cdc994f57d0153ca921"
+      "sha256": "b1847f9987191524a9416d66b271bf5018be1daf50a6293459325757b3a4e956"
     },
     {
       "id": "crystal",
@@ -5140,13 +5140,13 @@
       "source": "Assets/Weapons/Crystal Staff/Teenage Joe Holding crystal v1.png",
       "sourceRect": [
         989,
-        355,
+        411,
         240,
-        511
+        455
       ],
       "nativeSize": [
         240,
-        511
+        455
       ],
       "displaySize": [
         160,
@@ -5155,7 +5155,7 @@
       "fullResolution": "Assets/Weapons/Crystal Staff/Game Ready/Full Resolution/aim-7.png",
       "gameResolution": "Assets/Weapons/Crystal Staff/Game Ready/Game Resolution/aim-7.png",
       "file": "ready/holding/crystal/aim-7.png",
-      "sha256": "85af4bfa2446288cd61714d08fbbb489a1dd89a12ef0d06bf38a35c55c092d6b"
+      "sha256": "28616e7352cd9a8af3934124227cf8200b817b227880c68f86f85d4c4956de94"
     },
     {
       "id": "crystal",

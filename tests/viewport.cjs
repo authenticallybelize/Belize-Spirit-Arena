@@ -39,3 +39,13 @@ assert.deepEqual(point(portrait, { left: 10, top: 20, width: 300, height: 600 },
 assert.deepEqual(point(entire, rect, 240, 25), { x: 0, y: 0 });
 assert.deepEqual(point(entire, rect, 640, 425), { x: 1200, y: 1200 });
 console.log('PASS: viewport aspect, smooth deadzone/bounds, frame-rate independence, static letterboxing, orientation changes and scrolling mouse-world coordinates.');
+const large = {w:2400,h:2400}, center = {x:1200,y:1200};
+const cropped = follow(center,large,2,false,null,0,1200);
+assert.deepEqual(cropped,{x:600,y:900,w:1200,h:600});
+const right = follow({x:1800,y:1800},large,2,false,cropped,1,1200);
+assert(right.x>600 && right.y>900,'Large arena failed to scroll in both axes');
+near(right.w/right.h,2);
+const overview = follow(center,large,2,true,cropped,0,1200);
+assert.deepEqual(overview,{x:-1200,y:0,w:4800,h:2400});
+assert.deepEqual(point(cropped,{left:0,top:0,width:1600,height:800},800,400),center);
+console.log('PASS: expanded world crops proportionally, follows both axes, preserves mouse coordinates and optional overview.');

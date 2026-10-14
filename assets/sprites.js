@@ -3,6 +3,17 @@ window.ARENA_SPRITES = {"joe":{"file":"teenage-joe.png","frames":[[134,41,154,23
 // Crop coordinates use the original sheet grid; mobile CDNs may deliver smaller images.
 window.ArenaArt = {
   playerHeightRatio: 30 / 320,
+  nativeJoeFrame(angle, walking, time) {
+    const row = Math.abs(angle) < Math.PI / 4 ? 1 : Math.abs(angle) > Math.PI * .75 ? 2 : angle < 0 ? 3 : 0;
+    return row * 5 + (walking ? 1 + Math.floor(time * 9) % 2 : 0);
+  },
+  carryHands: {
+    0: [271,206,259,192,26,25], 1: [511,205,500,192,25,24], 2: [759,191,747,177,25,27],
+    5: [171,501,157,486,24,23], 6: [408,484,393,472,28,24], 7: [648,492,637,479,24,23],
+    10: [222,766,208,750,28,27], 11: [509,750,493,736,30,25], 12: [741,762,725,747,33,26],
+    15: [268,1003,255,989,26,28], 16: [513,972,498,959,28,26], 17: [750,969,739,957,26,26]
+  },
+  carryGrips: { slingshot:[8.46,41.55], bow:[22.46,32.07], dart:[16.91,41.45], spear:[15.5,47], crystal:[17.1,46.64], cacao:[15.07,48.4], drum:[12.03,32.09], claw:[22.57,33.14], feather:[12.57,50.29], obsidian:[11.87,48.39], cohune:[18.34,39.35], staff:[31.74,40.6] },
   holdingPose(art, angle, height) {
     const index = (Math.round(angle / (Math.PI / 4)) % 8 + 8) % 8;
     const turn = Math.atan2(Math.sin(angle - art.angles[index]), Math.cos(angle - art.angles[index]));

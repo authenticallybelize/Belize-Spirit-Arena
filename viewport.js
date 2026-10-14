@@ -1,9 +1,10 @@
 /* Copyright (c) 2026 Authentically Belize Movement. See LICENSE. */
 (function (root) {
   'use strict';
-  function follow(player, world, aspect, entire, previous, dt) {
+  function follow(player, world, aspect, entire, previous, dt, visibleExtent = 0) {
     const ratio = world.w / world.h;
-    const w = entire ? aspect > ratio ? world.h * aspect : world.w : aspect > ratio ? world.w : world.h * aspect;
+    const fit = aspect > ratio ? world.w : world.h * aspect;
+    const w = entire ? aspect > ratio ? world.h * aspect : world.w : visibleExtent ? Math.min(fit, aspect > 1 ? visibleExtent : visibleExtent * aspect) : fit;
     const h = w / aspect;
     if (entire) return { x: (world.w - w) / 2, y: (world.h - h) / 2, w, h };
     const clamp = (n, max) => Math.max(0, Math.min(max, n));

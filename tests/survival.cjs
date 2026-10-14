@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { Game, WEAPONS, PERKS, POWERS, move, visible } = require('../survival.js');
+const { Game, SURVIVAL_WAVES, WEAPONS, PERKS, POWERS, move, visible } = require('../survival.js');
 const { circleRect, AIM_HEIGHT, aimAt } = require('../core.js');
 const originalArenas = require('./fixtures/original-arenas.json');
 const originalBounds = { canyon: { x: 180, y: 145, w: 835, h: 685 }, underworld: { x: 180, y: 145, w: 835, h: 685 }, coast: { x: 180, y: 145, w: 835, h: 685 }, jungle: { x: 135, y: 232, w: 930, h: 728 } };
@@ -26,6 +26,7 @@ for (const w of WEAPONS) {
 }
 for (const arena of ['canyon', 'jungle', 'underworld', 'coast']) {
   const g = playing('slingshot', arena);
+  assert.equal(g.arena.width, 1200); assert.equal(g.arena.height, 1200);
   assert.deepEqual(g.arena.bounds, originalBounds[arena], 'Supplied map boundary changed');
   assert.deepEqual(g.arena.obstacles, originalArenas[arena].obstacles, 'Supplied map boulders/walls changed');
   assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(__dirname, '../assets', g.arena.image))).digest('hex'), originalArenas[arena].sha256, 'Supplied arena image changed');
@@ -38,7 +39,8 @@ for (const arena of ['canyon', 'jungle', 'underworld', 'coast']) {
   const o = g.arena.obstacles[0], p = { x: o.x - 30, y: o.y + o.h / 2, r: 13 };
   move(g, p, 500, 0); assert(p.x + p.r <= o.x + .01);
 }
-const open = playing('slingshot', 'open'); assert.deepEqual(open.arena.bounds, { x: 88, y: 88, w: 1024, h: 1024 }); assert.deepEqual(open.arena.obstacles, []);
+const open = playing('slingshot', 'open'); assert.deepEqual(open.arena.bounds, { x: 88, y: 88, w: 2224, h: 2224 }); assert.deepEqual(open.arena.obstacles, []);
+assert.equal(open.arena.width, 2400); assert.equal(open.arena.height, 2400); assert.deepEqual(open.player.x, 1200); assert.deepEqual(open.player.y, 1200);
 for (const type of ['crab', 'jaguar', 'shadow', 'duende', 'jaguarBoss', 'tommy', 'miniLlorona']) assert(open.spawn(type), 'Open field spawn failed: ' + type);
 const a = playing(), b = playing();
 const navigation = playing(); navigation.player.x = 519; navigation.player.y = 566;
@@ -148,8 +150,9 @@ ricochet.shot(200, 300, 0, false, 100, 30000, { bounces: 1 }); ricochet.update(1
 assert.equal(ricochet.bullets.length, 1, 'Old wall killed a redirected ricochet'); ricochet.update(1 / 120); assert.equal(bounceTarget.hp, 915);
 const range = field('cohune'); range.shot(200, 300, 0, false, 100, 1000, { explosive: true, life: .001 }); range.update(1 / 120);
 assert.equal(range.flashes.find(f => f.kind === 'explosion').x, 201, 'Rocket overshot the end of its flight');
-const border = field('cohune'); border.shot(1100, 300, 0, false, 100, 3000, { explosive: true, r: 9 }); border.update(1 / 120);
-assert.equal(border.flashes.find(f => f.kind === 'explosion').x, 1103, 'Rocket explosion escaped the playable boundary');
+const border = field('cohune'), rightEdge = border.arena.bounds.x + border.arena.bounds.w;
+border.shot(rightEdge - 12, 300, 0, false, 100, 3000, { explosive: true, r: 9 }); border.update(1 / 120);
+assert.equal(border.flashes.find(f => f.kind === 'explosion').x, rightEdge - 9, 'Rocket explosion escaped the playable boundary');
 
 const shock = playing(); shock.arena = { ...shock.arena, obstacles: [] };
 enemy(shock, 770, 575); enemy(shock, 650, 575); enemy(shock, 700, 575); shock.collectPower('shock'); shock.update(1 / 120);
@@ -182,18 +185,18 @@ assert(capped.choices[0].detail.includes('Current 4/5 · +1 rank'), 'Final avail
 assert(capped.choose(0)); assert.equal(capped.rank('speed'), 5);
 capped.xp = capped.xpNeeded; capped.levelUp(); assert(!capped.choices.some(p => p.id === 'speed'), 'Choosing the final rank did not remove the perk');
 const progression = playing(); const bossWaves = [];
-for (let wave = 1; wave <= 40; wave++) {
+for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   assert.equal(progression.wave, wave);
   if (progression.queue.some(type => type === 'duende' || type === 'jaguarBoss')) bossWaves.push(wave);
   progression.queue = []; progression.enemies = []; progression.update(1 / 120);
-  if (wave < 40) { assert.equal(progression.mode, 'playing'); while (progression.wave === wave) progression.update(.25); }
+  if (wave < SURVIVAL_WAVES) { assert.equal(progression.mode, 'playing'); while (progression.wave === wave) progression.update(.25); }
 }
-assert.deepEqual(bossWaves, [5, 10, 15, 20, 25, 30, 35, 40]); assert.equal(progression.mode, 'victory');
+assert.deepEqual(bossWaves, Array.from({ length: 28 }, (_, i) => (i + 1) * 5)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
 progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equal(progression.wave, 1); assert.equal(progression.totalWaves, 10); assert.equal(progression.player.weapon, 'dart'); assert.equal(progression.rank('damage'), 0);
 progression.level = 40; progression.xp = 99999; assert(!progression.levelUp());
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
 for (const w of WEAPONS.filter(w => w.art)) { const [x, y, ww, hh] = w.art; assert(x >= 0 && y >= 0 && x + ww <= width && y + hh <= height); }
-console.log('PASS: 12 weapons, four preserved arenas plus an open field, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 40-wave progression, XP cap and restart.');
+console.log('PASS: 12 weapons, four preserved arenas plus a 2400 open field, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 140-wave progression, XP cap and restart.');
 
 const snake = playing(); snake.spawn('tommy'); const striker = snake.enemies.at(-1);
 Object.assign(striker, { x: 650, y: 575, warmup: 0, rushTimer: 0, routeTimer: 99 });
@@ -205,4 +208,4 @@ Object.assign(echo, { x: 710, y: 575, warmup: 0, shotTimer: 0, routeTimer: 99 })
 spirit.enemyTick(echo, 1 / 120); assert.equal(spirit.bullets.filter(b => b.hostile).length, 3);
 assert.equal(echo.boss, undefined, 'Mini Llorona incorrectly counts as a full boss');
 console.log('PASS: Tommy warned strike and Mini Llorona ranged fan; neither changes Story enemy definitions.');
-console.log('PASS: separate open-field 1024-square bounds, original map hashes/walls/borders, five-second floor weapons/intermission grace, maxed/dead perk filtering, rocket flight/splash/order/range/border, smoke damage snapshot, aimed/ranked feather seeking, bounded nearest-link Shock and full-map Nuke.');
+console.log('PASS: separate open-field 2224-square bounds, original map hashes/walls/borders, five-second floor weapons/intermission grace, maxed/dead perk filtering, rocket flight/splash/order/range/border, smoke damage snapshot, aimed/ranked feather seeking, bounded nearest-link Shock and full-map Nuke.');

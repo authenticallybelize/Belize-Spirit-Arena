@@ -7,16 +7,17 @@
   <title>Belize: Spirit Arena — Survival & Arena Trials</title>
   <link rel="icon" href="assets/teenage-joe.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="survival.css?v=0.4.2">
-  <link rel="stylesheet" href="touch.css?v=0.4.2">
-  <script defer src="core.js?v=0.4.2"></script>
-  <script defer src="assets/sprites.js?v=0.4.2"></script>
-  <script defer src="assets/ready-assets.js?v=0.4.2"></script>
-  <script defer src="viewport.js?v=0.4.2"></script>
-  <script defer src="survival.js?v=0.4.2"></script>
-  <script defer src="survival-ui.js?v=0.4.2"></script>
-  <script defer src="touch.js?v=0.4.2"></script>
-  <script defer src="game.js?v=0.4.2"></script>
+  <link rel="stylesheet" href="survival.css?v=0.5.0">
+  <link rel="stylesheet" href="touch.css?v=0.5.0">
+  <script defer src="core.js?v=0.5.0"></script>
+  <script defer src="assets/sprites.js?v=0.5.0"></script>
+  <script defer src="assets/ready-assets.js?v=0.5.0"></script>
+  <script defer src="assets/joe-motion.js?v=0.5.0"></script>
+  <script defer src="viewport.js?v=0.5.0"></script>
+  <script defer src="survival.js?v=0.5.0"></script>
+  <script defer src="survival-ui.js?v=0.5.0"></script>
+  <script defer src="touch.js?v=0.5.0"></script>
+  <script defer src="game.js?v=0.5.0"></script>
 </head>
 <body class="survival-edition">
   <main class="shell">
@@ -31,14 +32,14 @@
     <section class="intro">
       <p><a href="story.html" style="color:var(--mint)">Story Mode · canon prologue ↗</a></p>
       <h1>The jungle opens.</h1>
-      <p>One open field. Four original arenas. Forty waves.</p>
+      <p>One open field. Four original arenas. One hundred forty waves.</p>
     </section>
-    <div class="survival-layout"><aside class="expedition" id="config"><h2>Choose your expedition</h2><label for="arenaSelect">Arena</label><select id="arenaSelect"><option value="open">Open Jungle Clearing</option><option value="canyon">Ancient Forest Canyon</option><option value="jungle">Jungle Ruins</option><option value="underworld">The Corrupted Underworld</option><option value="coast">Spirit Coast · Hopkins</option></select><label for="modeSelect">Edition</label><select id="modeSelect"><option value="survival">Survival · 40 waves</option><option value="run">Arena Run · 10 waves</option></select><label for="starterWeapon">Starting weapon</label><select id="starterWeapon"></select><p class="setup-note">All twelve starters are available for testing. XP level and wave count are separate.</p><a class="classic-link" href="./index.html">Original ten-wave game ↗</a><label class="view-option"><input id="entireArena" type="checkbox"> Show entire arena</label><div class="build"><h2>Your build</h2><strong id="buildWeapon">Joe’s Sling I</strong><p id="buildStats"></p><p id="arenaName"></p><p id="activePowers">No temporary powers active</p><p id="buildEmpty">Collect gems to grow your build.</p><ul id="buildPerks"></ul></div></aside><section class="game-frame" aria-label="Belize: Spirit Arena game">
+    <div class="survival-layout"><aside class="expedition" id="config"><h2>Choose your expedition</h2><label for="arenaSelect">Arena</label><select id="arenaSelect"><option value="open">Open Jungle Clearing</option><option value="canyon">Ancient Forest Canyon</option><option value="jungle">Jungle Ruins</option><option value="underworld">The Corrupted Underworld</option><option value="coast">Spirit Coast · Hopkins</option></select><label for="modeSelect">Edition</label><select id="modeSelect"><option value="survival">Survival · 140 waves</option><option value="run">Arena Run · 10 waves</option></select><label for="starterWeapon">Starting weapon</label><select id="starterWeapon"></select><p class="setup-note">All twelve starters are available for testing. XP level and wave count are separate.</p><a class="classic-link" href="./index.html">Original ten-wave game ↗</a><label class="view-option"><input id="entireArena" type="checkbox"> Show entire arena</label><div class="build"><h2>Your build</h2><strong id="buildWeapon">Joe’s Sling I</strong><p id="buildStats"></p><p id="arenaName"></p><p id="activePowers">No temporary powers active</p><p id="buildEmpty">Collect gems to grow your build.</p><ul id="buildPerks"></ul></div></aside><section class="game-frame" aria-label="Belize: Spirit Arena game">
       <div class="hud">
         <div class="hero"><canvas class="joe-portrait" width="64" height="64" aria-label="Teenage Joe Grind"></canvas><div><strong>JOE GRIND</strong><span id="levelLabel">LEVEL 1</span></div></div>
         <div class="meter health"><div class="meter-label"><span>HEALTH</span><b id="healthLabel">100 / 100</b></div><div class="track" id="healthMeter" role="progressbar" aria-label="Health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="healthFill"></i></div></div>
         <div class="meter experience"><div class="meter-label"><span>EXPERIENCE</span><b id="xpLabel">0 / 25</b></div><div class="track" id="xpMeter" role="progressbar" aria-label="Experience" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0"><i id="xpFill"></i></div></div>
-        <div class="wave"><strong id="waveLabel">WAVE 1 / 40</strong><div id="waveDots" aria-hidden="true"></div></div>
+        <div class="wave"><strong id="waveLabel">WAVE 1 / 140</strong><div id="waveDots" aria-hidden="true"></div></div>
       </div>
       <div class="arena-wrap">
         <canvas id="arena" width="1200" height="1200" tabindex="0" aria-label="Jungle arena. Move with WASD or arrow keys, aim with your mouse and hold left-click to shoot. Space dashes. Escape pauses.">Canvas support is required to play.</canvas>
