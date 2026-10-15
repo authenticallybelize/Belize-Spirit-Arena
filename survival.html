@@ -5,23 +5,27 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#091712">
   <title>Belize: Spirit Arena — Survival & Arena Trials</title>
-  <link rel="icon" href="assets/teenage-joe.png" type="image/png">
+  <link rel="icon" href="favicon.ico?v=0.5.2" sizes="16x16 32x32" type="image/x-icon">
+  <link rel="icon" href="assets/branding/icon-32.png?v=0.5.2" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/branding/icon-180.png?v=0.5.2" sizes="180x180">
+  <link rel="icon" href="assets/branding/icon-192.png?v=0.5.2" sizes="192x192" type="image/png">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="survival.css?v=0.5.1">
-  <link rel="stylesheet" href="touch.css?v=0.5.1">
-  <script defer src="core.js?v=0.5.1"></script>
-  <script defer src="assets/sprites.js?v=0.5.1"></script>
-  <script defer src="assets/ready-assets.js?v=0.5.1"></script>
-  <script defer src="viewport.js?v=0.5.1"></script>
-  <script defer src="survival.js?v=0.5.1"></script>
-  <script defer src="survival-ui.js?v=0.5.1"></script>
-  <script defer src="touch.js?v=0.5.1"></script>
-  <script defer src="game.js?v=0.5.1"></script>
+  <link rel="stylesheet" href="survival.css?v=0.5.2">
+  <link rel="stylesheet" href="touch.css?v=0.5.2">
+  <link rel="stylesheet" href="branding.css?v=0.5.2">
+  <script defer src="core.js?v=0.5.2"></script>
+  <script defer src="assets/sprites.js?v=0.5.2"></script>
+  <script defer src="assets/ready-assets.js?v=0.5.2"></script>
+  <script defer src="viewport.js?v=0.5.2"></script>
+  <script defer src="survival.js?v=0.5.2"></script>
+  <script defer src="survival-ui.js?v=0.5.2"></script>
+  <script defer src="touch.js?v=0.5.2"></script>
+  <script defer src="game.js?v=0.5.2"></script>
 </head>
 <body class="survival-edition">
   <main class="shell">
     <header class="masthead">
-      <a class="brand" href="./story.html" aria-label="Belize: Spirit Arena home"><span>BELIZE</span><i></i><small>SPIRIT ARENA</small></a>
+      <a class="brand" href="./story.html" aria-label="Belize: Spirit Arena home"><img src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="140px" width="1774" height="887" alt="" decoding="async"></a>
       <nav aria-label="Game settings">
         <button id="helpButton" class="text-button">How to play</button>
         <button id="soundButton" class="icon-button" aria-label="Enable sound" aria-pressed="false" title="Sound off">♫</button>
@@ -47,7 +51,7 @@
         <div class="arena-status"><span id="killsLabel">0 spirits released</span><span id="weaponLabel">SLINGSHOT</span><span id="dashLabel">SPACE · DASH READY</span></div>
         <section id="overlay" class="overlay" aria-label="Game menu" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
           <div class="dialog" id="dialogContent">
-            <canvas class="joe-portrait menu-portrait" width="64" height="64" aria-hidden="true"></canvas>
+            <img class="menu-logo" src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="280px" width="1774" height="887" alt="" decoding="async">
             <h2 id="overlayTitle">Enter the clearing.</h2>
             <p>Choose an arena and weapon.<br>Gather power. Face the guardians. Survive.</p>
             <button id="startButton" class="primary" disabled>Loading the jungle…</button>

@@ -1,5 +1,9 @@
 # Source asset audit and exports
 
+## 0.5.2 branding integration
+
+The approved title logo and generated matching obsidian website emblem are stored separately in assets/branding. Standard proportional logo and icon-size exports preserve full-resolution originals in Assets/Branding, with prompt provenance and Game Ready siblings. The existing gameplay PNGs and actor rendering are unchanged. See README.md for sizes, exporter, menu/browser integration and testing.
+
 ## 0.5.1 whole-body repair
 
 The incompatible torso/leg masks and their generator were removed. All 227 existing PNG exports and 93 original sources are unchanged. Joe uses complete native idle/walking frames with measured carried grips and complete eight-direction held images while firing. No replacement art was generated or arbitrarily cropped. Held images are static full poses, not complete walking-with-weapon cycles. See README.md for the root cause, verified visual evidence and the explicit future 192-frame authoring requirement. Historical 0.5.0 mask work below is superseded.

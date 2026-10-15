@@ -1,6 +1,6 @@
 {
   "name": "belize-spirit-arena",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "description": "Local top-down Belizean jungle arena shooter prototype",
   "scripts": {

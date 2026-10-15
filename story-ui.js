@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  const menuLogo = '<img class="menu-logo" src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="280px" width="1774" height="887" alt="" decoding="async">';
   let storage;
   try { storage = window.localStorage; } catch { storage = { getItem() { throw Error('Unavailable'); } }; }
   const store = new StoryCore.Store(storage);
@@ -45,14 +46,14 @@
     return '<button id="' + id + '" class="' + (primary ? 'primary' : 'secondary') + '"' + (disabled ? ' disabled' : '') + '>' + text + '</button>';
   }
   function show(html) {
-    bridge.clearInput(); $('overlay').hidden = false; $('dialogContent').innerHTML = html;
+    bridge.clearInput(); $('overlay').hidden = false; $('dialogContent').innerHTML = menuLogo + html;
     $('dialogContent').querySelector('button:not(:disabled)')?.focus();
   }
   function home() {
     artRequest++; artCache.clear(); loadingArt = false;
     cinematic = null; $('cinematic').hidden = true; document.body.classList.remove('cinematic-open');
     bridge.game.mode = 'menu'; view = 'main';
-    show('<h2 id="overlayTitle">Belize: Spirit Arena</h2><p>Chapter I · Seven years later.<br>A stone. A doorway. A jungle that remembers.</p><div class="story-menu">' +
+    show('<h2 id="overlayTitle" class="visually-hidden">Belize: Spirit Arena</h2><p>Chapter I · Seven years later.<br>A stone. A doorway. A jungle that remembers.</p><div class="story-menu">' +
       button('storyMenu', 'STORY MODE', true) + button('survivalMenu', 'SURVIVAL MODE', false, !store.data.survivalUnlocked) +
       button('leaderboardMenu', 'LEADERBOARD') + button('howMenu', 'HOW TO PLAY') + button('optionsMenu', 'OPTIONS') +
       '</div><p class="menu-footnote">' + (store.data.survivalUnlocked ? 'Survival unlocked.' : 'Survival unlocks after all four Story trials.') +

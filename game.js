@@ -8,6 +8,7 @@
   const { OBSTACLES, WAVES } = ArenaCore;
   const game = new Game(), canvas = document.getElementById('arena'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id), overlay = $('overlay'), content = $('dialogContent');
+  const menuLogo = '<img class="menu-logo" src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="280px" width="1774" height="887" alt="" decoding="async">';
   const startButton = $('startButton');
   const joeHeight = 1200 * ArenaArt.playerHeightRatio;
   let view = { x: 0, y: 0, w: W, h: H }, mouse = null, mousePointer = null;
@@ -286,13 +287,13 @@
       content.innerHTML = `<h2 id="overlayTitle">Your spirit grows.</h2><p>Level ${game.level} · Choose one upgrade.<br>The jungle can wait.</p><div class="choices">${game.choices.map((choice, index) => `<button class="choice" data-choice="${index}"><span class="choice-icon" aria-hidden="true">${choice.icon}</span><span><strong>${choice.name}</strong><small>${choice.detail}</small></span><kbd>${index + 1}</kbd></button>`).join('')}</div><span class="small-note">Choose with your mouse or the numbered keys.</span>`;
       content.querySelectorAll('[data-choice]').forEach(button => button.onclick = () => choose(Number(button.dataset.choice)));
     } else if (game.mode === 'paused') {
-      content.innerHTML = '<h2 id="overlayTitle">Take a breath.</h2><p>Your run is paused. Nothing moves until you return.</p><button id="resumeButton" class="primary">Back to the jungle</button><br><button id="restartButton" class="secondary">Restart run</button><span class="small-note">Esc to resume · Switching tabs pauses automatically</span>';
+      content.innerHTML = menuLogo + '<h2 id="overlayTitle">Take a breath.</h2><p>Your run is paused. Nothing moves until you return.</p><button id="resumeButton" class="primary">Back to the jungle</button><br><button id="restartButton" class="secondary">Restart run</button><span class="small-note">Esc to resume · Switching tabs pauses automatically</span>';
       $('resumeButton').onclick = togglePause; $('restartButton').onclick = start;
       if (extended) { const viewButton = document.createElement('button'); viewButton.className = 'secondary'; viewButton.textContent = $('entireArena').checked ? 'Use following camera' : 'Show entire arena'; viewButton.onclick = () => { $('entireArena').checked = !$('entireArena').checked; viewButton.textContent = $('entireArena').checked ? 'Use following camera' : 'Show entire arena'; }; content.append(viewButton); }
       if (story) { const back = document.createElement('button'); back.className = 'secondary'; back.textContent = 'Story menu'; back.onclick = StoryUI.menu; content.append(back); }
     } else {
       const won = game.mode === 'victory', seconds = Math.floor(game.time);
-      content.innerHTML = `<canvas class="joe-portrait menu-portrait" width="64" height="64" aria-hidden="true"></canvas><h2 id="overlayTitle">${won ? 'The jungle is yours.' : 'The spirits prevailed.'}</h2><p>${won ? (extended ? game.totalWaves + ' waves survived. Guardians defeated.<br>Joe Grind lives to tell the story.' : 'Ten waves survived. Both bosses released.<br>Joe Grind lives to tell the story.') : 'Every run makes you wiser.<br>Gather light, use cover, and keep moving.'}</p><div class="run-stats"><div><b>${game.kills}</b><span>SPIRITS RELEASED</span></div><div><b>${game.level}</b><span>LEVEL</span></div><div><b>${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}</b><span>RUN TIME</span></div></div><button id="restartButton" class="primary">Play again</button><span class="small-note">${won ? `VICTORY · ${extended ? game.totalWaves : WAVES.length} / ${extended ? game.totalWaves : WAVES.length} waves` : `Reached wave ${game.wave} / ${extended ? game.totalWaves : WAVES.length}`}</span>`;
+      content.innerHTML = `${menuLogo}<h2 id="overlayTitle">${won ? 'The jungle is yours.' : 'The spirits prevailed.'}</h2><p>${won ? (extended ? game.totalWaves + ' waves survived. Guardians defeated.<br>Joe Grind lives to tell the story.' : 'Ten waves survived. Both bosses released.<br>Joe Grind lives to tell the story.') : 'Every run makes you wiser.<br>Gather light, use cover, and keep moving.'}</p><div class="run-stats"><div><b>${game.kills}</b><span>SPIRITS RELEASED</span></div><div><b>${game.level}</b><span>LEVEL</span></div><div><b>${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}</b><span>RUN TIME</span></div></div><button id="restartButton" class="primary">Play again</button><span class="small-note">${won ? `VICTORY · ${extended ? game.totalWaves : WAVES.length} / ${extended ? game.totalWaves : WAVES.length} waves` : `Reached wave ${game.wave} / ${extended ? game.totalWaves : WAVES.length}`}</span>`;
       $('restartButton').onclick = start;
     }
     paintPortraits(); content.querySelector('button')?.focus();
@@ -389,7 +390,7 @@
         try { if (image.decode) await image.decode(); images[file] = ArenaArt.sourceGrid(image, file); clearTimeout(timeout); resolve(); }
         catch { fail(); }
       };
-      image.onerror = fail; image.src = `assets/${file}?v=0.5.1`;
+      image.onerror = fail; image.src = `assets/${file}?v=0.5.2`;
     }).catch(error => { loads.delete(file); throw error; }));
     return loads.get(file);
   }
