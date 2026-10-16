@@ -71,6 +71,16 @@
     }
   }
   function drawSprite(type, index, x, bottom, height, flip = false, alpha = 1, hurt = false) {
+    const roster = window.ARENA_ROSTER?.[type];
+    if (roster) {
+      const size = roster.cell, scale = height / roster.bodyHeight;
+      ctx.save(); ctx.globalAlpha = alpha; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+      ctx.translate(Math.round(x), Math.round(bottom));
+      if (hurt) ctx.filter = 'brightness(1.8)';
+      ctx.drawImage(images[roster.file], index % 6 * size, Math.floor(index / 6) * size, size, size,
+        -roster.pivot[0] * scale, -roster.pivot[1] * scale, size * scale, size * scale);
+      ctx.restore(); return;
+    }
     const id = type === 'jaguar' ? 'minijaguar' : type, art = ARENA_READY.sprites[id];
     index = art.frames[index] ? index : 0;
     const frame = ARENA_SPRITES[id].frames[index], pivot = art.pivots[index];
@@ -92,6 +102,35 @@
   }
   function drawEnemy(enemy, t) {
     const { x, y, type } = enemy;
+    if (window.ARENA_ROSTER?.[type]) {
+      const height = enemy.height, bottom = y + 13 - (enemy.flying ? 12 : 0);
+      if (enemy.dead) {
+        drawSprite(type, 18 + Math.min(5, Math.floor((.6 - enemy.life) * 10)), x, bottom, height, false, Math.min(1, enemy.life * 4)); return;
+      }
+      shadow(x, y, enemy.r);
+      if (enemy.warmup > 0 || enemy.action === 'windup') {
+        const spawn = enemy.warmup > 0, radius = spawn ? enemy.r + 12 : enemy.attack === 'pounce' ? enemy.r + 6 : enemy.reach;
+        ctx.save(); ctx.strokeStyle = enemy.alpha ? '#ffb17c' : '#c9b1e5'; ctx.fillStyle = enemy.alpha ? '#e7793c22' : '#b69bd51c'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        if (!spawn && enemy.attack === 'pounce') {
+          ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.moveTo(x, y);
+          ctx.lineTo(x + Math.cos(enemy.attackAngle) * enemy.rushSpeed * enemy.rushDuration, y + Math.sin(enemy.attackAngle) * enemy.rushSpeed * enemy.rushDuration); ctx.stroke();
+        }
+        ctx.restore();
+      }
+      const row = enemy.attack === 'shot' ? 2 : 1;
+      const actionFrame = enemy.action === 'windup' ? Math.min(2, Math.floor(enemy.actionTime / enemy.windup * 3))
+        : enemy.action === 'active' ? 3 : Math.min(5, 3 + Math.floor(enemy.actionTime / .45 * 3));
+      const index = enemy.warmup > 0 ? 0 : enemy.hit > 0 ? 18 : enemy.action !== 'move' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
+      drawSprite(type, index, x, bottom, height, false, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
+      if (enemy.warmup <= 0) {
+        const width = enemy.r * 2 + 10;
+        ctx.fillStyle = '#102416'; ctx.fillRect(x - width / 2 - 1, y - height - 2, width + 2, 6);
+        ctx.fillStyle = enemy.alpha ? '#ffc17d' : '#e86b52'; ctx.fillRect(x - width / 2, y - height - 1, width * Math.max(0, enemy.hp / enemy.maxHp), 4);
+        if (enemy.alpha) { ctx.font = 'bold 11px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffe0b0'; ctx.fillText('ALPHA · ' + enemy.name, x, y - height - 9); }
+      }
+      return;
+    }
     if (enemy.warmup > 0) {
       const progress = 1 - enemy.warmup / (enemy.boss ? 1.7 : .85);
       ctx.save(); ctx.strokeStyle = '#d0a7f2'; ctx.lineWidth = 2; ctx.globalAlpha = .7;
@@ -201,6 +240,7 @@
       { ...ArenaCore.TYPES.shadow, type: 'shadow', x: 970, y: 460, maxHp: 48, id: 1 }
     ] : game.enemies;
     for (const enemy of enemies) drawables.push({ y: enemy.y, draw: () => drawEnemy(enemy, t) });
+    for (const corpse of game.corpses || []) drawables.push({ y: corpse.y, draw: () => drawEnemy(corpse, t) });
     drawables.sort((a, b) => a.y - b.y).forEach(item => item.draw());
     if (extended) SurvivalUI.draw(game, ctx, images);
     for (const b of game.bullets) {
@@ -379,7 +419,8 @@
   const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.held, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
   const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
-  const files = [...new Set([...spriteFiles, ...holdingFiles, 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+  const rosterFiles = extended ? Object.values(window.ARENA_ROSTER || {}).map(a => a.file) : [];
+  const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
     ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {

@@ -1,0 +1,106 @@
+[
+  {
+    "id": "spiderling",
+    "source": "beta-common-v1/spiderling-beta-v1.png",
+    "sourceSHA256": "5197c9d8037120f72352027fbb2cb031899a9fa9158ecaf49ae73b143e68a022",
+    "runtimeSHA256": "8d60f1ede18f0e75cf69986b8186cb13f8dd8b723ce8cf8761dc9cc07cd15c86",
+    "file": "ready/roster/spiderling.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 73
+  },
+  {
+    "id": "worker",
+    "source": "beta-common-v1/sompopo-worker-beta-v1.png",
+    "sourceSHA256": "33e66493928973c27f066398cb7c8581e77d6b8c8180f28cb5f6b4f811c5fc4e",
+    "runtimeSHA256": "acd7303f4615270432712e3b3d5645c12d06290183bdda1f923b1422a14076de",
+    "file": "ready/roster/worker.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 98
+  },
+  {
+    "id": "bees",
+    "source": "beta-common-v1/africanized-bee-swarm-beta-v1.png",
+    "sourceSHA256": "3703ab7fd95d0d9d6b0056d5f9655746e5460dcfc209eb1752bd7b3a59f97090",
+    "runtimeSHA256": "3b31ffec5623734b5acdb3460659e6305407282da2656f2702c3c7db17401dee",
+    "file": "ready/roster/bees.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      103
+    ],
+    "bodyHeight": 81
+  },
+  {
+    "id": "rootling",
+    "source": "beta-common-v1/corrupted-rootling-beta-v1.png",
+    "sourceSHA256": "ed3a6e3e8a6a03298123a6365012176c41f3896734f9ddd8f6bde5ed0c76b21c",
+    "runtimeSHA256": "f0c93ba7f029641c08926c7970cc2a38a08e1d29fb20f3f18bd27cb545955306",
+    "file": "ready/roster/rootling.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 93
+  },
+  {
+    "id": "owlShade",
+    "source": "beta-common-v1/owl-shade-beta-v1.png",
+    "sourceSHA256": "1460632ffe1e7ffcc7eb27dd685fa755432192c02d592ed390d2c5afe92c5b6b",
+    "runtimeSHA256": "fa07ce077325a514d5ff6b6ce1c317da724e4f034ab0b9afffbeaab496805264",
+    "file": "ready/roster/owlShade.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 74
+  },
+  {
+    "id": "alphaCrab",
+    "source": "alpha-corrupted-v1/armored-mangrove-crab-alpha-v1.png",
+    "sourceSHA256": "deb5a2c68955f8cbad209c93ff480b4701dfe06296298a53fe7708a802700640",
+    "runtimeSHA256": "e4a612cd98e2440e32c01af4694f924843f2101f9e4e2b118b5236e1ea18f3e4",
+    "file": "ready/roster/alphaCrab.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      107
+    ],
+    "bodyHeight": 97
+  },
+  {
+    "id": "alphaJaguar",
+    "source": "alpha-corrupted-v1/jaguar-sentinel-alpha-v1.png",
+    "sourceSHA256": "438fefcd3cfe1de94e57a5f029c221fb0cfaf1d9e40dd519aafd504eb186fcef",
+    "runtimeSHA256": "de36cf59cebd32c678e3a3d349aad2407b2aba806a45f9d4258b2be644fb5196",
+    "file": "ready/roster/alphaJaguar.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      121
+    ],
+    "bodyHeight": 114
+  },
+  {
+    "id": "shadowBrute",
+    "source": "alpha-corrupted-v1/shadow-brute-alpha-v1.png",
+    "sourceSHA256": "a1aa6ea63eb7ef2af8939cf71474639dec6c669db27a57974395bd8f360f8bd7",
+    "runtimeSHA256": "fa266fd66c241bfa0482257f9e009525d62a73fb472f0e376a168bacafa10549",
+    "file": "ready/roster/shadowBrute.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      111
+    ],
+    "bodyHeight": 103
+  }
+]

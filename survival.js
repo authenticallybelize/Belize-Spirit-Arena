@@ -5,8 +5,18 @@
   const { circleRect, segmentRect, segmentCircle } = Base;
   const TYPES = { ...Base.TYPES,
     tommy: { name: 'Tommy Goff', hp: 52, speed: 90, r: 16, damage: 13, xp: 9 },
-    miniLlorona: { name: 'Mini Llorona', hp: 58, speed: 68, r: 16, damage: 10, xp: 12 }
+    miniLlorona: { name: 'Mini Llorona', hp: 58, speed: 68, r: 16, damage: 10, xp: 12 },
+    spiderling: { name: 'Spiderling', hp: 24, speed: 125, r: 11, damage: 7, xp: 5, height: 33, attack: 'bite', reach: 27, windup: .25, cooldown: 1.2 },
+    worker: { name: 'Sompopo Worker', hp: 36, speed: 90, r: 13, damage: 8, xp: 6, height: 40, attack: 'bite', reach: 30, windup: .35, cooldown: 1.4 },
+    bees: { name: 'Africanized Bee Swarm', hp: 28, speed: 135, r: 16, damage: 8, xp: 7, height: 44, flying: true, attack: 'bite', reach: 30, windup: .3, cooldown: 1.5 },
+    rootling: { name: 'Corrupted Rootling', hp: 42, speed: 58, r: 14, damage: 10, xp: 7, height: 39, attack: 'shot', reach: 280, windup: .6, cooldown: 3 },
+    owlShade: { name: 'Owl Shade', hp: 30, speed: 110, r: 13, damage: 9, xp: 7, height: 41, flying: true, attack: 'pounce', reach: 150, windup: .55, cooldown: 3.2, rushSpeed: 280, rushDuration: .35 },
+    alphaCrab: { name: 'Armored Mangrove Crab', hp: Base.TYPES.crab.hp * 4, speed: 48, r: 29, damage: Base.TYPES.crab.damage * 1.5, xp: 20, height: 75, alpha: true, attack: 'slam', reach: 85, windup: 1, cooldown: 3 },
+    alphaJaguar: { name: 'Jaguar Sentinel', hp: Base.TYPES.jaguar.hp * 4, speed: 110, r: 25, damage: Base.TYPES.jaguar.damage * 1.5, xp: 28, height: 81, alpha: true, attack: 'pounce', reach: 230, windup: .85, cooldown: 3.5, rushSpeed: 350, rushDuration: .5 },
+    shadowBrute: { name: 'Shadow Brute', hp: Base.TYPES.shadow.hp * 4, speed: 45, r: 30, damage: Base.TYPES.shadow.damage * 1.5, xp: 40, height: 88, alpha: true, attack: 'slam', reach: 105, windup: 1.15, cooldown: 3.6 }
   };
+  const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade'];
+  const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute'];
   const W = 2400, H = 2400, SURVIVAL_WAVES = 140, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
@@ -88,9 +98,9 @@
     const n = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 6)), b = g.arena.bounds;
     for (let i = 0; i < n; i++) {
       const x = clamp(e.x + dx / n, b.x + e.r, b.x + b.w - e.r);
-      if (!g.arena.obstacles.some(o => circleRect(x, e.y, e.r, o))) e.x = x;
+      if (e.flying || !g.arena.obstacles.some(o => circleRect(x, e.y, e.r, o))) e.x = x;
       const y = clamp(e.y + dy / n, b.y + e.r + (e === g.player ? Base.AIM_HEIGHT : 0), b.y + b.h - e.r);
-      if (!g.arena.obstacles.some(o => circleRect(e.x, y, e.r, o))) e.y = y;
+      if (e.flying || !g.arena.obstacles.some(o => circleRect(e.x, y, e.r, o))) e.y = y;
     }
   }
   const visible = (g, a, b, padding = 0) => !g.arena.obstacles.some(o => segmentRect(a, b, o, padding) !== null);
@@ -128,7 +138,7 @@
       this.arenaId = this.arenaId || 'open'; this.arena = ARENAS[this.arenaId]; this.totalWaves = this.totalWaves || SURVIVAL_WAVES;
       Object.assign(this.player, this.arena.spawn); this.player.weapon = 'slingshot';
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
-      this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.attackCount = 0;
+      this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.attackCount = 0;
       this.navigation = {};
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
@@ -163,8 +173,18 @@
       this.enemyLimit = 32 + Math.min(64, Math.floor(late * 64 / 90));
       this.queue = Array.from({ length: count }, (_, i) => this.wave < 3 ? i % 3 === 0 ? 'jaguar' : 'crab' : ['crab', 'jaguar', 'shadow'][i % 3]);
       if (this.wave >= 4) this.queue = this.queue.map((type, i) => i % 7 === 3 ? 'tommy' : this.wave >= 7 && i % 7 === 6 ? 'miniLlorona' : type);
+      this.queue = this.queue.map((type, i) => i % 2 === 0 ? COMMONS[(Math.floor(i / 2) + this.wave - 1) % COMMONS.length] : type);
+      this.alphaCount = 0;
+      if (this.wave > 10 && [3, 6, 9].includes(this.wave % 10)) {
+        const max = Math.min(4, Math.floor(this.wave / 10));
+        this.alphaCount = this.wave % 10 === 3 ? max : 1 + Math.floor(this.random() * max);
+        const offset = Math.floor(this.random() * ALPHAS.length);
+        // Alphas replace ordinary slots so the existing wave and active-enemy budgets stay bounded.
+        this.queue.splice(0, this.alphaCount, ...Array.from({ length: this.alphaCount }, (_, i) => ALPHAS[(offset + i) % ALPHAS.length]));
+      }
       if (this.wave % 5 === 0) this.queue.unshift(this.wave % 10 === 5 ? 'duende' : 'jaguarBoss');
       this.spawnTimer = 1.3; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
+      if (this.alphaCount) this.banner = 'Wave ' + this.wave + ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
       for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
       this.refreshStats();
       this.events.push({ type: 'wave' });
@@ -192,7 +212,7 @@
         const damageScale = 1 + .012 * (early - 1) + .006 * late;
         this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
           shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
-          type, id: this.nextId++, warmup: spec.boss ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {} });
+          type, id: this.nextId++, warmup: spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, action: 'move', actionTime: 0, attackTimer: 1 });
         return true;
       }
       return false;
@@ -277,6 +297,10 @@
     defeat(e, reducedXP = false) {
       if (e.dead) return;
       e.dead = true; this.kills++;
+      if (e.attack) {
+        this.corpses.push({ type: e.type, x: e.x, y: e.y, r: e.r, height: e.height, dead: true, life: .6 });
+        if (this.corpses.length > 16) this.corpses.shift();
+      }
       if (this.level < 40) this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
       this.events.push({ type: 'defeat', x: e.x, y: e.y, boss: e.boss });
       if (e.boss) {
@@ -379,6 +403,7 @@
         const applied = Math.min(dt, s.remaining); s.remaining -= dt;
         this.damageEnemy(e, s.dps * applied); if (s.remaining <= 0) delete e.statuses[id]; if (e.dead) return;
       }
+      if (e.attack) { this.rosterTick(e, dt); return; }
       e.routeTimer -= dt;
       if (e.routeTimer <= 0) { e.waypoint = route(this, e, this.player); e.routeTimer = .25; }
       const target = e.waypoint || this.player, angle = Math.atan2(target.y - e.y, target.x - e.x), d = dist(e, this.player);
@@ -410,8 +435,49 @@
       }
       if (e.type === 'jaguarBoss') { for (const a of (e.hp < e.maxHp / 2 ? [-.3, -.15, 0, .15, .3] : [-.2, 0, .2])) this.shot(e.x, e.y, aim + a, true, 14 * (e.shotScale || 1), 245); e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.8; }
     }
+    rosterTick(e, dt) {
+      if (this.active('freeze')) return;
+      const p = this.player, d = dist(e, p);
+      const speed = e.speed * (e.slow || 1); e.slow = 1;
+      e.actionTime += dt; e.attackTimer -= dt;
+      if (e.action === 'windup') {
+        if (e.actionTime < e.windup) return;
+        e.actionTime = 0;
+        if (e.attack === 'pounce') e.action = 'active';
+        else {
+          e.action = 'recover';
+          if (e.attack === 'shot') {
+            if (visible(this, e, p)) this.shot(e.x, e.y, e.attackAngle, true, e.damage, 200, { color: '#bda5d9', r: 5 });
+          } else {
+            this.flashes.push({ x: e.x, y: e.y, r: e.reach, life: .25, color: e.alpha ? '#ffad78' : '#bb9cd3' });
+            if (d <= e.reach + p.r && visible(this, e, p)) this.hurt(e.damage);
+          }
+        }
+        return;
+      }
+      if (e.action === 'active') {
+        move(this, e, Math.cos(e.attackAngle) * e.rushSpeed * dt, Math.sin(e.attackAngle) * e.rushSpeed * dt);
+        if (dist(e, p) < e.r + p.r && visible(this, e, p)) this.hurt(e.damage);
+        if (e.actionTime >= e.rushDuration) { e.action = 'recover'; e.actionTime = 0; }
+        return;
+      }
+      if (e.action === 'recover') {
+        if (e.actionTime >= .45) { e.action = 'move'; e.actionTime = 0; }
+        return;
+      }
+      if (e.attackTimer <= 0 && d <= e.reach + p.r && visible(this, e, p)) {
+        e.action = 'windup'; e.actionTime = 0; e.attackTimer = e.cooldown;
+        e.attackAngle = Math.atan2(p.y - e.y, p.x - e.x); return;
+      }
+      e.routeTimer -= dt;
+      if (e.flying) e.waypoint = p;
+      else if (e.routeTimer <= 0) { e.waypoint = route(this, e, p); e.routeTimer = .25; }
+      const target = e.waypoint || p, angle = Math.atan2(target.y - e.y, target.x - e.x);
+      if (e.attack !== 'shot' || d > 210 || !visible(this, e, p)) move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
+    }
     tick(dt, input) {
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
+      this.corpses = this.corpses.filter(e => { e.life -= dt; return e.life > 0; });
       const p = this.player; p.invincible = Math.max(0, p.invincible - dt); p.dashCooldown = Math.max(0, p.dashCooldown - dt); p.fireCooldown -= dt;
       this.wardCooldown = Math.max(0, this.wardCooldown - dt);
       for (const id of Object.keys(this.powers)) { this.powers[id] -= dt; if (this.powers[id] <= 0) delete this.powers[id]; }
@@ -531,6 +597,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, WEAPONS, PERKS, POWERS, weapon, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, WEAPONS, PERKS, POWERS, weapon, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);
