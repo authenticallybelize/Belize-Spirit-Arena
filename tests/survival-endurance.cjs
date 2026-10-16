@@ -8,7 +8,7 @@ function atWave(wave, mode = 'survival', arena = 'open') {
 }
 function deadFoe() { return { x: 1200, y: 1200, xp: 5, type: 'crab' }; }
 
-const earlyCounts = [7, 8, 9, 11, 13, 13, 14, 16, 17, 19], table = [];
+const earlyCounts = [8, 9, 10, 13, 15, 15, 16, 18, 19, 21], table = [];
 let lastMobs = 0, lastTotal = 0, lastHP = 0, lastDamage = 0, lastInterval = Infinity, lastLimit = 0;
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   const g = atWave(wave), mobs = g.queue.filter(type => !TYPES[type].boss).length;
@@ -79,21 +79,21 @@ assert(entire.spawn('duende')); assert(entire.enemies[0].warmup > 0, 'Show-entir
 const levelCap = atWave(60); levelCap.level = 39; levelCap.xp = levelCap.xpNeeded;
 levelCap.gems = [{ x: 0, y: 0, value: 5 }]; levelCap.powers.doubleXP = 2;
 levelCap.addDrop('bonusXP', 1000, 1000, 'power'); levelCap.addDrop('doubleXP', 1050, 1000, 'power'); levelCap.addDrop('shield', 1100, 1000, 'power');
-assert(levelCap.levelUp()); assert.equal(levelCap.level, 40); assert.equal(levelCap.powerPool().length, 8);
-assert.deepEqual(levelCap.gems, []); assert.equal(levelCap.active('doubleXP'), false); assert.deepEqual(levelCap.drops.map(d => d.id), ['shield']);
-levelCap.defeat(deadFoe()); assert.equal(levelCap.gems.length, 0, 'Zero-value XP gems accumulated past the cap');
-levelCap.xp = 99999; assert(!levelCap.levelUp());
+assert(levelCap.levelUp()); assert.equal(levelCap.level, 40); assert.equal(levelCap.powerPool().length, 10);
+assert.equal(levelCap.gems.length, 1); assert.equal(levelCap.active('doubleXP'), true); assert.deepEqual(levelCap.drops.map(d => d.id), ['bonusXP', 'doubleXP', 'shield']);
+levelCap.defeat(deadFoe()); assert.equal(levelCap.gems.length, 2, 'XP gems stopped at level forty');
+levelCap.choose(0); levelCap.xp = levelCap.xpNeeded; assert(levelCap.levelUp()); assert.equal(levelCap.level, 41);
 for (const perk of PERKS) levelCap.ranks[perk.id] = perk.max;
 assert(PERKS.every(perk => !levelCap.eligible(perk)), 'Endurance reopened capped perks');
-const validPowers = Object.keys(POWERS).filter(id => !['bonusXP', 'doubleXP'].includes(id)), randomPowers = [];
-for (let index = 0; index < 8; index++) {
-  const g = atWave(80); g.level = 40; const samples = [.034999, (index + .5) / 8]; g.random = () => samples.shift(); g.defeat(deadFoe()); randomPowers.push(g.drops[0].id);
+const validPowers = Object.keys(POWERS), randomPowers = [];
+for (let index = 0; index < 10; index++) {
+  const g = atWave(80); g.level = 40; const samples = [.034999, (index + .5) / 10]; g.random = () => samples.shift(); g.defeat(deadFoe()); randomPowers.push(g.drops[0].id);
 }
 assert.deepEqual(randomPowers, validPowers);
 const chance = atWave(80); chance.level = 40; chance.random = () => .035; chance.defeat(deadFoe()); assert.equal(chance.drops.length, 0, 'Nominal power-drop chance increased');
 const guaranteed = [];
-for (let wave = 42; wave <= 56; wave += 2) { const g = atWave(wave); g.level = 40; g.queue = []; g.update(1 / 120); guaranteed.push(g.drops.find(d => d.kind === 'power').id); }
-assert.deepEqual(new Set(guaranteed), new Set(validPowers), 'Guaranteed power cycle offered dead XP powers');
+for (let wave = 42; wave <= 60; wave += 2) { const g = atWave(wave); g.level = 40; g.queue = []; g.update(1 / 120); guaranteed.push(g.drops.find(d => d.kind === 'power').id); }
+assert.deepEqual(new Set(guaranteed), new Set(validPowers), 'Guaranteed power cycle lost usable XP powers');
 
 const stress = atWave(100); stress.level = 40; stress.collectPower('shield');
 while (stress.enemies.length < stress.enemyLimit) assert(stress.spawn('crab'));
@@ -102,6 +102,6 @@ for (let i = 0; i < 200; i++) stress.shot(1200, 1168, i * Math.PI / 100, false, 
 for (let i = 0; i < 150; i++) { const a = i * Math.PI / 75; stress.shot(1200 + Math.cos(a) * 300, 1200 + Math.sin(a) * 300, a, true, 1, 170); }
 const started = performance.now(); for (let i = 0; i < 240; i++) stress.update(1 / 120);
 assert(stress.enemies.length <= 96 && stress.bullets.length <= 350);
-console.log('PASS: 140-wave increasing pressure, preserved first ten waves/Arena Run, ten-per-second cadence, active cap/retry, safe offscreen pressure spawning, capped progression/powers and damage snapshots.');
+console.log('PASS: 140-wave increasing pressure, updated ten-wave Arena Run, bounded cadence/cap/retry, safe offscreen spawning, uncapped progression, all powers and damage snapshots.');
 console.table(table);
 console.log('Logic-only stress: ' + ((performance.now() - started) / 240).toFixed(2) + ' ms / 120Hz step with up to 96 mobs and 350 projectiles; excludes browser rendering and physical devices.');

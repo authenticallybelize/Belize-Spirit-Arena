@@ -68,9 +68,9 @@ aimedClaw.update(1 / 120, { shooting: true, aimX: closeTarget.x, aimY: closeTarg
 assert.equal(closeTarget.hp, 976, 'Claw missed the cursor target because its arc used a different origin');
 assert.equal(aimedClaw.flashes[0].y, aimedClaw.player.y - AIM_HEIGHT);
 const groundedDrum = field('drum'); groundedDrum.fire(); assert.equal(groundedDrum.flashes[0].y, groundedDrum.player.y, 'Drum radial pulse lost its ground origin');
-for (let i = 0; i < 5; i++) assert(pick(a, 'damage'));
+for (let i = 0; i < 6; i++) assert(pick(a, 'damage'));
 assert(!a.eligible(PERKS.find(p => p.id === 'damage'))); assert(!pick(a, 'damage'));
-assert(Math.abs(a.player.damage - 19 * 1.25 ** 5) < 1e-8);
+assert(Math.abs(a.player.damage - 19 * 1.25 ** 6) < 1e-8);
 const rolls = playing('claw'); rolls.wave = 1; rolls.xp = 25; assert(rolls.levelUp());
 assert.equal(new Set(rolls.choices.map(p => p.id)).size, 3); assert(rolls.choices.every(p => p.tag !== 'projectile' && p.tag !== 'boss'));
 rolls.choose(0); assert(pick(rolls, 'grandma')); rolls.xp = rolls.xpNeeded; assert(rolls.levelUp()); assert.equal(rolls.choices.length, 4);
@@ -181,8 +181,8 @@ const exhausted = playing(); for (const p of PERKS) exhausted.ranks[p.id] = p.ma
 assert.equal(exhausted.choices.length, 1, 'Exhausted pool repeated the same fallback card');
 const capped = playing(); for (const p of PERKS) capped.ranks[p.id] = p.max; capped.ranks.speed--; capped.xp = capped.xpNeeded; capped.levelUp();
 assert.deepEqual(capped.choices.map(p => p.id), ['speed'], 'Max-rank perks were offered');
-assert(capped.choices[0].detail.includes('Current 4/5 · +1 rank'), 'Final available rank looked like an already-maxed perk');
-assert(capped.choose(0)); assert.equal(capped.rank('speed'), 5);
+assert(capped.choices[0].detail.includes('Current 5/6 · +1 rank'), 'Final available rank looked like an already-maxed perk');
+assert(capped.choose(0)); assert.equal(capped.rank('speed'), 6);
 capped.xp = capped.xpNeeded; capped.levelUp(); assert(!capped.choices.some(p => p.id === 'speed'), 'Choosing the final rank did not remove the perk');
 const progression = playing(); const bossWaves = [];
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
@@ -193,10 +193,10 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
 }
 assert.deepEqual(bossWaves, Array.from({ length: 28 }, (_, i) => (i + 1) * 5)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
 progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equal(progression.wave, 1); assert.equal(progression.totalWaves, 10); assert.equal(progression.player.weapon, 'dart'); assert.equal(progression.rank('damage'), 0);
-progression.level = 40; progression.xp = 99999; assert(!progression.levelUp());
+progression.level = 40; progression.xp = progression.xpNeeded; assert(progression.levelUp()); assert.equal(progression.level, 41);
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
 for (const w of WEAPONS.filter(w => w.art)) { const [x, y, ww, hh] = w.art; assert(x >= 0 && y >= 0 && x + ww <= width && y + hh <= height); }
-console.log('PASS: 12 weapons, four preserved arenas plus a 2400 open field, collisions, cap/eligibility/fallback, four cards, enhancements/swaps, optional staff, powerups, statuses, cover/splash cap, separate projectile budgets, 140-wave progression, XP cap and restart.');
+console.log('PASS: 12 weapons, five arenas, collisions, perk caps/eligibility/fallback, four cards, enhancements, powers, statuses, cover/budgets, 140 waves, uncapped XP and restart.');
 
 const snake = playing(); snake.spawn('tommy'); const striker = snake.enemies.at(-1);
 Object.assign(striker, { x: 650, y: 575, warmup: 0, rushTimer: 0, routeTimer: 99 });

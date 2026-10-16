@@ -17,6 +17,8 @@
   };
   const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade'];
   const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute'];
+  for (const [id, spec] of Object.entries(TYPES)) TYPES[id] = { ...spec, hp: spec.hp * 1.15 * (spec.alpha ? 1.5 : 1) };
+  const xpForLevel = level => Math.ceil(25 + 13 * (level - 1) + .5 * (level - 1) ** 2);
   const W = 2400, H = 2400, SURVIVAL_WAVES = 140, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
@@ -51,7 +53,7 @@
   const weapon = id => WEAPONS.find(w => w.id === id) || WEAPONS[0];
   const PERKS = [
     ['damage', 'Heart of the Jungle', '+25% compounded damage', 5, 'Common'],
-    ['rate', 'Quick Hands', '+18% firing speed', 5, 'Common'],
+    ['rate', 'Quick Hands', '+18% firing speed; capped ranks add +5% direct damage', 5, 'Common'],
     ['speed', 'Trail Runner', '+24 movement speed', 5, 'Common'],
     ['health', 'Cohune Heart', '+25 max HP · heal 25', 5, 'Common'],
     ['harpy', 'Harpy Eye', '+20% shot speed · +10% range', 4, 'Common', 'projectile'],
@@ -65,23 +67,23 @@
     ['second', 'Second Wind', 'Below 35% HP: speed, fire and damage', 1, 'Uncommon'],
     ['duplicate', 'Duende Trick', '+8% phantom-shot chance · 60% damage', 3, 'Uncommon', 'projectile'],
     ['resonance', 'Guardian Resonance', '+20% temporary power duration', 3, 'Uncommon'],
-    ['rhythm', 'Belizean Rhythm', 'Kill-triggered spirit pulse: 25 → 20 → 15', 3, 'Uncommon'],
+    ['rhythm', 'Belizean Rhythm', 'Kill-triggered spirit pulse: 25 → 20 → 15 → 10', 3, 'Uncommon'],
     ['breathing', 'Breathing Room', 'Knock back foes · 1.5s protection on resume', 1, 'Uncommon'],
     ['pierce', 'Obsidian Edge', 'Pierce one more target · 15% falloff', 3, 'Rare', 'projectile'],
-    ['ricochet', 'Macal Ricochet', 'One extra enemy ricochet', 2, 'Rare', 'projectile'],
-    ['overflow', 'Spirit Overflow', 'Bonus shot every 6 → 5 → 4 attacks', 3, 'Rare', 'projectile'],
+    ['ricochet', 'Macal Ricochet', 'Two bounces maximum; rank III adds +15% bounced damage', 2, 'Rare', 'projectile'],
+    ['overflow', 'Spirit Overflow', 'Bonus shot every 6 → 5 → 4 → 3 attacks', 3, 'Rare', 'projectile'],
     ['blast', 'Cohune Blast', '+25% radius (160 cap) · +15% bomb damage', 4, 'Rare', 'explosive'],
     ['poison', 'Fer-de-Lance Venom', 'Poison: 6 DPS / rank for 3 seconds', 3, 'Uncommon', 'projectile'],
     ['fire', 'Bushfire Blessing', '15% / rank chance: burn 10 DPS / rank', 3, 'Uncommon', 'projectile'],
     ['homing', 'Kukulkan Wind', 'Stronger gentle projectile homing', 3, 'Rare', 'projectile'],
-    ['ward', 'Maya Ward', 'Block a hit every 25 → 20 → 15 seconds', 3, 'Rare'],
+    ['ward', 'Maya Ward', 'Block a hit every 25 → 20 → 15 → 10 seconds', 3, 'Rare'],
     ['bossDamage', 'Legend Hunter', '+20% boss damage', 3, 'Rare', 'boss'],
     ['courage', 'Jaguar Courage', 'While boss lives: speed, fire and damage', 1, 'Uncommon', 'boss'],
     ['trophy', 'Trophy Keeper', 'Each future boss: +5% damage · +10 max HP', 1, 'Legendary', 'boss'],
     ['sacred', 'Sacred Return', 'Boss death: heal 35% · guaranteed power', 1, 'Legendary', 'boss'],
     ['grandma', 'Grandma Knows Best', 'Fourth card with improved rarity odds', 1, 'Legendary'],
     ['commit', 'One Tool, One Path', 'Lock weapon · +40% damage · +20% fire', 1, 'Legendary']
-  ].map(([id, name, detail, max, rarity, tag]) => ({ id, name, detail, max, rarity, tag, icon: '✦' }));
+  ].map(([id, name, detail, max, rarity, tag]) => ({ id, name, detail, max: max > 1 ? max + 1 : max, rarity, tag, icon: '✦' }));
   const POWERS = {
     heavy: { name: 'Heavy Bullets', duration: 8, color: '#ffe197' },
     freeze: { name: 'Freeze', duration: 5, color: '#9adfff' },
@@ -142,6 +144,7 @@
       this.navigation = {};
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
+      this.xpNeeded = xpForLevel(this.level);
       this.spawnInterval = .882; this.enemyLimit = 32; this.view = null;
       this.refreshStats();
     }
@@ -152,7 +155,12 @@
     }
     rank(id) { return this.ranks[id] || 0; }
     active(id) { return (this.powers[id] || 0) > 0; }
-    powerPool() { return Object.keys(POWERS).filter(id => this.level < 40 || id !== 'doubleXP' && id !== 'bonusXP'); }
+    powerPool() { return Object.keys(POWERS); }
+    normalInterval(rank = this.rank('rate')) {
+      const w = weapon(this.player.weapon), low = this.player.hp < this.player.maxHp * .35 && this.rank('second');
+      const boss = this.enemies.some(e => e.boss && !e.dead);
+      return Math.max(.065, 1 / w.rate * .45, 1 / w.rate / 1.18 ** rank / (this.commitWeapon ? 1.2 : 1) / (low ? 1.12 : 1) / (boss && this.rank('courage') ? 1.12 : 1));
+    }
     refreshStats() {
       const p = this.player, w = weapon(p.weapon), enhancement = 1 + .15 * (this.weaponLevels[w.id] - 1);
       this.enduranceBonus = this.totalWaves > 10 ? clamp(this.wave - 40 + (this.finishedWave ? 1 : 0), 0, 100) * .01 : 0;
@@ -160,15 +168,14 @@
       p.damage = w.damage * enhancement * 1.25 ** this.rank('damage') * (1 + .05 * this.trophyBosses) * (1 + this.enduranceBonus) *
         (this.commitWeapon ? 1.4 : 1) * (boss && this.rank('courage') ? 1.1 : 1) * (low ? 1.1 : 1) *
         (this.active('heavy') ? 2 : 1) * (this.active('evolution') ? 1.5 : 1) * (w.explosive ? 1 + .15 * this.rank('blast') : 1);
-      const normalFloor = Math.max(.065, 1 / w.rate * .45);
-      p.interval = Math.max(normalFloor, 1 / w.rate / 1.18 ** this.rank('rate') / (this.commitWeapon ? 1.2 : 1) / (low ? 1.12 : 1) / (boss && this.rank('courage') ? 1.12 : 1));
+      p.interval = this.normalInterval();
       if (this.active('badman')) p.interval = Math.max(.03, p.interval / 2.25);
       p.speed = Math.min(400, (218 + 24 * this.rank('speed')) * (low ? 1.15 : 1) * (boss && this.rank('courage') ? 1.12 : 1));
     }
     beginWave() {
       this.wave++; this.finishedWave = false; this.breakTime = 0;
       const late = this.totalWaves > 10 ? Math.max(0, this.wave - 10) : 0;
-      const count = 6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5);
+      const count = Math.ceil((6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5)) * 1.1);
       this.spawnInterval = late ? Math.max(.1, .72 - .62 * late / 90) : Math.max(.32, .9 - .018 * this.wave);
       this.enemyLimit = 32 + Math.min(64, Math.floor(late * 64 / 90));
       this.queue = Array.from({ length: count }, (_, i) => this.wave < 3 ? i % 3 === 0 ? 'jaguar' : 'crab' : ['crab', 'jaguar', 'shadow'][i % 3]);
@@ -230,7 +237,7 @@
       if (this.rank(perk.id) >= perk.max) return false;
       if (perk.tag === 'boss') return this.wave >= 5;
       if (perk.id === 'commit') return this.wave >= 5 && !this.commitWeapon;
-      if (perk.id === 'rate') return this.player.interval > Math.max(.065, 1 / w.rate * .45) + .001;
+      if (perk.id === 'rate' && w.cloud) return this.normalInterval(this.rank('rate') + 1) < this.normalInterval() - .000001;
       if (perk.id === 'homing') return (w.homing ? FEATHER_HOMING[this.weaponLevels[w.id] - 1] : 0) + .55 * this.rank('homing') < Math.PI - .001;
       return true;
     }
@@ -242,19 +249,15 @@
       return candidates.at(-1)?.p || pool[Math.floor(this.random() * pool.length)];
     }
     levelUp() {
-      if (this.level >= 40 || this.xp < this.xpNeeded) return false;
-      this.xp -= this.xpNeeded; this.level++; this.xpNeeded = 25 + (this.level - 1) * 13;
-      if (this.level === 40) {
-        this.gems = []; delete this.powers.doubleXP;
-        this.drops = this.drops.filter(d => d.kind !== 'power' || d.id !== 'doubleXP' && d.id !== 'bonusXP');
-      }
+      if (this.xp < this.xpNeeded) return false;
+      this.xp -= this.xpNeeded; this.level++; this.xpNeeded = xpForLevel(this.level);
       let available = PERKS.filter(p => this.eligible(p)); this.choices = [];
       const n = this.rank('grandma') ? 4 : 3;
       for (let i = 0; i < n; i++) {
         if (!available.length && this.choices.length) break;
         let pool = i === 0 ? available.filter(p => !p.tag && ['Common', 'Uncommon'].includes(p.rarity)) : i === 1 ? available.filter(p => p.tag !== 'boss') : available;
         if (!pool.length) pool = available;
-        let pick = pool.length ? this.roll(pool, i === 3) : { id: 'overflowHeal', name: 'Jungle Recovery', detail: 'Heal 25 HP · all useful perks exhausted', max: 0, rarity: 'Common', icon: '♡' };
+        let pick = pool.length ? this.roll(pool, i === 3) : { id: 'overflowHeal', name: 'Jungle Vitality', detail: '+5 permanent max HP · heal 25 HP · repeatable', max: 0, rarity: 'Common', icon: '♡' };
         this.choices.push({ ...pick, detail: pick.detail + (pick.max ? ' · Current ' + this.rank(pick.id) + '/' + pick.max + ' · +1 rank' : '') });
         available = available.filter(p => p.id !== pick.id);
       }
@@ -263,7 +266,7 @@
     choose(index) {
       if (this.mode !== 'upgrade' || !this.choices[index]) return false;
       const id = this.choices[index].id;
-      if (id === 'overflowHeal') this.player.hp = Math.min(this.player.maxHp, this.player.hp + 25);
+      if (id === 'overflowHeal') { this.player.maxHp += 5; this.player.hp = Math.min(this.player.maxHp, this.player.hp + 25); }
       else {
         const perk = PERKS.find(p => p.id === id); if (!perk || this.rank(id) >= perk.max) return false;
         this.ranks[id] = this.rank(id) + 1; this.upgrades.push(id);
@@ -301,7 +304,7 @@
         this.corpses.push({ type: e.type, x: e.x, y: e.y, r: e.r, height: e.height, dead: true, life: .6 });
         if (this.corpses.length > 16) this.corpses.shift();
       }
-      if (this.level < 40) this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
+      this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
       this.events.push({ type: 'defeat', x: e.x, y: e.y, boss: e.boss });
       if (e.boss) {
         this.bossesDefeated++; this.addDrop(e.type === 'duende' ? 'staff' : 'claw', e.x, e.y, 'weapon', true);
@@ -343,7 +346,6 @@
       this.banner = POWERS[id].name + ' collected'; this.bannerTime = 2; this.refreshStats();
     }
     gainXP(value, gem = true) {
-      if (this.level >= 40) return;
       this.xpFraction += value * (gem ? 1 + .2 * this.rank('xp') : 1) * (this.active('doubleXP') ? 2 : 1);
       const whole = Math.floor(this.xpFraction); this.xp += whole; this.xpFraction -= whole;
     }
@@ -370,12 +372,13 @@
       const p = this.player, w = weapon(p.weapon); this.attackCount++;
       const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id];
       let damage = p.damage;
+      if (!w.cloud) for (let i = 1; i <= this.rank('rate'); i++) if (this.normalInterval(i) >= this.normalInterval(i - 1) - .000001) damage *= 1.05;
       if (this.random() < Math.min(.5, .08 * this.rank('crit'))) damage *= 2;
       if (w.melee || w.pulse) this.pulse(w.melee ? origin : p, w.range + (this.weaponLevels[w.id] - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
       else {
         const launch = (angle, multiplier = 1, secondary = false) => this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
           w.speed * (1 + .2 * this.rank('harpy')), { kind: w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: w.range * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
-            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: this.rank('ricochet'), homing: Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
+            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: Math.min(2, this.rank('ricochet')), ricochetBoost: this.rank('ricochet') > 2 ? 1.15 : 1, homing: Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
             targetId: w.homing ? this.homingTarget(origin, angle)?.id : undefined, seekingRank: w.homing ? rank : 0,
             poison: (w.poison || 0) + 6 * this.rank('poison'), burn: this.random() < .15 * this.rank('fire') ? 10 * this.rank('fire') : 0,
             explosive: w.explosive, cloud: w.cloud, secondary });
@@ -537,7 +540,7 @@
           if (b.pierce > 0) { b.pierce--; b.damage *= .85; continue; }
           if (b.bounces > 0) {
             const next = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !b.hitIds.has(e.id) && visible(this, hit.e, e)).sort((a, e) => dist(a, hit.e) - dist(e, hit.e))[0];
-            if (next) { const a = Math.atan2(next.y - hit.e.y, next.x - hit.e.x), speed = Math.hypot(b.vx, b.vy); b.vx = Math.cos(a) * speed; b.vy = Math.sin(a) * speed; b.bounces--; b.damage *= .85; b.x = hit.e.x; b.y = hit.e.y; stoppedAtHit = true; break; }
+            if (next) { const a = Math.atan2(next.y - hit.e.y, next.x - hit.e.x), speed = Math.hypot(b.vx, b.vy); b.vx = Math.cos(a) * speed; b.vy = Math.sin(a) * speed; b.bounces--; b.damage *= .85 * (b.ricochetBoost || 1); b.ricochetBoost = 1; b.x = hit.e.x; b.y = hit.e.y; stoppedAtHit = true; break; }
           }
           b.life = 0; stoppedAtHit = true; break;
         }
@@ -597,6 +600,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, WEAPONS, PERKS, POWERS, weapon, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, WEAPONS, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

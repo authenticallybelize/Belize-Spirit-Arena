@@ -2,7 +2,17 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
-## Common mobs and alphas — 0.6.0
+## Progression and enemy balance — 0.6.1
+
+Survival and Arena Run no longer stop XP levels, gems or XP powers at level 40. Every level costs `ceil(25 + 13 × (level − 1) + 0.5 × (level − 1)²)` XP, so later levels become progressively harder. All 24 stackable perks gain one maximum rank; seven unique perks stay at one. Once all useful choices are exhausted, repeatable Jungle Vitality adds five permanent max HP and heals 25, so even a full-health/maxed build still gains something on every level.
+
+Existing weapon firing floors, two-ricochet limit, 180-degree/sec homing cap, sixteen Shock links and 96-active-enemy limit remain. Quick Hands ranks that cannot improve the normal firing interval provide +5% direct attack damage instead; temporary Badman does not affect that calculation. Cloud weapons do not receive this direct-only bonus and do not offer a firing rank with no benefit. Ricochet III adds +15% bounced-hit damage once, without adding a third bounce. Other additional ranks follow their existing formulas.
+
+Ordinary queue slots increase by 10%, rounded up per wave, while the scheduled single boss and alpha counts remain the same. All fifteen Survival enemy definitions, including bosses, gain 15% base HP. Alphas also gain 50% HP, applied multiplicatively: **1.725× previous alpha HP**, or **6× their newly increased normal family HP**. Damage, XP rewards, attack timing and the alpha schedule are unchanged. Story, classic, original RPG code and saves retain their existing rules.
+
+Validation: `npm test` passes all ten suites, including all 140 wave budgets/count boundaries, same-wave HP ratios, all enemy HP changes, exact perk caps, XP beyond level 200, overflow XP/queued upgrades, late XP gems/powers, repeated permanent vitality at full health and bounded Quick Hands/ricochet effects. Local Edge/Playwright (Browser plugin not available) at 1440×1000 desktop and 844×390 touch verifies real movement/fire, pause/restart, updated help, level 40→41, selecting rank VI, repeated vitality and actual scaled alpha HP. Story and classic menus still respond; zero local application errors/failed assets. Evidence and publication/rollback packages are under `.codex/workspaces/bsa-balance-qa` on the authoring machine. Physical phones, Safari engine and an uninterrupted earned 140-wave balance run remain unverified.
+
+## Common mobs and alphas — 0.6.0 (historical release)
 
 Survival and Arena Run add exactly five common enemies: Spiderling, Sompopo Worker, Africanized Bee Swarm, Corrupted Rootling and Owl Shade. The insects pursue and bite/sting; Rootling fires a warned spirit shot; Owl Shade warns before a short talon dive. Bees and Owl Shade fly over cover while remaining shootable. Existing world boundaries, projectile cover and player movement remain authoritative.
 

@@ -24,7 +24,7 @@ for (let wave = 1; wave <= 140; wave++) {
     const expected = wave > 10 && [3, 6, 9].includes(wave % 10) ? wave % 10 === 3 ? max : roll === 0 ? 1 : max : 0;
     assert.equal(count, expected, 'Alpha schedule at wave ' + wave);
     assert.equal(count, g.alphaCount);
-    assert.equal(g.queue.length, 6 + Math.floor(wave * 1.25) + Math.ceil(Math.max(0, wave - 10) / 5) + (wave % 5 === 0 ? 1 : 0), 'Alphas added extra crowd slots');
+    assert.equal(g.queue.length, Math.ceil((6 + Math.floor(wave * 1.25) + Math.ceil(Math.max(0, wave - 10) / 5)) * 1.1) + (wave % 5 === 0 ? 1 : 0), 'Alphas added extra crowd slots');
     assert(g.queue.every(id => TYPES[id]));
     assert.equal(g.queue.filter(id => TYPES[id].boss).length, wave % 5 === 0 ? 1 : 0);
   }
@@ -35,7 +35,7 @@ for (const [alpha, normal] of [['alphaCrab', 'crab'], ['alphaJaguar', 'jaguar'],
   for (const wave of [13, 23, 33, 100, 140]) {
     const g = game(wave); assert(g.spawn(alpha)); assert(g.spawn(normal));
     const [a, n] = g.enemies;
-    assert(Math.abs(a.hp - n.hp * 4) < 1e-8); assert(Math.abs(a.damage - n.damage * 1.5) < 1e-8);
+    assert(Math.abs(a.hp - n.hp * 6) < 1e-8); assert(Math.abs(a.damage - n.damage * 1.5) < 1e-8);
     assert(!a.boss && a.alpha && a.warmup === 1.7); assert(a.r > n.r);
   }
 }
@@ -109,4 +109,4 @@ for (let i = 0; i < 150; i++) stress.shot(1200, 1200, i * Math.PI / 75, true, .1
 for (let i = 0; i < 240; i++) stress.update(1 / 120);
 assert(stress.enemies.length <= 96 && stress.bullets.length <= 350 && stress.corpses.length <= 16);
 assert(stress.enemies.every(e => Number.isFinite(e.x + e.y + e.hp + e.actionTime)));
-console.log('PASS: exactly five commons/three alphas, all 140 wave schedules and random extremes, 4x HP/1.5x damage, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');
+console.log('PASS: exactly five commons/three alphas, all 140 wave schedules and random extremes, 6x family HP/1.5x damage, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');
