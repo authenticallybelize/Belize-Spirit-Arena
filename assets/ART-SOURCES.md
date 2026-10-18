@@ -1,5 +1,11 @@
 # Spirit Arena artwork and references
 
+## Full boss integration — 0.7.0
+
+Six existing generated folklore sheets are copied into measured runtime derivatives for El Cadejo, Male/Female Sisimite, Anansi, Soch and La Xtabai. Soch also uses the already prepared transformation and harpy combat sheets. Originals and prompts remain untouched under `C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated`. La Llorona uses the original `llorona.png` frames already prepared for Mini Llorona, drawn at full boss scale; Duende/Jaguar preserve their existing art.
+
+`ready/bosses/manifest.json` records each source path/SHA-256, runtime hash, cell size, body height and pivot. `bosses.js` extends the original roster without changing its eight atlases or metadata. Runtime sheets use the same alpha threshold, disconnected-fragment cleanup, three-source-pixel cell margin and 50% downsampling as the 0.6.0 roster preparation. No artwork was regenerated. The eight sheets remain single-facing 6×4 source animations, not newly authored multi-directional cycles. Boss effects deal damage through bounded simulation areas/projectiles, independent of illustrative particles in the sheets.
+
 ## Eight-enemy roster — 0.6.0
 
 User-approved generated sheets from the Legends of Belize workspace are integrated only for Spiderling, Sompopo Worker, Africanized Bee Swarm, Corrupted Rootling, Owl Shade, Armored Mangrove Crab, Jaguar Sentinel and Shadow Brute. Originals remain under `spirit-arena/assets/generated/beta-common-v1` and `alpha-corrupted-v1`, with generation prompts in each folder's `PROMPTS.md`. No new designs were generated for this integration. Source and runtime SHA-256 hashes, source-relative filenames, cell sizes and stable anchors are in `ready/roster/manifest.json`.

@@ -5,8 +5,8 @@ const oldHP = { crab: 42, jaguar: 25, shadow: 48, duende: 1050, jaguarBoss: 2400
 const oldCaps = { damage: 5, rate: 5, speed: 5, health: 5, harpy: 4, magnet: 4, xp: 5, armor: 4, dodge: 4, crit: 4, regen: 4, recovery: 3, second: 1, duplicate: 3, resonance: 3, rhythm: 3, breathing: 1, pierce: 3, ricochet: 2, overflow: 3, blast: 4, poison: 3, fire: 3, homing: 3, ward: 3, bossDamage: 3, courage: 1, trophy: 1, sacred: 1, grandma: 1, commit: 1 };
 const near = (actual, expected) => assert(Math.abs(actual - expected) < 1e-7, actual + ' != ' + expected);
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
-function playing(weapon = 'slingshot') { const g = new Game(seeded(7)); g.start({ mode: 'survival', weapon }); g.queue = ['crab']; g.spawnTimer = 999; return g; }
-for (const [id, hp] of Object.entries(oldHP)) near(TYPES[id].hp, hp * 1.15 * (TYPES[id].alpha ? 1.5 : 1));
+function playing(weapon = 'slingshot') { const g = new Game(seeded(7)); g.start({ mode: 'survival' }); g.player.weapon = weapon; g.refreshStats(); g.queue = ['crab']; g.spawnTimer = 999; return g; }
+for (const [id, hp] of Object.entries(oldHP)) near(TYPES[id].hp, hp * 1.15 * (TYPES[id].alpha ? 1.5 : id === 'duende' ? 5 : 1));
 assert.equal(Base.TYPES.crab.hp, 42); assert.equal(Base.TYPES.duende.hp, 1050, 'Survival mutated Story/classic stats');
 for (const p of PERKS) assert.equal(p.max, oldCaps[p.id] === 1 ? 1 : oldCaps[p.id] + 1, p.id);
 assert.equal(PERKS.filter(p => p.max === 1).length, 7); assert.equal(PERKS.length, 31);

@@ -81,7 +81,7 @@
         -roster.pivot[0] * scale, -roster.pivot[1] * scale, size * scale, size * scale);
       ctx.restore(); return;
     }
-    const id = type === 'jaguar' ? 'minijaguar' : type, art = ARENA_READY.sprites[id];
+    const id = type === 'jaguar' ? 'minijaguar' : type === 'lloronaBoss' ? 'miniLlorona' : type, art = ARENA_READY.sprites[id];
     index = art.frames[index] ? index : 0;
     const frame = ARENA_SPRITES[id].frames[index], pivot = art.pivots[index];
     const scale = height / (frame[3] * Math.min(art.frameSize[0] / frame[2], art.frameSize[1] / frame[3]));
@@ -102,28 +102,37 @@
   }
   function drawEnemy(enemy, t) {
     const { x, y, type } = enemy;
+    if (enemy.dead && !window.ARENA_ROSTER?.[type]) { drawSprite(type, 4, x, y + 13, enemy.height || 60, false, Math.min(1, enemy.life * 4)); return; }
     if (window.ARENA_ROSTER?.[type]) {
+      const sprite = type === 'sochBoss' && enemy.form === 'transform' ? 'sochTransform' : type === 'sochBoss' && enemy.form === 'harpy' ? 'sochHarpy' : type;
       const height = enemy.height, bottom = y + 13 - (enemy.flying ? 12 : 0);
       if (enemy.dead) {
-        drawSprite(type, 18 + Math.min(5, Math.floor((.6 - enemy.life) * 10)), x, bottom, height, false, Math.min(1, enemy.life * 4)); return;
+        drawSprite(sprite, 18 + Math.min(5, Math.floor((.6 - enemy.life) * 10)), x, bottom, height, false, Math.min(1, enemy.life * 4)); return;
       }
       shadow(x, y, enemy.r);
-      if (enemy.warmup > 0 || enemy.action === 'windup') {
-        const spawn = enemy.warmup > 0, radius = spawn ? enemy.r + 12 : enemy.attack === 'pounce' ? enemy.r + 6 : enemy.reach;
+      const skill = enemy.skill, attack = skill?.kind || enemy.attack;
+      if (enemy.warmup > 0 || enemy.action === 'windup' && enemy.alpha && attack === 'slam') {
+        const spawn = enemy.warmup > 0, radius = spawn ? enemy.r + 12 : enemy.reach;
         ctx.save(); ctx.strokeStyle = enemy.alpha ? '#ffb17c' : '#c9b1e5'; ctx.fillStyle = enemy.alpha ? '#e7793c22' : '#b69bd51c'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-        if (!spawn && enemy.attack === 'pounce') {
-          ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.moveTo(x, y);
-          ctx.lineTo(x + Math.cos(enemy.attackAngle) * enemy.rushSpeed * enemy.rushDuration, y + Math.sin(enemy.attackAngle) * enemy.rushSpeed * enemy.rushDuration); ctx.stroke();
+        ctx.restore();
+      }
+      if (enemy.warmup <= 0 && enemy.action === 'windup' && ['pounce', 'rush', 'shot', 'fan'].includes(attack)) {
+        const length = attack === 'pounce' ? enemy.rushSpeed * enemy.rushDuration : attack === 'rush' ? skill.speed * skill.duration : 190;
+        ctx.save(); ctx.strokeStyle = enemy.boss ? '#f4be8c' : '#bc9bda'; ctx.lineWidth = 2; ctx.setLineDash([8, 6]);
+        const count = attack === 'fan' ? 3 : 1;
+        for (let i = 0; i < count; i++) {
+          const angle = enemy.attackAngle + (i - (count - 1) / 2) * (skill?.spread || 0) * ((skill?.count || 1) - 1) / 2;
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length); ctx.stroke();
         }
         ctx.restore();
       }
-      const row = enemy.attack === 'shot' ? 2 : 1;
-      const actionFrame = enemy.action === 'windup' ? Math.min(2, Math.floor(enemy.actionTime / enemy.windup * 3))
+      const row = enemy.bossAI ? ((enemy.skillIndex || 1) % 2 ? 1 : 2) : enemy.attack === 'shot' ? 2 : 1;
+      const actionFrame = enemy.action === 'windup' ? Math.min(2, Math.floor(enemy.actionTime / (skill?.warning || enemy.windup) * 3))
         : enemy.action === 'active' ? 3 : Math.min(5, 3 + Math.floor(enemy.actionTime / .45 * 3));
-      const index = enemy.warmup > 0 ? 0 : enemy.hit > 0 ? 18 : enemy.action !== 'move' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
-      drawSprite(type, index, x, bottom, height, false, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
-      if (enemy.warmup <= 0) {
+      const index = enemy.form === 'transform' ? Math.min(17, Math.floor(enemy.formTime / 1.2 * 18)) : enemy.warmup > 0 ? 0 : enemy.hit > 0 ? 18 : enemy.action !== 'move' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
+      drawSprite(sprite, index, x, bottom, height, false, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
+      if (enemy.warmup <= 0 && !enemy.boss) {
         const width = enemy.r * 2 + 10;
         ctx.fillStyle = '#102416'; ctx.fillRect(x - width / 2 - 1, y - height - 2, width + 2, 6);
         ctx.fillStyle = enemy.alpha ? '#ffc17d' : '#e86b52'; ctx.fillRect(x - width / 2, y - height - 1, width * Math.max(0, enemy.hp / enemy.maxHp), 4);
@@ -139,13 +148,18 @@
       drawSprite(type, 0, x, y + 10, enemy.boss ? 96 : 43, false, .12 + progress * .4); return;
     }
     shadow(x, y, enemy.r);
-    if (enemy.casting) { ctx.strokeStyle = type === 'duende' ? '#e6ca74' : '#c598ef'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, enemy.r + 6 + Math.sin(t * 20) * 2, 0, Math.PI * 2); ctx.stroke(); }
+    if (enemy.casting && (enemy.boss || !extended)) { ctx.strokeStyle = type === 'duende' ? '#e6ca74' : '#c598ef'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, enemy.r + 6 + Math.sin(t * 20) * 2, 0, Math.PI * 2); ctx.stroke(); }
+    if (type === 'lloronaBoss' && enemy.action === 'windup' && enemy.skill?.kind === 'fan') {
+      ctx.save(); ctx.strokeStyle = '#9cdeec'; ctx.setLineDash([8, 6]);
+      for (const offset of [-.36, 0, .36]) { const angle = enemy.attackAngle + offset; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(angle) * 190, y + Math.sin(angle) * 190); ctx.stroke(); }
+      ctx.restore();
+    }
     if (enemy.rushWindup > 0) {
       ctx.save(); ctx.strokeStyle = '#f29477'; ctx.lineWidth = 3; ctx.setLineDash([9, 8]);
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + enemy.rushX * 190, y + enemy.rushY * 190); ctx.stroke(); ctx.restore();
     }
-    const height = { crab: 39, jaguar: 43, shadow: 57, duende: 96, jaguarBoss: 112, tommy: 45, miniLlorona: 54 }[type];
-    const index = type === 'duende' ? 0 : type === 'jaguarBoss' ? enemy.hit > 0 ? 6 : enemy.casting ? 5 : enemy.rushTime > 0 ? 3 : 1 + Math.floor(t * 7) % 2 : enemy.hit > 0 ? 4 : enemy.casting ? 3 : Math.floor(t * (type === 'jaguar' ? 9 : 5)) % 3;
+    const height = enemy.height || { crab: 39, jaguar: 43, shadow: 57, duende: 96, jaguarBoss: 112, tommy: 45, miniLlorona: 54 }[type];
+    const index = type === 'duende' ? 0 : type === 'jaguarBoss' ? enemy.hit > 0 ? 6 : enemy.casting ? 5 : enemy.rushTime > 0 ? 3 : 1 + Math.floor(t * 7) % 2 : enemy.hit > 0 ? 4 : enemy.casting || enemy.action === 'windup' ? 3 : Math.floor(t * (type === 'jaguar' ? 9 : 5)) % 3;
     drawSprite(type, index, x, y + 13 + (['shadow', 'miniLlorona'].includes(type) ? Math.sin(t * 3 + enemy.id) * 3 : 0), height, ['jaguar', 'jaguarBoss', 'tommy'].includes(type) && game.player.x < x, 1, enemy.hit > 0);
     if (!enemy.boss) {
       const w = enemy.r * 2 + 9;

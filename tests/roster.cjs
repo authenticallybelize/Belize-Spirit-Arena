@@ -48,7 +48,7 @@ for (const arena of Object.keys(ARENAS)) for (const type of [...COMMONS, ...ALPH
   assert(!g.arena.obstacles.some(o => Base.circleRect(e.x, e.y, e.r, o)));
 }
 for (const w of WEAPONS) for (const type of [...COMMONS, ...ALPHAS]) {
-  const g = game(); g.start({ mode: 'survival', weapon: w.id }); g.spawnTimer = 999;
+  const g = game(); g.start({ mode: 'survival' }); g.player.weapon = w.id; g.refreshStats(); g.spawnTimer = 999;
   const e = foe(g, type); e.hp = e.maxHp = 10000; e.speed = 0; e.attackTimer = 999;
   const aim = { shooting: true, aimX: e.x, aimY: e.y };
   for (let i = 0; i < 180; i++) g.update(1 / 120, aim);

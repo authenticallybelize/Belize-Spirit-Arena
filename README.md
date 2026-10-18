@@ -2,7 +2,19 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
-## Progression and enemy balance — 0.6.1
+## Nine bosses and weapon drops — 0.7.0
+
+Survival rotates all nine full bestiary bosses: La Llorona (wave 5), Corrupted Jaguar Spirit (10), El Cadejo (15), Tata Duende (20), Male Sisimite (25), Female Sisimite (30), Anansi (35), The Soch / La Lechuza (40) and La Xtabai (45). The cycle repeats every 45 waves through the existing 140-wave endpoint. Arena Run uses the first two milestones. Duende has five times his 0.6.1 base HP and contact/projectile damage: 6037.5 base HP, 100 base contact damage and 65 base bolt damage, before his existing wave scaling. Classic and Story keep their prior encounter and Duende rules.
+
+Every run starts with Joe’s Sling; the starter dropdown is removed and runtime starter overrides are ignored. Ordinary enemies and alphas have a 6% chance per defeat to drop one random weapon. Every boss guarantees one random weapon from all twelve, with one-time rewards and bounded floor pickups; duplicate/enhancement, E/touch pickup, five-active-second expiry and intermission grace remain. Automatic end-of-wave weapon rewards are removed. Existing random powers and periodic power rewards remain separate.
+
+New boss moves use the existing simulation and real attacks: Llorona’s wailing fan/water bursts; Cadejo’s charge/howl area; Male Sisimite’s slam/boulders; Female Sisimite’s root zones/volley; Anansi’s web fan/web zones; Soch’s flight, dives and feathers; Xtabai’s thorn zones/spirit fan. Soch transforms once below 25% HP through the prepared owl/hybrid sheet into the final female-headed harpy, retaining HP and gaining a faster, wider attack pattern. Sprite sheets are reused, not regenerated. The first implementation does not add web slowing, forced root immobilization, decoys or additional summons.
+
+Only functional beta spawn/directional warnings remain; decorative casting rings and bite-impact circles are removed from Survival betas. Crab/Brute alpha slams retain their full warning radius and now leave a 0.35-second damaging impact area. Boss area attacks show dashed countdown circles before activating, with a solid filled danger area during damage. Hazards respect cover, pause, Reflex/Freeze, damage immunity, a 24-area cap, finite lifetimes and parent defeat/restart cleanup. Eight new transparent runtime atlases include six boss sources, Soch’s intermediate transformation and her final harpy; La Llorona reuses the original RPG sprite at boss scale. Asset hashes are in `assets/ready/bosses/manifest.json`.
+
+Validation: all eleven `npm test` suites pass, including the full 140-wave boss order, forced starters, every weapon/drop boundary, guarantee under full drop capacity, fivefold Duende, distinct boss AI attacks, all five arena spawn paths, real alpha/boss area damage and counterplay, Soch’s exact trigger/no health reset, and sprite hashes. Local Edge/Playwright (Browser plugin not available) at 1440×1000 desktop and 844×390 touch verifies all nine rendered bosses, weapon pickup via real E/touch controls, movement/fire, pause/restart, the Soch transformation and functional warning visuals. Story/classic menus respond; no application errors or failed assets. QA scripts, screenshots, server baseline and rollback/release archives are retained under `.codex/workspaces/bsa-bosses-20261018` on the authoring machine. Physical devices/Safari and an earned 140-wave balance run remain unverified.
+
+## Progression and enemy balance — 0.6.1 (historical release)
 
 Survival and Arena Run no longer stop XP levels, gems or XP powers at level 40. Every level costs `ceil(25 + 13 × (level − 1) + 0.5 × (level − 1)²)` XP, so later levels become progressively harder. All 24 stackable perks gain one maximum rank; seven unique perks stay at one. Once all useful choices are exhausted, repeatable Jungle Vitality adds five permanent max HP and heals 25, so even a full-health/maxed build still gains something on every level.
 

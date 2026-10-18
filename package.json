@@ -1,11 +1,11 @@
 {
   "name": "belize-spirit-arena",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "private": true,
   "description": "Local top-down Belizean jungle arena shooter prototype",
   "scripts": {
     "start": "node serve.cjs",
-    "test": "node tests/check.cjs && node tests/survival.cjs && node tests/story.cjs && node tests/assets.cjs && node tests/joe-render.cjs && node tests/viewport.cjs && node tests/touch.cjs && node tests/survival-endurance.cjs && node tests/roster.cjs && node tests/balance.cjs"
+    "test": "node tests/check.cjs && node tests/survival.cjs && node tests/story.cjs && node tests/assets.cjs && node tests/joe-render.cjs && node tests/viewport.cjs && node tests/touch.cjs && node tests/survival-endurance.cjs && node tests/roster.cjs && node tests/balance.cjs && node tests/bosses.cjs"
   },
   "engines": {
     "node": ">=18"

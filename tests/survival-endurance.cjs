@@ -87,10 +87,10 @@ for (const perk of PERKS) levelCap.ranks[perk.id] = perk.max;
 assert(PERKS.every(perk => !levelCap.eligible(perk)), 'Endurance reopened capped perks');
 const validPowers = Object.keys(POWERS), randomPowers = [];
 for (let index = 0; index < 10; index++) {
-  const g = atWave(80); g.level = 40; const samples = [.034999, (index + .5) / 10]; g.random = () => samples.shift(); g.defeat(deadFoe()); randomPowers.push(g.drops[0].id);
+  const g = atWave(80); g.level = 40; const samples = [.034999, (index + .5) / 10, .999]; g.random = () => samples.shift(); g.defeat(deadFoe()); randomPowers.push(g.drops[0].id);
 }
 assert.deepEqual(randomPowers, validPowers);
-const chance = atWave(80); chance.level = 40; chance.random = () => .035; chance.defeat(deadFoe()); assert.equal(chance.drops.length, 0, 'Nominal power-drop chance increased');
+const chance = atWave(80); chance.level = 40; chance.random = () => .035; chance.defeat(deadFoe()); assert.equal(chance.drops.filter(d => d.kind === 'power').length, 0, 'Nominal power-drop chance increased');
 const guaranteed = [];
 for (let wave = 42; wave <= 60; wave += 2) { const g = atWave(wave); g.level = 40; g.queue = []; g.update(1 / 120); guaranteed.push(g.drops.find(d => d.kind === 'power').id); }
 assert.deepEqual(new Set(guaranteed), new Set(validPowers), 'Guaranteed power cycle lost usable XP powers');

@@ -6,7 +6,7 @@ const { circleRect, AIM_HEIGHT, aimAt } = require('../core.js');
 const originalArenas = require('./fixtures/original-arenas.json');
 const originalBounds = { canyon: { x: 180, y: 145, w: 835, h: 685 }, underworld: { x: 180, y: 145, w: 835, h: 685 }, coast: { x: 180, y: 145, w: 835, h: 685 }, jungle: { x: 135, y: 232, w: 930, h: 728 } };
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
-function playing(weapon = 'slingshot', arena = 'canyon') { const g = new Game(seeded(8)); g.start({ weapon, arena, mode: 'survival' }); g.spawnTimer = 999; return g; }
+function playing(weapon = 'slingshot', arena = 'canyon') { const g = new Game(seeded(8)); g.start({ arena, mode: 'survival' }); g.player.weapon = weapon; g.refreshStats(); g.spawnTimer = 999; return g; }
 function enemy(g, x = 710, y = 575, hp = 1000) {
   const e = { id: g.nextId++, x, y, r: 15, hp, maxHp: hp, xp: 5, type: 'crab', speed: 0, damage: 0, warmup: 0, hit: 0, routeTimer: 99, shotTimer: 99, statuses: {} };
   g.enemies.push(e); return e;
@@ -83,7 +83,7 @@ lock.queue = []; lock.enemies = []; lock.update(1 / 120); assert.equal(lock.fini
 const expiry = playing(); expiry.addDrop('bow', 900, 700); expiry.addDrop('staff', 900, 750, 'weapon', true);
 for (let i = 0; i < 19; i++) expiry.update(.25); expiry.update(.24); assert.equal(expiry.drops.length, 2);
 expiry.pause(); expiry.update(.25); assert.equal(expiry.drops.length, 2); expiry.resume(); expiry.update(.02); assert.equal(expiry.drops.length, 0);
-const grace = playing(); grace.queue = []; grace.update(1 / 120); const reward = grace.drops.find(d => d.kind === 'weapon');
+const grace = playing(); grace.addDrop('bow', grace.player.x + 50, grace.player.y); grace.queue = []; grace.update(1 / 120); const reward = grace.drops.find(d => d.kind === 'weapon');
 const rewardLife = reward.life; for (let i = 0; i < 12; i++) grace.update(.25); assert.equal(reward.life, rewardLife, 'Weapon grace expired during intermission');
 while (grace.wave === 1) grace.update(.05); grace.spawnTimer = 999; assert(reward.life > 4.9, 'Round start did not give floor weapons five seconds');
 for (let i = 0; i < 21; i++) grace.update(.25); assert(!grace.drops.includes(reward));
@@ -97,7 +97,7 @@ const boss = enemy(clearing, 800, 900, 5000); Object.assign(boss, { boss: true, 
 clearing.shot(610, 575, 0, true, 5); clearing.collectPower('nuke');
 assert.equal(clearing.enemies.length, 0); assert.equal(clearing.kills, 2); assert.equal(clearing.bossesDefeated, 1);
 assert.equal(clearing.bullets.length, 0); assert.deepEqual(clearing.queue, queued, 'Nuke consumed future enemies');
-assert(clearing.drops.some(d => d.id === 'claw')); assert.equal(clearing.mode, 'playing', 'Nuke fabricated a wave victory');
+assert(clearing.drops.some(d => d.kind === 'weapon' && d.boss)); assert.equal(clearing.mode, 'playing', 'Nuke fabricated a wave victory');
 const shield = playing(); shield.collectPower('shield'); shield.hurt(20); assert.equal(shield.player.hp, 100); shield.powers = {}; shield.hurt(20); assert.equal(shield.player.hp, 80);
 const trophy = playing(); const firstBoss = enemy(trophy); firstBoss.boss = true; firstBoss.type = 'duende'; trophy.defeat(firstBoss);
 assert(pick(trophy, 'trophy')); assert.equal(trophy.player.damage, 19, 'Trophy applied to a boss killed before acquiring it');
@@ -187,12 +187,12 @@ capped.xp = capped.xpNeeded; capped.levelUp(); assert(!capped.choices.some(p => 
 const progression = playing(); const bossWaves = [];
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   assert.equal(progression.wave, wave);
-  if (progression.queue.some(type => type === 'duende' || type === 'jaguarBoss')) bossWaves.push(wave);
+  if (progression.queue.some(type => require('../survival.js').TYPES[type].boss)) bossWaves.push(wave);
   progression.queue = []; progression.enemies = []; progression.update(1 / 120);
   if (wave < SURVIVAL_WAVES) { assert.equal(progression.mode, 'playing'); while (progression.wave === wave) progression.update(.25); }
 }
 assert.deepEqual(bossWaves, Array.from({ length: 28 }, (_, i) => (i + 1) * 5)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
-progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equal(progression.wave, 1); assert.equal(progression.totalWaves, 10); assert.equal(progression.player.weapon, 'dart'); assert.equal(progression.rank('damage'), 0);
+progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equal(progression.wave, 1); assert.equal(progression.totalWaves, 10); assert.equal(progression.player.weapon, 'slingshot'); assert.equal(progression.rank('damage'), 0);
 progression.level = 40; progression.xp = progression.xpNeeded; assert(progression.levelUp()); assert.equal(progression.level, 41);
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
 for (const w of WEAPONS.filter(w => w.art)) { const [x, y, ww, hh] = w.art; assert(x >= 0 && y >= 0 && x + ww <= width && y + hh <= height); }
