@@ -23,7 +23,7 @@
   if (extended || story) window.spiritArena = game;
   const keys = new Set(), input = { dx: 0, dy: 0, shooting: false, aimX: 920, aimY: 350 };
   const images = {}, particles = [], reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  $('waveDots').innerHTML = (story ? Array(5).fill(0) : extended ? Array(28).fill(0) : WAVES).map(() => '<i></i>').join('');
+  $('waveDots').innerHTML = (story ? Array(4).fill(0) : extended ? Array(28).fill(0) : WAVES).map(() => '<i></i>').join('');
   let ready = false, previousMode = '', last = 0, lastHud = 0, shake = 0, helpOpen = false, helpMode = 'menu';
   let soundOn = false, audio = null;
   let touch = null;
@@ -102,6 +102,7 @@
   }
   function drawEnemy(enemy, t) {
     const { x, y, type } = enemy;
+    if (story && enemy.objective) { StoryUI.drawCrystal(enemy, ctx, images); return; }
     if (enemy.dead && !window.ARENA_ROSTER?.[type]) { drawSprite(type, 4, x, y + 13, enemy.height || 60, false, Math.min(1, enemy.life * 4)); return; }
     if (window.ARENA_ROSTER?.[type]) {
       const sprite = type === 'sochBoss' && enemy.form === 'transform' ? 'sochTransform' : type === 'sochBoss' && enemy.form === 'harpy' ? 'sochHarpy' : type;
@@ -257,6 +258,7 @@
     for (const corpse of game.corpses || []) drawables.push({ y: corpse.y, draw: () => drawEnemy(corpse, t) });
     drawables.sort((a, b) => a.y - b.y).forEach(item => item.draw());
     if (extended) SurvivalUI.draw(game, ctx, images);
+    if (story) StoryUI.draw(game, ctx);
     for (const b of game.bullets) {
       const len = Math.hypot(b.vx, b.vy), color = b.color || (b.hostile ? '#d99cfa' : b.kind === 'magic' ? '#9fffd0' : '#c5b39a');
       ctx.lineWidth = b.hostile ? 3 : 3.5; ctx.strokeStyle = b.hostile ? '#8948b5aa' : b.kind === 'magic' ? '#58dca88c' : '#77664e66';
@@ -292,13 +294,13 @@
     $('healthMeter').setAttribute('aria-valuenow', Math.ceil(p.hp)); $('healthMeter').setAttribute('aria-valuemax', p.maxHp);
     $('levelLabel').textContent = `LEVEL ${game.level}`; $('xpLabel').textContent = `${game.xp} / ${game.xpNeeded}`;
     $('xpFill').style.width = `${game.xp / game.xpNeeded * 100}%`; $('xpMeter').setAttribute('aria-valuenow', game.xp); $('xpMeter').setAttribute('aria-valuemax', game.xpNeeded);
-    $('waveLabel').textContent = `WAVE ${Math.max(1, game.wave)} / ${story ? 5 : extended ? game.totalWaves : WAVES.length}`;
+    $('waveLabel').textContent = `WAVE ${Math.max(1, game.wave)} / ${story ? 20 : extended ? game.totalWaves : WAVES.length}`;
     [...$('waveDots').children].forEach((dot, index) => { const current = extended ? Math.ceil(Math.max(1, game.wave) / 5) : Math.max(1, game.wave); dot.className = index + 1 < current ? 'done' : index + 1 === current ? 'active' : ''; });
     $('killsLabel').textContent = `${game.kills} spirit${game.kills === 1 ? '' : 's'} released`;
     $('dashLabel').textContent = p.dashCooldown > 0 ? `SPACE · DASH ${p.dashCooldown.toFixed(1)}s` : 'SPACE · DASH READY';
     $('dashLabel').style.color = p.dashCooldown > 0 ? '#aeb7a4' : '#bcf3cf';
     $('weaponLabel').textContent = p.weapon === 'staff' ? 'DUENDE STAFF' : 'SLINGSHOT';
-    if (extended) SurvivalUI.hud(game);
+    if (story) StoryUI.hud(game); else if (extended) SurvivalUI.hud(game);
     const boss = game.enemies.find(e => e.boss); $('bossHud').hidden = !boss;
     if (boss) { $('bossFill').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`; $('bossName').textContent = boss.name.toUpperCase(); }
     $('waveBanner').hidden = !!boss || game.bannerTime <= 0 || game.mode !== 'playing' || helpOpen;
@@ -374,7 +376,7 @@
     if (helpOpen) return;
     helpMode = game.mode; game.pause(); clearInput(); helpOpen = true; savedContent = [...content.childNodes]; overlay.hidden = false;
     content.innerHTML = '<h2 id="overlayTitle">Know the jungle.</h2><div class="instructions"><p><strong>Move</strong> with WASD or arrow keys. Aim with your mouse and hold left-click to fire your slingshot.</p><p><strong>Dash</strong> with Space. It grants brief protection and recharges in 1.65 seconds.</p><p><strong>Gather mint gems</strong> to level up. Combat pauses while you choose an upgrade.</p><p><strong>Use the ruins</strong> as cover. They block movement and shots. Purple rings warn you before enemies appear.</p><p><strong>Wave 5: Tata Duende.</strong> Defeat him and walk over his dropped staff. It grants +60% damage and 15% faster firing, keeping your perks. Collect it to continue to wave six.</p><p><strong>Wave 10: Corrupted Jaguar Spirit.</strong> Dodge its marked charge and spirit volleys to win.</p><p><strong>Rest between waves:</strong> recover 15 health and gather remaining gems. Esc pauses; switching tabs pauses too.</p></div><button id="closeHelpButton" class="primary">Got it</button><span class="small-note">Folklore-inspired fiction. Combat abilities are original game rules.</span>';
-    if (extended) content.innerHTML = SurvivalUI.help;
+    if (story) content.innerHTML = '<h2 id="overlayTitle">The Four Spirit Trials</h2><div class="instructions"><p>Move with WASD / arrows, aim with your mouse and hold left click to attack. Space dashes; Escape pauses. On touch, use both sticks and the Dash button.</p><p>Start with Joe’s Sling. E or the touch Weapon button cycles permanently unlocked spirit weapons when no drop is nearby. Collect gems and choose upgrades; each level needs more XP.</p><p>Four trials, twenty waves. Restore Duende at wave 5, the Hollow Keeper at 10, the Jaguar at 15 and the Tide Warden at 20. Walk through each purple doorway after its conversation.</p><p>Underworld crystals protect nearby foes. Shoot all three protective crystals before attacking the Keeper’s core. Green restored ground briefly heals.</p><p>Rockfalls show warning rings before they strike. The Jaguar summons up to six cave reinforcements and accelerates below half health.</p><p>The Coast’s tides reduce safe space. Stand in drum circles for brief protection and recovery. In the Warden’s final phase, charge each of the three circles between attacks to break its barrier.</p><p>Wave-start checkpoints retain your build. Death restarts that wave. Conversations may be skipped with the same rewards. The three spirit weapons remain unlocked on this device. Survival stays open during testing; full release requires Chapter I.</p></div><button id="closeHelpButton" class="primary">Got it</button>'; else if (extended) content.innerHTML = SurvivalUI.help;
     if (story) content.innerHTML = '<h2 id="overlayTitle">The first trial.</h2><div class="instructions"><p><strong>Desktop:</strong> WASD / arrows move; mouse aims; hold left-click to fire. Space dashes; Escape pauses.</p><p><strong>Touch:</strong> left stick moves and faces Joe; right stick aims and fires while pushed. Dash and Pause have buttons. Walk over gems and the dropped Duende Staff.</p><p><strong>Prologue:</strong> tap the scene or Continue, or press Enter. Skip prologue / Space skips the whole opening. Escape pauses it. Replay is available in the Story menu.</p><p><strong>The Jungle Remembers:</strong> five waves, ending with Tata Duende. Purify his manifestation, release the remaining creatures and collect his staff to complete this trial.</p><p><strong>Progress:</strong> Continue restarts the saved wave with its starting build. The other three Story encounters are still in development. Production Survival unlocks after all four trials.</p></div><button id="closeHelpButton" class="primary">Got it</button>';
     $('closeHelpButton').onclick = closeHelp; $('closeHelpButton').focus(); updateHud();
   };
@@ -435,6 +437,7 @@
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
   const rosterFiles = extended ? Object.values(window.ARENA_ROSTER || {}).map(a => a.file) : [];
   const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+    ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
     ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {

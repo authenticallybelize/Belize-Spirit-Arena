@@ -73,7 +73,7 @@ for (const item of manifest) {
 }
 const drawSource = fs.readFileSync(path.join(__dirname, '../game.js'), 'utf8');
 const start = drawSource.indexOf('  function drawEnemy('), end = drawSource.indexOf('  function drawJoe(', start), circles = [];
-const drawing = { window: sandbox.window, game: { player: { x: 1200 } }, ctx: new Proxy({}, { get: (_, key) => key === 'arc' ? (...args) => circles.push(args) : () => {} }), shadow() {}, drawSprite() {} };
+const drawing = { story: false, window: sandbox.window, game: { player: { x: 1200 } }, ctx: new Proxy({}, { get: (_, key) => key === 'arc' ? (...args) => circles.push(args) : () => {} }), shadow() {}, drawSprite() {} };
 vm.createContext(drawing); vm.runInContext(drawSource.slice(start, end) + '\nthis.draw = drawEnemy;', drawing);
 for (const type of ['spiderling', 'worker', 'bees', 'rootling', 'owlShade']) {
   circles.length = 0; drawing.draw({ ...TYPES[type], type, id: 1, x: 1200, y: 1200, warmup: 0, action: 'windup', actionTime: .1, attackAngle: 0, hp: 20, maxHp: 30 }, 0);

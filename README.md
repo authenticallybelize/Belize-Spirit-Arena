@@ -2,6 +2,14 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## The Four Spirit Trials — 0.8.0
+
+Chapter I now runs from the existing prologue through twenty waves, four connected arenas and the morning ending. Tata Duende (5), Hollow Keeper (10), Corrupted Jaguar Spirit (15) and Tide Warden (20) survive purification. Three spirit weapons unlock permanently. Shoot protective crystals, dodge marked rockfalls, activate all three drums, and enter the doorways between trials. Survival remains open for testing.
+
+[Official story, dialogue, schedule, mechanics, saves and art provenance](STORY-CHAPTER-I.md). The Keeper recognizes the obsidian stone and has never met Joe. The Heart’s breaker and the Jaguar’s exact identity remain unresolved.
+
+Validation: all eleven automated suites pass. Local desktop and two-stick touch browser walkthroughs cover all twenty controlled wave clears, Guardian scenes, door reload, both watched/skipped endings, saved completion and Survival navigation. Human balance and physical devices remain unverified.
+
 ## Nine bosses and weapon drops — 0.7.0
 
 Survival rotates all nine full bestiary bosses: La Llorona (wave 5), Corrupted Jaguar Spirit (10), El Cadejo (15), Tata Duende (20), Male Sisimite (25), Female Sisimite (30), Anansi (35), The Soch / La Lechuza (40) and La Xtabai (45). The cycle repeats every 45 waves through the existing 140-wave endpoint. Arena Run uses the first two milestones. Duende has five times his 0.6.1 base HP and contact/projectile damage: 6037.5 base HP, 100 base contact damage and 65 base bolt damage, before his existing wave scaling. Classic and Story keep their prior encounter and Duende rules.
