@@ -431,18 +431,18 @@
     if (!story || !StoryUI.active) render(game.mode === 'menu' ? now / 1000 : game.time);
     requestAnimationFrame(frame);
   }
-  const weaponIds = extended ? Object.keys(ARENA_READY.weapons) : ['slingshot', 'staff'];
+  const weaponIds = story ? ['slingshot', 'staff', 'obsidian', 'claw'] : extended ? Object.keys(ARENA_READY.weapons) : ['slingshot', 'staff'];
   const weaponFiles = weaponIds.flatMap(id => { const a = ARENA_READY.weapons[id]; return [a.pickup, a.held, a.projectile, ...(extended ? a.impactFrames || [a.impact] : [])]; });
   const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
-  const rosterFiles = extended ? Object.values(window.ARENA_ROSTER || {}).map(a => a.file) : [];
+  const rosterFiles = extended ? Object.entries(window.ARENA_ROSTER || {}).filter(([id]) => !story || ['spiderling', 'worker', 'bees', 'rootling', 'owlShade', 'hollowKeeper', 'tideWarden'].includes(id)).map(([, a]) => a.file) : [];
   const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
     ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
     ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
     if (!loads.has(file)) loads.set(file, new Promise((resolve, reject) => {
-      const image = new Image(), timeout = setTimeout(() => fail(), 20000);
+      const image = new Image(), timeout = setTimeout(() => fail(), 45000);
       function fail() { clearTimeout(timeout); reject(new Error(`Artwork failed to load/decode: assets/${file}`)); }
       image.onload = async () => {
         try { if (image.decode) await image.decode(); images[file] = ArenaArt.sourceGrid(image, file); clearTimeout(timeout); resolve(); }
@@ -452,12 +452,21 @@
     }).catch(error => { loads.delete(file); throw error; }));
     return loads.get(file);
   }
-  Promise.all(files.map(loadImage)).then(() => {
+  async function loadArtwork(files) {
+    const queue = [...files]; let completed = 0;
+    await Promise.all(Array.from({ length: 6 }, async () => {
+      while (queue.length) {
+        await loadImage(queue.shift()); completed++;
+        startButton.textContent = 'Loading artwork… ' + completed + ' / ' + files.length;
+      }
+    }));
+  }
+  loadArtwork(files).then(() => {
     ready = true; startButton.disabled = false; startButton.textContent = 'Enter the arena';
     if (window.TouchControls) touch = TouchControls.attach({ game, input, canvas, togglePause });
     if (story) StoryUI.init({ game, clearInput, startStory, tone, whisper, images, touch });
     updateHud(); paintPortraits();
   })
-    .catch(error => { startButton.textContent = 'Artwork could not load'; content.querySelector('p').textContent = `${error.message}. Keep the assets folder beside index.html.`; console.error(error); });
+    .catch(error => { startButton.disabled = false; startButton.textContent = 'Retry loading'; startButton.onclick = () => location.reload(); content.querySelector('p').textContent = 'Artwork did not finish loading. Check your connection, then retry.'; console.error(error); });
   requestAnimationFrame(frame);
 })();

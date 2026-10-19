@@ -90,8 +90,8 @@ assert.deepEqual(campaign.store.data.unlockedWeapons, ['slingshot', 'staff', 'ob
 assert(D.AFTER[1][0].lines.some(l => l[1] === 'No, child. I have never seen you.')); assert.equal(Run.BOSSES.length, 9); assert.equal(Run.BOSSES[3], 'duende');
 assert.equal(Run.TYPES.duende.hp, Base.TYPES.duende.hp * 1.15 * 5);
 const vm = require('node:vm'), access = fs.readFileSync(path.join(__dirname, '../story-access.js'), 'utf8');
-for (const [testOpen, earned, redirect] of [[true, false, false], [false, false, true], [false, true, false]]) {
-  let target = null; const data = { ...fresh(), storyComplete: earned, survivalUnlocked: earned, completedArenas: earned ? S.TRIALS.map(t => t.id) : [] };
+for (const [testOpen, earned, redirect, replaying] of [[true, false, false], [false, false, true], [false, true, false], [false, true, false, true]]) {
+  let target = null; const data = { ...fresh(), storyComplete: earned && !replaying, survivalUnlocked: earned, completedArenas: earned && !replaying ? S.TRIALS.map(t => t.id) : [] };
   vm.runInNewContext(access, { StoryCampaign: { ...S, SURVIVAL_TEST_OPEN: testOpen }, localStorage: memory(JSON.stringify(data)), location: { replace(url) { target = url; } } });
   assert.equal(target, redirect ? 'story.html' : null);
 }
@@ -99,3 +99,15 @@ for (const item of JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/st
   const bytes = fs.readFileSync(path.join(__dirname, '../assets', item.file)); assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), item.runtimeSHA256);
 }
 console.log('PASS: twenty waves/four Guardians, crystal shield, warned fissures/rockfalls, capped cave adds, mandatory three drums, permanent weapons, scene/door retries, v1 migration, protected/concurrent saves, watch/skip and unchanged Survival schedule.');
+
+const renderer = fs.readFileSync(path.join(__dirname, '../game.js'), 'utf8');
+const loader = renderer.slice(renderer.indexOf('  async function loadArtwork('), renderer.indexOf('  loadArtwork(files).then'));
+(async () => {
+  let active = 0, maximum = 0; const finished = [], startButton = {};
+  const context = { startButton, async loadImage(file) { active++; maximum = Math.max(maximum, active); await new Promise(resolve => setTimeout(resolve, 1)); active--; finished.push(file); } };
+  vm.runInNewContext(loader + '\nthis.run = loadArtwork;', context);
+  await context.run(Array.from({ length: 23 }, (_, i) => String(i)));
+  assert.equal(finished.length, 23); assert.equal(new Set(finished).size, 23); assert(maximum <= 6); assert.equal(active, 0); assert.equal(startButton.textContent, 'Loading artwork… 23 / 23');
+  context.loadImage = async () => { throw Error('missing art'); }; await assert.rejects(context.run(['broken']), /missing art/);
+  console.log('PASS: bounded six-image network loading, all assets awaited, progress and propagated failures.');
+})().catch(error => { console.error(error); process.exitCode = 1; });

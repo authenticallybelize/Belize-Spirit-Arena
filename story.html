@@ -22,12 +22,12 @@
   <script defer src="assets/roster.js?v=0.8.0"></script>
   <script defer src="assets/bosses.js?v=0.8.0"></script>
   <script defer src="assets/story/sprites.js?v=0.8.0"></script>
-  <script defer src="story-campaign.js?v=0.8.0"></script>
+  <script defer src="story-campaign.js?v=0.8.0-r2"></script>
   <script defer src="story-dialogue.js?v=0.8.0"></script>
   <script defer src="story.js?v=0.8.0"></script>
   <script defer src="story-ui.js?v=0.8.0"></script>
   <script defer src="touch.js?v=0.5.2"></script>
-  <script defer src="game.js?v=0.8.0"></script>
+  <script defer src="game.js?v=0.8.0-r2"></script>
 </head>
 <body class="story-edition">
   <main class="shell">
@@ -52,7 +52,7 @@
         <div class="wave"><strong id="waveLabel">WAVE 1 / 20</strong><div id="waveDots" aria-hidden="true"></div></div>
       </div>
       <div class="arena-wrap">
-<section id="cinematic" class="cinematic" aria-label="Opening cinematic" hidden>
+<section id="cinematic" class="cinematic" aria-label="Story cinematic" hidden>
   <div id="cinemaStage" class="cinema-stage" tabindex="0" role="button" aria-label="Continue to the next dialogue"><img id="cinemaPrevious" alt="" aria-hidden="true" draggable="false" hidden><img id="cinemaArt" alt="Illustrated prologue scene" draggable="false"><div id="cinemaPlaceholder" role="status" hidden></div><img id="cinemaActor" class="cinema-actor" alt="Restored Guardian" hidden><div id="spiritSymbols" class="spirit-symbols" aria-label="Twelve spirit doors" hidden><i aria-label="Door 1"></i><i aria-label="Door 2"></i><i aria-label="Door 3"></i><i aria-label="Door 4"></i><i aria-label="Door 5"></i><i aria-label="Door 6"></i><i aria-label="Door 7"></i><i aria-label="Door 8"></i><i aria-label="Door 9"></i><i aria-label="Door 10"></i><i aria-label="Door 11"></i><i aria-label="Door 12"></i></div><div class="cinema-light"></div><div id="cinemaVeil" class="cinema-veil"></div></div>
   <div class="cinema-top"><span id="cinemaCount">FRAME 1 / 12</span><div><button id="cinemaSound" class="secondary" aria-pressed="false">Sound off</button><button id="cinemaPause" class="secondary">Pause</button><button id="cinemaSkip" class="secondary" aria-label="Skip this story sequence">Skip</button></div></div>
   <div class="cinema-dialogue"><h2 id="cinemaTitle">Seven years later</h2><strong id="cinemaSpeaker"></strong><p id="cinemaText" aria-live="polite"></p><div class="cinema-bottom"><span>Tap scene / Enter · Space skips</span><button id="cinemaNext" class="primary">Continue →</button></div><p id="cinemaPaused" hidden>Paused · Escape or Resume to continue</p></div>
@@ -65,9 +65,9 @@
           <div class="dialog" id="dialogContent">
             <img class="menu-logo" src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="280px" width="1774" height="887" alt="" decoding="async">
             <h2 id="overlayTitle">Hold your ground.</h2>
-            <p>Joe Grind starts with a slingshot.<br>Defeat Tata Duende. Claim his staff. Face the Jaguar.</p>
+            <p>Sixteen-year-old Joe Grind. One obsidian fragment.<br>Four Guardian trials. The Arena remembers.</p>
             <button id="startButton" class="primary" disabled>Loading the jungle…</button>
-            <span class="small-note">Ten waves · Two bosses · Keyboard & mouse</span>
+            <span class="small-note">Twenty waves · Four Guardians · Story saves on this device</span>
           </div>
         </section>
       </div>

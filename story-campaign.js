@@ -111,6 +111,7 @@
     }
   }
   class Game extends Run.Game {
+    constructor(random) { super(random); this.totalWaves = 20; this.selectArena('jungle'); }
     selectArena(id) {
       this.arenaId = id; const a = arenaFor(id); this.arena = { ...a, bounds: { ...a.bounds } }; this.navigation = {};
       Object.assign(this.player, a.spawn);

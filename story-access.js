@@ -4,5 +4,5 @@
   let storage;
   try { storage = localStorage; } catch { location.replace('story.html'); return; }
   const data = new StoryCampaign.Store(storage).data;
-  if (!data.storyComplete || !data.survivalUnlocked) location.replace('story.html');
+  if (!data.survivalUnlocked) location.replace('story.html');
 })();
