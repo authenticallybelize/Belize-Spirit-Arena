@@ -108,7 +108,8 @@
       const sprite = type === 'sochBoss' && enemy.form === 'transform' ? 'sochTransform' : type === 'sochBoss' && enemy.form === 'harpy' ? 'sochHarpy' : type;
       const height = enemy.height, bottom = y + 13 - (enemy.flying ? 12 : 0);
       if (enemy.dead) {
-        drawSprite(sprite, 18 + Math.min(5, Math.floor((.6 - enemy.life) * 10)), x, bottom, height, false, Math.min(1, enemy.life * 4)); return;
+        const frames = enemy.deathFrames || [18, 19, 20, 21, 22, 23];
+        drawSprite(sprite, frames[Math.min(frames.length - 1, Math.floor((.6 - enemy.life) * 10))], x, bottom, height, false, Math.min(1, enemy.life * 4)); return;
       }
       shadow(x, y, enemy.r);
       const skill = enemy.skill, attack = skill?.kind || enemy.attack;
@@ -118,20 +119,20 @@
         ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         ctx.restore();
       }
-      if (enemy.warmup <= 0 && enemy.action === 'windup' && ['pounce', 'rush', 'shot', 'fan'].includes(attack)) {
+      if (enemy.warmup <= 0 && enemy.action === 'windup' && !enemy.summoning && ['pounce', 'rush', 'shot', 'fan'].includes(attack)) {
         const length = attack === 'pounce' ? enemy.rushSpeed * enemy.rushDuration : attack === 'rush' ? skill.speed * skill.duration : 190;
         ctx.save(); ctx.strokeStyle = enemy.boss ? '#f4be8c' : '#bc9bda'; ctx.lineWidth = 2; ctx.setLineDash([8, 6]);
-        const count = attack === 'fan' ? 3 : 1;
+        const count = attack === 'fan' || enemy.shotCount ? 3 : 1;
         for (let i = 0; i < count; i++) {
-          const angle = enemy.attackAngle + (i - (count - 1) / 2) * (skill?.spread || 0) * ((skill?.count || 1) - 1) / 2;
+          const angle = enemy.attackAngle + (i - (count - 1) / 2) * (skill ? skill.spread * (skill.count - 1) / 2 : enemy.shotCount ? .2 : 0);
           ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length); ctx.stroke();
         }
         ctx.restore();
       }
-      const row = enemy.bossAI ? ((enemy.skillIndex || 1) % 2 ? 1 : 2) : enemy.attack === 'shot' ? 2 : 1;
+      const row = enemy.summoning ? 1 : enemy.bossAI ? ((enemy.skillIndex || 1) % 2 ? 1 : 2) : enemy.attackRow || (enemy.attack === 'shot' ? 2 : 1);
       const actionFrame = enemy.action === 'windup' ? Math.min(2, Math.floor(enemy.actionTime / (skill?.warning || enemy.windup) * 3))
         : enemy.action === 'active' ? 3 : Math.min(5, 3 + Math.floor(enemy.actionTime / .45 * 3));
-      const index = enemy.form === 'transform' ? Math.min(17, Math.floor(enemy.formTime / 1.2 * 18)) : enemy.warmup > 0 ? 0 : enemy.hit > 0 ? 18 : enemy.action !== 'move' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
+      const index = enemy.form === 'transform' ? Math.min(17, Math.floor(enemy.formTime / 1.2 * 18)) : enemy.warmup > 0 ? 0 : enemy.hit > 0 ? (type === 'rotTapir' ? 12 : type === 'jabiruReaper' ? 0 : 18) : enemy.action !== 'move' && enemy.action !== 'sidestep' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
       drawSprite(sprite, index, x, bottom, height, false, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
       if (enemy.warmup <= 0 && !enemy.boss) {
         const width = enemy.r * 2 + 10;

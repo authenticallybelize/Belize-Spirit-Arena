@@ -16,7 +16,7 @@ function foe(g, type, x = g.player.x + 50, y = g.player.y) {
     warmup: 0, statuses: {}, hit: 0, routeTimer: 0, action: 'move', actionTime: 0, attackTimer: 0 };
   g.enemies.push(e); return e;
 }
-assert.equal(COMMONS.length, 5); assert.equal(ALPHAS.length, 3);
+assert.equal(COMMONS.length, 5); assert.equal(ALPHAS.length, 12);
 for (let wave = 1; wave <= 140; wave++) {
   for (const roll of [0, .999999]) {
     const g = game(wave, roll), count = g.queue.filter(id => TYPES[id].alpha).length;
@@ -61,7 +61,7 @@ for (const type of [...COMMONS, ...ALPHAS]) {
   assert(e.hp < 9990, type + ' ignored damage over time');
   g.damageEnemy(e, 20000); g.damageEnemy(e, 20000);
   assert.equal(g.kills, 1); assert.equal(g.gems.length, 1); assert.equal(g.corpses.length, 1); assert.equal(g.bossesDefeated, 0);
-  g.queue = []; g.update(1 / 120); assert(g.finishedWave, 'Corpse blocked wave clear');
+  g.queue = []; g.update(1 / 120); assert(type === 'rotTapir' ? !g.finishedWave && g.enemies.length === 3 : g.finishedWave, 'Defeat/wave-clear state is incorrect');
   g.start(); assert.equal(g.corpses.length, 0);
 }
 for (const type of ['alphaCrab', 'shadowBrute']) {
@@ -94,7 +94,7 @@ walls.player.x = rock.x + rock.w + 30; walls.player.y = rock.y + rock.h / 2;
 const blocked = foe(walls, 'rootling', rock.x - 30, walls.player.y); walls.enemyTick(blocked, .01); assert.equal(blocked.action, 'move', 'Rootling cast through cover');
 const sandbox = { window: {} }; vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../assets/roster.js'), 'utf8'), sandbox);
 const art = sandbox.window.ARENA_ROSTER, manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/ready/roster/manifest.json')));
-assert.deepEqual(Object.keys(art).sort(), [...COMMONS, ...ALPHAS].sort());
+assert.deepEqual(Object.keys(art).sort(), [...COMMONS, ...ALPHAS, 'parasiteTapir', 'voidEgg', 'nightHatchling'].sort());
 for (const item of manifest) {
   const data = fs.readFileSync(path.join(__dirname, '../assets', item.file));
   assert.equal(data.readUInt32BE(16), 768); assert.equal(data.readUInt32BE(20), 512); assert.equal(data[25], 6);
@@ -109,4 +109,4 @@ for (let i = 0; i < 150; i++) stress.shot(1200, 1200, i * Math.PI / 75, true, .1
 for (let i = 0; i < 240; i++) stress.update(1 / 120);
 assert(stress.enemies.length <= 96 && stress.bullets.length <= 350 && stress.corpses.length <= 16);
 assert(stress.enemies.every(e => Number.isFinite(e.x + e.y + e.hp + e.actionTime)));
-console.log('PASS: exactly five commons/three alphas, all 140 wave schedules and random extremes, 6x family HP/1.5x damage, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');
+console.log('PASS: five commons/twelve alphas, all 140 wave schedules and random extremes, 6x family HP/1.5x damage, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');

@@ -102,5 +102,164 @@
       111
     ],
     "bodyHeight": 103
+  },
+  {
+    "id": "chiwoj",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/chiwoj-alpha-v1.png",
+    "sourceSHA256": "04ff7104570c6f3b6850c6a8c99ff9ea7da107afe39f3110ee83872fac313674",
+    "runtimeSHA256": "0d78264cf1475c89a451f4e880190e07212eb94647f06690e7d3dae33797cf53",
+    "file": "ready/roster/chiwoj.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      115
+    ],
+    "bodyHeight": 107
+  },
+  {
+    "id": "tigerSpider",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/tiger-wandering-spider-alpha-v1.png",
+    "sourceSHA256": "95ddd188457e0d0475e0137b0f24890895e1489dbbdcee4ce8e5e3eccf2b80aa",
+    "runtimeSHA256": "75ea3cd982f02773565b317f38a22c86545bc9639cf4aeb54e2d15ccc233cacb",
+    "file": "ready/roster/tigerSpider.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      121
+    ],
+    "bodyHeight": 105
+  },
+  {
+    "id": "soldierAnt",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/wee-wee-soldier-ant-alpha-v1.png",
+    "sourceSHA256": "1077f18e47ba6de39d7888aa02ec4cf7033b97ce23ba8a96e14c4cb28aab2ded",
+    "runtimeSHA256": "cd1b2c798ef49bf88f88d355e5aef5edd0702e41886503a22ba08876e592c479",
+    "file": "ready/roster/soldierAnt.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      116
+    ],
+    "bodyHeight": 114
+  },
+  {
+    "id": "bulletAnt",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/bullet-ant-champion-alpha-v1.png",
+    "sourceSHA256": "e5d028e61c90fd2bf5487cfb26a7bca60a8b43ec85928b5b151db462a5fee59d",
+    "runtimeSHA256": "0d569ede32581c9d131eab548377af9912074ea772d384bdf9d6950f9867a966",
+    "file": "ready/roster/bulletAnt.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      124
+    ],
+    "bodyHeight": 120
+  },
+  {
+    "id": "giantCentipede",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/giant-centipede-alpha-v1.png",
+    "sourceSHA256": "090a8b9b85ef55d286c066c78ec809bc5589a5cd923161d4a7b667ef7c52f1fb",
+    "runtimeSHA256": "479d6249580e2fd3c234d0be721892272db5e844c0227e7af58d3cbf85cf72d6",
+    "file": "ready/roster/giantCentipede.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      123
+    ],
+    "bodyHeight": 119
+  },
+  {
+    "id": "hiveGuardian",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/hive-guardian-alpha-v1.png",
+    "sourceSHA256": "2c8903715c41d2f58abe2d6674c6def7177b61da03ca25d1c1357480595d43cf",
+    "runtimeSHA256": "881e6d46714fa726b50f1f3c4418e26fb3aa70675c7d3eeb9467b36139e70b50",
+    "file": "ready/roster/hiveGuardian.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      108
+    ],
+    "bodyHeight": 101
+  },
+  {
+    "id": "giantTommy",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/giant-tommy-goff-alpha-v1.png",
+    "sourceSHA256": "a0405cbcdbadebecab565d5ec744705b198597506ba4b135b5e5f03563c1bb3c",
+    "runtimeSHA256": "2b75feafa8fdbf6853b9dbba6a044a22d123b14626a0e9b8e4ab7c4bebe1e003",
+    "file": "ready/roster/giantTommy.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      122
+    ],
+    "bodyHeight": 116
+  },
+  {
+    "id": "rotTapir",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/rot-tapir-transparent-v1.png",
+    "sourceSHA256": "cddd906ff3f5890842e8df2809fcfefc088f47476d50ec0efc5374ea442c26a6",
+    "runtimeSHA256": "1200d9c6774233c86deae3075e801fa9de12506e4097b38e85b9fa9699c1ef65",
+    "file": "ready/roster/rotTapir.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      117
+    ],
+    "bodyHeight": 112
+  },
+  {
+    "id": "jabiruReaper",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/jabiru-reaper-transparent-v1.png",
+    "sourceSHA256": "bbb71a5467f93f07e5bf0dad12e257a7cf90d966346b41b8f6a615e5f968a0b6",
+    "runtimeSHA256": "478261047018515272c4931e97161608011e5d51073ddda5170e78a6633489b1",
+    "file": "ready/roster/jabiruReaper.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      109
+    ],
+    "bodyHeight": 90
+  },
+  {
+    "id": "parasiteTapir",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/rot-tapir-transparent-v1.png",
+    "sourceSHA256": "cddd906ff3f5890842e8df2809fcfefc088f47476d50ec0efc5374ea442c26a6",
+    "runtimeSHA256": "45f6de9f985fcdc13f7a879fdc997c192ce09a83edd826704096014715c76629",
+    "file": "ready/roster/parasiteTapir.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 99,
+    "derivation": "One isolated existing miniature pose, shared foot anchor, hit flash and fading defeat."
+  },
+  {
+    "id": "voidEgg",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/jabiru-reaper-transparent-v1.png",
+    "sourceSHA256": "bbb71a5467f93f07e5bf0dad12e257a7cf90d966346b41b8f6a615e5f968a0b6",
+    "runtimeSHA256": "e06e42c4bde61ea9d49f2529d9d5be03e619c620cc296dbaf91e0b4c523120dc",
+    "file": "ready/roster/voidEgg.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      113
+    ],
+    "bodyHeight": 93,
+    "derivation": "Existing egg pose, shared foot anchor; immediately destructible."
+  },
+  {
+    "id": "nightHatchling",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/jabiru-reaper-transparent-v1.png",
+    "sourceSHA256": "bbb71a5467f93f07e5bf0dad12e257a7cf90d966346b41b8f6a615e5f968a0b6",
+    "runtimeSHA256": "3b7648bdb4c249fb671bcabd7dd132be45ca0a5a31da6ca85fd2a781eb3f38bc",
+    "file": "ready/roster/nightHatchling.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      115
+    ],
+    "bodyHeight": 59,
+    "derivation": "Two isolated existing hatchling poses, shared foot anchor, hit flash and fading defeat."
   }
 ]

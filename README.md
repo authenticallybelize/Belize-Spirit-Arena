@@ -2,6 +2,12 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## All twelve Survival alphas — 0.9.0
+
+Survival adds the remaining nine alpha identities with their existing sprites and working attacks: Chiwoj, Tiger Wandering Spider, Wee-Wee Soldier Ant, Bullet Ant Champion, Giant Centipede, Hive Guardian, Giant Tommy Goff, Rot-Tapir and Jabiru-Reaper. There are now 31 primary Survival creatures: ten common enemies, twelve alphas and nine bosses. Tapir splitting, timed destructible eggs/hatchlings, bounded Hive swarms, venom, latch/dash escape and warned damage areas are implemented. [Exact mechanics, stats, art and test scope](ALPHAS.md).
+
+The existing alpha wave schedule, all HP increases, bosses and weapon drops remain. Chapter I and Arena Run retain their own rosters and save behavior. All twelve automated suites and local desktop/touch browser checks pass. Live verification is recorded after publication. Physical phones and human late-wave balance remain unverified.
+
 ## The Four Spirit Trials — 0.8.0
 
 Chapter I now runs from the existing prologue through twenty waves, four connected arenas and the morning ending. Tata Duende (5), Hollow Keeper (10), Corrupted Jaguar Spirit (15) and Tide Warden (20) survive purification. Three spirit weapons unlock permanently. Shoot protective crystals, dodge marked rockfalls, activate all three drums, and enter the doorways between trials. Survival remains open for testing.

@@ -14,6 +14,18 @@
     alphaCrab: { name: 'Armored Mangrove Crab', hp: Base.TYPES.crab.hp * 4, speed: 48, r: 29, damage: Base.TYPES.crab.damage * 1.5, xp: 20, height: 75, alpha: true, attack: 'slam', reach: 85, windup: 1, cooldown: 3 },
     alphaJaguar: { name: 'Jaguar Sentinel', hp: Base.TYPES.jaguar.hp * 4, speed: 110, r: 25, damage: Base.TYPES.jaguar.damage * 1.5, xp: 28, height: 81, alpha: true, attack: 'pounce', reach: 230, windup: .85, cooldown: 3.5, rushSpeed: 350, rushDuration: .5 },
     shadowBrute: { name: 'Shadow Brute', hp: Base.TYPES.shadow.hp * 4, speed: 45, r: 30, damage: Base.TYPES.shadow.damage * 1.5, xp: 40, height: 88, alpha: true, attack: 'slam', reach: 105, windup: 1.15, cooldown: 3.6 },
+    chiwoj: { name: 'Chiwoj — Red-Rumped Tarantula', hp: 24 * 4, speed: 67, r: 28, damage: 16, xp: 25, height: 78, alpha: true, attack: 'pounce', reach: 225, windup: .9, cooldown: 4, rushSpeed: 330, rushDuration: .5, hairs: true, attackRow: 2 },
+    tigerSpider: { name: 'Tiger Wandering Spider', hp: 24 * 4, speed: 105, r: 25, damage: 15, xp: 25, height: 76, alpha: true, attack: 'pounce', reach: 220, windup: .65, cooldown: 3.5, rushSpeed: 390, rushDuration: .4, sidestep: true },
+    soldierAnt: { name: 'Wee-Wee Soldier Ant', hp: 36 * 4, speed: 85, r: 25, damage: 16, xp: 26, height: 77, alpha: true, attack: 'bite', reach: 48, windup: .65, cooldown: 3.4, attach: 1.3 },
+    bulletAnt: { name: 'Bullet Ant Champion', hp: 36 * 4, speed: 55, r: 27, damage: 24, xp: 30, height: 80, alpha: true, attack: 'bite', reach: 52, windup: 1, cooldown: 3.5, impair: 1.5 },
+    giantCentipede: { name: 'Giant Centipede', hp: 40 * 4, speed: 90, r: 30, damage: 19, xp: 30, height: 94, alpha: true, attack: 'pounce', reach: 235, windup: .9, cooldown: 4, rushSpeed: 340, rushDuration: .55, venom: true },
+    hiveGuardian: { name: 'Hive Guardian', hp: 28 * 4, speed: 64, r: 27, damage: 15, xp: 30, height: 85, alpha: true, flying: true, attack: 'shot', reach: 300, windup: .9, cooldown: 3.8, shotCount: 3, summonType: 'bees', summonStart: 6, summonEvery: 10, summonLimit: 3, attackRow: 1 },
+    giantTommy: { name: 'Giant Tommy Goff', hp: 52 * 4, speed: 62, r: 29, damage: 25, xp: 35, height: 85, alpha: true, attack: 'pounce', reach: 250, windup: 1.1, cooldown: 4, rushSpeed: 420, rushDuration: .45, venom: true },
+    rotTapir: { name: 'Rot-Tapir', hp: 60 * 4, speed: 42, r: 34, damage: 20, xp: 36, height: 93, alpha: true, attack: 'shot', reach: 285, windup: 1.1, cooldown: 4.5, shotCount: 3, acid: true, attackRow: 1, deathFrames: [12, 13, 14, 15, 16, 17] },
+    jabiruReaper: { name: 'Jabiru-Reaper', hp: 45 * 4, speed: 90, r: 29, damage: 22, xp: 36, height: 104, alpha: true, flying: true, attack: 'pounce', reach: 270, windup: 1, cooldown: 4.5, rushSpeed: 390, rushDuration: .55, summonType: 'voidEgg', summonStart: 10, summonEvery: 60, summonLimit: 3, attackRow: 2, deathFrames: [23] },
+    parasiteTapir: { name: 'Parasite-Tapir', hp: 22, speed: 150, r: 11, damage: 8, xp: 0, height: 33, summonedForm: true, attack: 'bite', reach: 29, windup: .3, cooldown: 1.4 },
+    voidEgg: { name: 'Void Egg', hp: 24, speed: 0, r: 13, damage: 0, xp: 0, height: 32, summonedForm: true },
+    nightHatchling: { name: 'Night Hatchling', hp: 20, speed: 145, r: 12, damage: 8, xp: 0, height: 37, summonedForm: true, flying: true, attack: 'bite', reach: 30, windup: .35, cooldown: 1.5 },
     lloronaBoss: { name: 'La Llorona', hp: 1200, speed: 62, r: 29, damage: 18, xp: 60, height: 108, boss: true, bossAI: true },
     cadejoBoss: { name: 'El Cadejo', hp: 1800, speed: 115, r: 30, damage: 24, xp: 70, height: 110, boss: true, bossAI: true },
     maleSisimite: { name: 'Male Sisimite', hp: 2800, speed: 62, r: 34, damage: 30, xp: 85, height: 128, boss: true, bossAI: true },
@@ -23,7 +35,7 @@
     xtabaiBoss: { name: 'La Xtabai', hp: 3100, speed: 70, r: 29, damage: 25, xp: 100, height: 116, boss: true, bossAI: true }
   };
   const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade'];
-  const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute'];
+  const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute', 'chiwoj', 'tigerSpider', 'soldierAnt', 'bulletAnt', 'giantCentipede', 'hiveGuardian', 'giantTommy', 'rotTapir', 'jabiruReaper'];
   for (const [id, spec] of Object.entries(TYPES)) TYPES[id] = { ...spec, hp: spec.hp * 1.15 * (spec.alpha ? 1.5 : 1) };
   TYPES.duende.hp *= 5; TYPES.duende.damage *= 5;
   const BOSSES = ['lloronaBoss', 'jaguarBoss', 'cadejoBoss', 'duende', 'maleSisimite', 'femaleSisimite', 'anansiBoss', 'sochBoss', 'xtabaiBoss'];
@@ -160,7 +172,7 @@
       Object.assign(this.player, this.arena.spawn); this.player.weapon = 'slingshot';
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.hazards = []; this.attackCount = 0;
-      this.navigation = {};
+      this.navigation = {}; this.pendingSummons = [];
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
       this.xpNeeded = xpForLevel(this.level);
@@ -190,6 +202,7 @@
       p.interval = this.normalInterval();
       if (this.active('badman')) p.interval = Math.max(.03, p.interval / 2.25);
       p.speed = Math.min(400, (218 + 24 * this.rank('speed')) * (low ? 1.15 : 1) * (boss && this.rank('courage') ? 1.12 : 1));
+      if (p.slowTime > 0 || this.enemies.some(e => !e.dead && e.action === 'attached')) p.speed *= .6;
     }
     beginWave() {
       this.wave++; this.finishedWave = false; this.breakTime = 0;
@@ -215,11 +228,15 @@
       this.refreshStats();
       this.events.push({ type: 'wave' });
     }
-    spawn(type) {
+    spawn(type, origin = null) {
       const spec = TYPES[type], b = this.arena.bounds;
+      if (origin && this.enemies.filter(e => !e.dead).length >= this.enemyLimit) return false;
       for (let i = 0; i < 40; i++) {
         let point;
-        if (this.arenaId === 'open') {
+        if (origin) {
+          const angle = this.random() * Math.PI * 2, radius = origin.r + spec.r + 14 + this.random() * 120;
+          point = { x: clamp(origin.x + Math.cos(angle) * radius, b.x + spec.r + 8, b.x + b.w - spec.r - 8), y: clamp(origin.y + Math.sin(angle) * radius, b.y + spec.r + 8, b.y + b.h - spec.r - 8) };
+        } else if (this.arenaId === 'open') {
           const view = this.view, margin = spec.boss ? 120 : 70;
           // A clamped square camera can hide the normal ring near corners; widen later retries.
           const extra = view && i >= 20 ? Math.hypot(this.player.x - view.x - view.w / 2, this.player.y - view.y - view.h / 2) : 0;
@@ -232,13 +249,13 @@
           const side = Math.floor(this.random() * 4), t = .08 + this.random() * .84;
           point = { x: side < 2 ? b.x + b.w * t : b.x + (side === 2 ? spec.r + 8 : b.w - spec.r - 8), y: side >= 2 ? b.y + b.h * t : b.y + (side === 0 ? spec.r + 8 : b.h - spec.r - 8) };
         }
-        if (dist(point, this.player) < 230 || this.arena.obstacles.some(o => circleRect(point.x, point.y, spec.r, o)) || this.enemies.some(e => dist(e, point) < e.r + spec.r + 6)) continue;
+        if (dist(point, this.player) < (origin ? spec.r + this.player.r + 28 : 230) || this.arena.obstacles.some(o => circleRect(point.x, point.y, spec.r, o)) || this.enemies.some(e => !e.dead && dist(e, point) < e.r + spec.r + 6)) continue;
         const late = this.totalWaves > 10 ? Math.max(0, this.wave - 40) : 0, early = this.wave - late;
         const scale = spec.boss ? 1 + .035 * (early - 5) + .025 * late : 1 + .065 * (early - 1) + .03 * late;
         const damageScale = 1 + .012 * (early - 1) + .006 * late;
         this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
           shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
-          type, id: this.nextId++, warmup: spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, action: 'move', actionTime: 0, attackTimer: 1 });
+          type, id: this.nextId++, warmup: origin && type === 'voidEgg' ? 0 : spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, action: 'move', actionTime: 0, attackTimer: 1, summonTimer: spec.summonStart });
         return true;
       }
       return false;
@@ -316,16 +333,20 @@
       const drop = { id, x, y, kind, boss, life: kind === 'weapon' ? 5 : boss ? Infinity : 45 };
       this.drops.push(drop); return drop;
     }
-    defeat(e, reducedXP = false) {
+    defeat(e, reducedXP = false, noSummons = false) {
       if (e.dead) return;
-      e.dead = true; this.kills++;
+      e.dead = true;
+      for (const child of this.enemies) if (e.id != null && child.owner === e.id) child.dead = true;
+      if (e.type === 'rotTapir' && !noSummons) for (let i = 0; i < 3; i++) this.pendingSummons.push({ origin: e, type: 'parasiteTapir' });
       if (e.attack || e.bossAI) {
-        this.corpses.push({ type: e.type, form: e.form, x: e.x, y: e.y, r: e.r, height: e.height, dead: true, life: .6 });
+        this.corpses.push({ type: e.type, form: e.form, x: e.x, y: e.y, r: e.r, height: e.height, deathFrames: e.deathFrames, dead: true, life: .6 });
         if (this.corpses.length > 16) this.corpses.shift();
       }
-      this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
       this.events.push({ type: 'defeat', x: e.x, y: e.y, boss: e.boss });
       this.hazards = this.hazards.filter(h => h.owner !== e.id);
+      if (e.summoned || e.summonedForm) return;
+      this.kills++;
+      this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
       if (e.boss) {
         this.bossesDefeated++; this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y, 'weapon', true);
         if (this.rank('trophy')) { this.trophyBosses++; this.player.maxHp += 10; this.player.hp += 10; }
@@ -359,7 +380,8 @@
       if (!POWERS[id]) return;
       if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5), false);
       else if (id === 'nuke') {
-        for (const e of [...this.enemies]) if (!e.dead) { e.hp = 0; this.defeat(e, true); }
+        for (const e of [...this.enemies]) if (!e.dead) { e.hp = 0; this.defeat(e, true, true); }
+        this.pendingSummons = [];
         this.enemies = []; this.bullets = this.bullets.filter(b => !b.hostile);
         this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
       } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
@@ -427,6 +449,15 @@
         const applied = Math.min(dt, s.remaining); s.remaining -= dt;
         this.damageEnemy(e, s.dps * applied); if (s.remaining <= 0) delete e.statuses[id]; if (e.dead) return;
       }
+      if (e.type === 'voidEgg') {
+        if (this.active('freeze')) return;
+        e.hatchTime = (e.hatchTime || 0) + dt;
+        if (e.hatchTime >= 5) {
+          const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp;
+          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
+        }
+        return;
+      }
       if (e.bossAI) { this.bossTick(e, this.active('freeze') ? dt * .5 : dt); return; }
       if (e.attack) { this.rosterTick(e, dt); return; }
       e.routeTimer -= dt;
@@ -460,39 +491,76 @@
       }
       if (e.type === 'jaguarBoss') { for (const a of (e.hp < e.maxHp / 2 ? [-.3, -.15, 0, .15, .3] : [-.2, 0, .2])) this.shot(e.x, e.y, aim + a, true, 14 * (e.shotScale || 1), 245); e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.8; }
     }
+    strike(e) {
+      const p = this.player, hp = p.hp; this.hurt(e.damage);
+      if (p.hp >= hp) return;
+      if (e.venom) { p.venomTime = 3; p.venomClock = 1; p.venomDamage = e.damage * .15; }
+      if (e.impair) p.slowTime = e.impair;
+      if (e.attach) { e.action = 'attached'; e.actionTime = 0; }
+    }
+    dash(input) {
+      if (!super.dash(input)) return false;
+      for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
+      this.player.slowTime = 0; return true;
+    }
+    summon(e) {
+      const count = this.enemies.filter(child => !child.dead && child.owner === e.id).length;
+      if (count >= e.summonLimit || !this.spawn(e.summonType, e)) return false;
+      const child = this.enemies.at(-1); child.owner = e.id; child.summoned = true; return true;
+    }
     rosterTick(e, dt) {
       if (this.active('freeze')) return;
       const p = this.player, d = dist(e, p);
       const speed = e.speed * (e.slow || 1); e.slow = 1;
       e.actionTime += dt; e.attackTimer -= dt;
+      if (e.summonType) e.summonTimer = (e.summonTimer ?? e.summonStart) - dt;
+      if (e.action === 'attached') {
+        if (e.actionTime >= e.attach || p.dashTime > 0 || d > e.r + p.r + 60) { e.action = 'recover'; e.actionTime = 0; }
+        else { const a = Math.atan2(e.y - p.y, e.x - p.x), gap = e.r + p.r - 4; move(this, e, p.x + Math.cos(a) * gap - e.x, p.y + Math.sin(a) * gap - e.y); }
+        return;
+      }
+      if (e.action === 'sidestep') {
+        move(this, e, Math.cos(e.attackAngle + Math.PI / 2) * speed * 2 * dt, Math.sin(e.attackAngle + Math.PI / 2) * speed * 2 * dt);
+        if (e.actionTime >= .3) { e.action = 'windup'; e.actionTime = 0; e.attackAngle = Math.atan2(p.y - e.y, p.x - e.x); }
+        return;
+      }
       if (e.action === 'windup') {
         if (e.actionTime < e.windup) return;
         e.actionTime = 0;
+        if (e.summoning) { this.summon(e); e.summoning = false; e.action = 'recover'; return; }
         if (e.attack === 'pounce') e.action = 'active';
         else {
           e.action = 'recover';
           if (e.attack === 'shot') {
-            if (visible(this, e, p)) this.shot(e.x, e.y, e.attackAngle, true, e.damage, 200, { color: '#bda5d9', r: 5 });
+            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, e.damage, 200, { color: e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9', r: 5 });
           } else {
-            if (e.alpha) this.addArea(e, e.x, e.y, e.reach, 0, .35, '#f5a06c');
-            if (d <= e.reach + p.r && visible(this, e, p)) this.hurt(e.damage);
+            if (e.attack === 'slam') this.addArea(e, e.x, e.y, e.reach, 0, .35, '#f5a06c');
+            if (d <= e.reach + p.r && visible(this, e, p)) this.strike(e);
           }
         }
         return;
       }
       if (e.action === 'active') {
         move(this, e, Math.cos(e.attackAngle) * e.rushSpeed * dt, Math.sin(e.attackAngle) * e.rushSpeed * dt);
-        if (dist(e, p) < e.r + p.r && visible(this, e, p)) this.hurt(e.damage);
-        if (e.actionTime >= e.rushDuration) { e.action = 'recover'; e.actionTime = 0; }
+        if (dist(e, p) < e.r + p.r && visible(this, e, p)) this.strike(e);
+        if (e.actionTime >= e.rushDuration) {
+          if (e.hairs) this.addArea(e, e.x, e.y, 90, .8, 3, '#d381b6', { slow: true });
+          e.action = 'recover'; e.actionTime = 0;
+        }
         return;
       }
       if (e.action === 'recover') {
         if (e.actionTime >= .45) { e.action = 'move'; e.actionTime = 0; }
         return;
       }
+      if (e.summonType && e.summonTimer <= 0) {
+        e.summonTimer = e.summonEvery; e.summoning = true; e.action = 'windup'; e.actionTime = 0; return;
+      }
       if (e.attackTimer <= 0 && d <= e.reach + p.r && visible(this, e, p)) {
-        e.action = 'windup'; e.actionTime = 0; e.attackTimer = e.cooldown;
-        e.attackAngle = Math.atan2(p.y - e.y, p.x - e.x); return;
+        e.action = e.sidestep ? 'sidestep' : 'windup'; e.actionTime = 0; e.attackTimer = e.cooldown;
+        e.attackAngle = Math.atan2(p.y - e.y, p.x - e.x);
+        if (e.acid) { const reach = Math.min(d, 200); this.addArea(e, e.x + Math.cos(e.attackAngle) * reach, e.y + Math.sin(e.attackAngle) * reach, 78, e.windup + dt, 5, '#b6d545'); }
+        return;
       }
       e.routeTimer -= dt;
       if (e.flying) e.waypoint = p;
@@ -500,12 +568,12 @@
       const target = e.waypoint || p, angle = Math.atan2(target.y - e.y, target.x - e.x);
       if (e.attack !== 'shot' || d > 210 || !visible(this, e, p)) move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
     }
-    addArea(owner, x, y, radius, delay, life, color) {
+    addArea(owner, x, y, radius, delay, life, color, extra = {}) {
       if (this.hazards.length >= 24) return false;
       const b = this.arena.bounds;
       x = clamp(x, b.x + 1, b.x + b.w - 1); y = clamp(y, b.y + 1, b.y + b.h - 1);
       if (this.arena.obstacles.some(o => circleRect(x, y, 1, o))) return false;
-      this.hazards.push({ owner: owner.id, boss: !!owner.boss, x, y, r: radius, delay, warning: delay, life, damage: owner.damage, color });
+      this.hazards.push({ owner: owner.id, boss: !!owner.boss, x, y, r: radius, delay, warning: delay, life, damage: owner.damage, color, ...extra });
       return true;
     }
     tickAreas(dt) {
@@ -515,7 +583,7 @@
         if (step <= 0) continue;
         const active = Math.max(0, step - Math.max(0, h.delay)); h.delay -= step;
         if (active > 0) {
-          if (dist(h, this.player) <= h.r + this.player.r && visible(this, h, this.player)) this.hurt(h.damage);
+          if (dist(h, this.player) <= h.r + this.player.r && visible(this, h, this.player)) { this.hurt(h.damage); if (h.slow) this.player.slowTime = .3; }
           h.life -= active;
         }
       }
@@ -573,6 +641,11 @@
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
       this.corpses = this.corpses.filter(e => { e.life -= dt; return e.life > 0; });
       const p = this.player; p.invincible = Math.max(0, p.invincible - dt); p.dashCooldown = Math.max(0, p.dashCooldown - dt); p.fireCooldown -= dt;
+      p.slowTime = Math.max(0, (p.slowTime || 0) - dt);
+      if (p.venomTime > 0) {
+        p.venomTime = Math.max(0, p.venomTime - dt); p.venomClock -= dt;
+        if (p.venomClock <= 1e-8) { this.hurt(p.venomDamage); p.venomClock += 1; if (this.mode !== 'playing') return; }
+      }
       this.wardCooldown = Math.max(0, this.wardCooldown - dt);
       for (const id of Object.keys(this.powers)) { this.powers[id] -= dt; if (this.powers[id] <= 0) delete this.powers[id]; }
       this.regenClock += dt; if (this.regenClock >= 4) { p.hp = Math.min(p.maxHp, p.hp + this.rank('regen')); this.regenClock -= 4; }
@@ -668,6 +741,11 @@
       }
       if (this.pendingRhythm) { this.pendingRhythm = false; this.pulse(p, 190, p.damage * .6, '#ffe2a1', true); }
       this.enemies = this.enemies.filter(e => !e.dead);
+      while (this.pendingSummons.length && this.enemies.length < this.enemyLimit) {
+        const pending = this.pendingSummons[0];
+        if (!this.spawn(pending.type, pending.origin)) break;
+        this.enemies.at(-1).summoned = true; this.pendingSummons.shift();
+      }
       for (const gem of this.gems) {
         gem.age += dt; const d = dist(gem, p);
         if (d < 115 + 45 * this.rank('magnet') || this.finishedWave) { const pull = Math.min(d, (this.finishedWave ? 600 : 330) * dt); if (d > .01) { gem.x += (p.x - gem.x) / d * pull; gem.y += (p.y - gem.y) / d * pull; } }
@@ -679,7 +757,7 @@
       this.flashes = this.flashes.filter(f => { f.life -= dt; return f.life > 0; }).slice(-60);
       this.effects = this.effects.filter(e => { e.life -= dt; e.y -= dt * 22; return e.life > 0; }).slice(-45);
       if (this.levelUp()) return;
-      if (!this.queue.length && !this.enemies.length && !this.finishedWave && this.breakTime <= 0) {
+      if (!this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
         this.finishedWave = true; this.bullets = [];
         this.refreshStats();
         if (this.wave === this.totalWaves) { this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
