@@ -2,6 +2,12 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Ceiba Grove and boss-wave storms — 0.10.0
+
+Choose **Ceiba Grove Clearing · New** for another large scrolling arena: mossy rocks, fallen ceiba logs, broken stone markers and walkable puddles around broad fighting lanes. Storms roll in on boss waves 10, 20, 30 and onward, with cloud cover, slanted rain, distant lightning and optional thunder, then fade after the wave clears. Attack warnings remain readable, and reduced motion removes moving rain/lightning. The pause menu's whole-map button is also usable on touch screens. [Map, weather timing, artwork and checks](MAP-AND-WEATHER.md).
+
+All thirteen automated suites and local desktop/touch/reduced-motion browser checks pass. Existing enemies, quarter-XP minis, drops and wave-20 Duende retain their previous rules. Physical phones and human balance on the new layout remain unverified.
+
 ## Alpha drops and quarter-XP minis — 0.9.1
 
 All twelve alphas remain available in Survival. Rot-Tapir's three death-spawned minis, Jabiru hatchlings and Hive swarms now award one quarter of their parent's base XP when defeated: 9, 9 and 7.5 XP respectively. They survive the parent's death and must be cleared. Unhatched eggs give no XP; minis give no extra weapon/power drops. Hive/Jabiru have a three-child lifetime allowance to prevent unlimited farming. Parent weapon/power chances, alpha waves and wave-20 Duende's difficulty remain intact. [Exact mechanics and drop rules](ALPHAS.md).

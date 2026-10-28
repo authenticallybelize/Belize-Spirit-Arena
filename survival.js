@@ -53,7 +53,17 @@
   const W = 2400, H = 2400, SURVIVAL_WAVES = 140, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
-    open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', width: W, height: H, bounds: { x: 88, y: 88, w: 2224, h: 2224 }, obstacles: [], spawn: { x: 1200, y: 1200 } },
+    open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', width: W, height: H, scrolling: true, bounds: { x: 88, y: 88, w: 2224, h: 2224 }, obstacles: [], spawn: { x: 1200, y: 1200 } },
+    grove: { name: 'Ceiba Grove Clearing', image: 'open-survival-arena.png', width: W, height: H, scrolling: true, bounds: { x: 88, y: 88, w: 2224, h: 2224 },
+      obstacles: [
+        { x: 820, y: 990, w: 135, h: 80, image: 'grove/boulder.png' }, { x: 1450, y: 1000, w: 230, h: 58, image: 'grove/log.png' },
+        { x: 1820, y: 1200, w: 110, h: 86, image: 'grove/marker.png' }, { x: 1450, y: 1400, w: 145, h: 90, image: 'grove/boulder.png' },
+        { x: 760, y: 1390, w: 230, h: 58, image: 'grove/log.png' }, { x: 450, y: 1120, w: 110, h: 86, image: 'grove/marker.png' },
+        { x: 1090, y: 510, w: 110, h: 86, image: 'grove/marker.png' }, { x: 1100, y: 1870, w: 145, h: 90, image: 'grove/boulder.png' }
+      ], decor: [
+        { x: 1020, y: 1060, w: 190, h: 105, image: 'grove/puddle.png' }, { x: 1660, y: 1690, w: 160, h: 88, image: 'grove/puddle.png' },
+        { x: 620, y: 1250, w: 140, h: 77, image: 'grove/puddle.png' }
+      ], spawn: { x: 1200, y: 1200 } },
     underworld: { name: 'The Corrupted Underworld', image: 'underworld-arena.png', width: 1200, height: 1200, bounds: { x: 180, y: 145, w: 835, h: 685 },
       obstacles: [{ x: 518, y: 252, w: 85, h: 48 }, { x: 333, y: 345, w: 75, h: 70 }, { x: 808, y: 337, w: 95, h: 65 }, { x: 480, y: 521, w: 93, h: 65 }, { x: 713, y: 648, w: 87, h: 65 }, { x: 210, y: 677, w: 77, h: 56 }],
       spawn: { x: 610, y: 575 } },
@@ -173,6 +183,7 @@
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.hazards = []; this.attackCount = 0;
       this.navigation = {}; this.pendingSummons = [];
+      this.storm = 0; this.stormWave = false; this.weatherTime = 0;
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
       this.xpNeeded = xpForLevel(this.level);
@@ -206,6 +217,7 @@
     }
     beginWave() {
       this.wave++; this.finishedWave = false; this.breakTime = 0;
+      this.stormWave = this.wave % 10 === 0; this.weatherTime = 0;
       const late = this.totalWaves > 10 ? Math.max(0, this.wave - 10) : 0;
       const count = Math.ceil((6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5)) * 1.1);
       this.spawnInterval = late ? Math.max(.1, .72 - .62 * late / 90) : Math.max(.32, .9 - .018 * this.wave);
@@ -224,6 +236,7 @@
       if (this.wave % 5 === 0) this.queue.unshift(BOSSES[(this.wave / 5 - 1) % BOSSES.length]);
       this.spawnTimer = 1.3; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
       if (this.alphaCount) this.banner = 'Wave ' + this.wave + ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
+      if (this.stormWave) this.banner += ' · Storm incoming';
       for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
       this.refreshStats();
       this.events.push({ type: 'wave' });
@@ -236,7 +249,7 @@
         if (origin) {
           const angle = this.random() * Math.PI * 2, radius = origin.r + spec.r + 14 + this.random() * 120;
           point = { x: clamp(origin.x + Math.cos(angle) * radius, b.x + spec.r + 8, b.x + b.w - spec.r - 8), y: clamp(origin.y + Math.sin(angle) * radius, b.y + spec.r + 8, b.y + b.h - spec.r - 8) };
-        } else if (this.arenaId === 'open') {
+        } else if (this.arena.scrolling) {
           const view = this.view, margin = spec.boss ? 120 : 70;
           // A clamped square camera can hide the normal ring near corners; widen later retries.
           const extra = view && i >= 20 ? Math.hypot(this.player.x - view.x - view.w / 2, this.player.y - view.y - view.h / 2) : 0;
@@ -641,6 +654,10 @@
     }
     tick(dt, input) {
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
+      const thunderCycle = Math.floor(this.weatherTime / 9); this.weatherTime += dt;
+      const raining = this.stormWave && !this.finishedWave;
+      this.storm = clamp(this.storm + (raining ? dt : -dt) / 2, 0, 1);
+      if (raining && this.storm > .5 && Math.floor(this.weatherTime / 9) > thunderCycle) this.events.push({ type: 'thunder' });
       this.corpses = this.corpses.filter(e => { e.life -= dt; return e.life > 0; });
       const p = this.player; p.invincible = Math.max(0, p.invincible - dt); p.dashCooldown = Math.max(0, p.dashCooldown - dt); p.fireCooldown -= dt;
       p.slowTime = Math.max(0, (p.slowTime || 0) - dt);
@@ -763,7 +780,7 @@
       if (!this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
         this.finishedWave = true; this.bullets = [];
         this.refreshStats();
-        if (this.wave === this.totalWaves) { this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
+        if (this.wave === this.totalWaves) { this.storm = 0; this.stormWave = false; this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
         p.hp = Math.min(p.maxHp, p.hp + 15 + 10 * this.rank('recovery'));
         if (this.wave % 2 === 0) { const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.wave / 2 - 1) % pool.length], p.x - 30, p.y, 'power'); }
         this.breakTime = 4; this.banner = 'Wave cleared · +15 HP · Collect drops before moving on'; this.bannerTime = 4;

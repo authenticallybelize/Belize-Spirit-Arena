@@ -63,6 +63,7 @@
       if (event.type === 'gem') tone(830, .08, .025, 1250);
       if (event.type === 'dash') { tone(240, .13, .04, 90, 'triangle'); burst(game.player.x, game.player.y, '#84eacc', 12); }
       if (event.type === 'hurt') { shake = .18; tone(120, .14, .06, 50, 'triangle'); }
+      if (event.type === 'thunder') tone(65, .8, .045, 32, 'sine');
       if (event.type === 'impact') burst(event.x, event.y, event.hostile ? '#c898f0' : '#f4d593', 4);
       if (event.type === 'defeat') { burst(event.x, event.y, '#75e8be', event.boss ? 24 : 10); tone(200, .06, .02, 85); }
       if (event.type === 'level') tone(530, .3, .04, 1060);
@@ -227,12 +228,17 @@
     ctx.save();
     if (shake > 0 && !reducedMotion) ctx.translate(Math.sin(t * 175) * 3, Math.cos(t * 150) * 3);
     ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-    if (extended && game.arenaId === 'open') drawOpenGround(); else ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
-    if (extended && game.arenaId === 'open') {
+    if (extended && game.arena.scrolling) drawOpenGround(); else ctx.drawImage(images[extended ? game.arena.image : 'jungle-arena.png'], 0, 0, W, H);
+    if (extended && game.arena.scrolling) {
       const b = game.arena.bounds;
       ctx.save(); ctx.strokeStyle = '#c2cf91aa'; ctx.lineWidth = 5; ctx.setLineDash([14, 10]); ctx.strokeRect(b.x, b.y, b.w, b.h); ctx.restore();
     }
-    const drawables = (extended ? game.arenaId === 'jungle' ? game.arena.obstacles : [] : OBSTACLES).map(o => ({ y: o.y + o.h, draw: () => {
+    for (const d of extended ? game.arena.decor || [] : []) ctx.drawImage(images[d.image], d.x, d.y, d.w, d.h);
+    const drawables = (extended ? game.arena.obstacles.filter(o => game.arenaId === 'jungle' || o.image) : OBSTACLES).map(o => ({ y: o.y + o.h, draw: () => {
+      if (o.image) {
+        const image = images[o.image], height = o.w * (image.naturalHeight || image.height) / (image.naturalWidth || image.width);
+        ctx.drawImage(image, o.x, o.y + o.h - height, o.w, height); return;
+      }
       shadow(o.x + o.w / 2, o.y + o.h - 15, o.w * .44, .17);
       const width = o.w + 16, height = width * 642 / 1059;
       ctx.drawImage(images['limestone-ruins.png'], 304, 180, 1059, 642, o.x - 8, o.y + o.h + 4 - height, width, height);
@@ -258,6 +264,7 @@
     for (const enemy of enemies) drawables.push({ y: enemy.y, draw: () => drawEnemy(enemy, t) });
     for (const corpse of game.corpses || []) drawables.push({ y: corpse.y, draw: () => drawEnemy(corpse, t) });
     drawables.sort((a, b) => a.y - b.y).forEach(item => item.draw());
+    if (extended && !story) ArenaWeather.draw(ctx, view, game.weatherTime, game.storm, reducedMotion);
     if (extended) SurvivalUI.draw(game, ctx, images);
     if (story) StoryUI.draw(game, ctx);
     for (const b of game.bullets) {
@@ -320,7 +327,7 @@
     const button = content.querySelector('#restartButton') || startButton, label = button.textContent;
     button.disabled = true; button.textContent = 'Loading arena…';
     try {
-      if (extended) await loadImage(SurvivalCore.ARENAS[options.arena].image);
+      if (extended) await Promise.all(arenaFiles(SurvivalCore.ARENAS[options.arena]).map(loadImage));
       particles.length = 0; game.start(options);
       if (extended) for (const arena of Object.values(SurvivalCore.ARENAS)) if (arena.image !== game.arena.image) { delete images[arena.image]; loads.delete(arena.image); }
       previousMode = ''; last = performance.now(); syncOverlay(); canvas.focus();
@@ -420,7 +427,7 @@
     if (ready) {
       const rect = canvas.getBoundingClientRect();
       if (extended) { W=game.arena.width; H=game.arena.height; }
-      view = ArenaViewport.follow(game.player, { w: W, h: H }, rect.width / rect.height, extended && !!$('entireArena')?.checked, view, game.mode === 'playing' ? dt : 0, extended && game.arenaId === 'open' ? 1200 : 0);
+      view = ArenaViewport.follow(game.player, { w: W, h: H }, rect.width / rect.height, extended && !!$('entireArena')?.checked, view, game.mode === 'playing' ? dt : 0, extended && game.arena.scrolling ? 1200 : 0);
       if (extended) game.view = view;
       if (mouse && !input.relativeAim) { const target = ArenaViewport.point(view, rect, mouse.x, mouse.y); input.aimX = target.x; input.aimY = target.y; }
       touch?.update(); game.update(dt, input); handleEvents(); syncOverlay();
@@ -437,7 +444,8 @@
   const holdingFiles = weaponIds.flatMap(id => ARENA_READY.holding[id].frames);
   const spriteFiles = Object.entries(ARENA_READY.sprites).filter(([key]) => extended || !['tommy', 'miniLlorona'].includes(key)).flatMap(([key,a]) => [...(key === 'joe' ? [] : a.frames), ...(a.portrait ? [a.portrait] : [])]);
   const rosterFiles = extended ? Object.entries(window.ARENA_ROSTER || {}).filter(([id]) => !story || ['spiderling', 'worker', 'bees', 'rootling', 'owlShade', 'hollowKeeper', 'tideWarden'].includes(id)).map(([, a]) => a.file) : [];
-  const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', extended ? game.arena.image : 'jungle-arena.png', 'limestone-ruins.png', ...weaponFiles,
+  function arenaFiles(arena) { return [...new Set([arena.image, ...arena.obstacles.map(o => o.image), ...(arena.decor || []).map(d => d.image)].filter(Boolean))]; }
+  const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', ...(extended ? arenaFiles(game.arena) : ['jungle-arena.png']), 'limestone-ruins.png', ...weaponFiles,
     ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
     ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();

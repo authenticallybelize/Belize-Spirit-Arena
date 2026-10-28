@@ -64,3 +64,4 @@
 .in-game:not(.touch-enabled) .masthead nav{position:fixed;z-index:8;top:12px;right:16px}.in-game:not(.touch-enabled) .icon-button{background:#081e16d9}
 .in-game:not(.touch-enabled) .hud{position:absolute;z-index:3;top:12px;left:16px;right:235px;width:auto;height:66px;padding:8px 14px;display:flex;gap:18px;background:#081a15bf;border:1px solid #91a87877;border-radius:8px;pointer-events:none}
 .in-game:not(.touch-enabled) .wave>div{display:none}.in-game:not(.touch-enabled) .boss-hud{top:90px;left:33%;width:34%}.in-game:not(.touch-enabled) .wave-banner{top:95px}.in-game:not(.touch-enabled) .overlay{z-index:10}.in-game:not(.touch-enabled) .dialog{max-width:600px;max-height:90dvh}.in-game:not(.touch-enabled) .arena-status{bottom:20px;left:24px;right:24px}
+.paused .touch-controls{visibility:hidden}
