@@ -2,6 +2,10 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Alpha drops and quarter-XP minis — 0.9.1
+
+All twelve alphas remain available in Survival. Rot-Tapir's three death-spawned minis, Jabiru hatchlings and Hive swarms now award one quarter of their parent's base XP when defeated: 9, 9 and 7.5 XP respectively. They survive the parent's death and must be cleared. Unhatched eggs give no XP; minis give no extra weapon/power drops. Hive/Jabiru have a three-child lifetime allowance to prevent unlimited farming. Parent weapon/power chances, alpha waves and wave-20 Duende's difficulty remain intact. [Exact mechanics and drop rules](ALPHAS.md).
+
 ## All twelve Survival alphas — 0.9.0
 
 Survival adds the remaining nine alpha identities with their existing sprites and working attacks: Chiwoj, Tiger Wandering Spider, Wee-Wee Soldier Ant, Bullet Ant Champion, Giant Centipede, Hive Guardian, Giant Tommy Goff, Rot-Tapir and Jabiru-Reaper. There are now 31 primary Survival creatures: ten common enemies, twelve alphas and nine bosses. Tapir splitting, timed destructible eggs/hatchlings, bounded Hive swarms, venom, latch/dash escape and warned damage areas are implemented. [Exact mechanics, stats, art and test scope](ALPHAS.md).

@@ -336,7 +336,7 @@
     defeat(e, reducedXP = false, noSummons = false) {
       if (e.dead) return;
       e.dead = true;
-      for (const child of this.enemies) if (e.id != null && child.owner === e.id) child.dead = true;
+      if (!e.alpha) for (const child of this.enemies) if (e.id != null && child.owner === e.id) child.dead = true;
       if (e.type === 'rotTapir' && !noSummons) for (let i = 0; i < 3; i++) this.pendingSummons.push({ origin: e, type: 'parasiteTapir' });
       if (e.attack || e.bossAI) {
         this.corpses.push({ type: e.type, form: e.form, x: e.x, y: e.y, r: e.r, height: e.height, deathFrames: e.deathFrames, dead: true, life: .6 });
@@ -344,9 +344,13 @@
       }
       this.events.push({ type: 'defeat', x: e.x, y: e.y, boss: e.boss });
       this.hazards = this.hazards.filter(h => h.owner !== e.id);
-      if (e.summoned || e.summonedForm) return;
+      const mini = e.summoned || e.summonedForm;
+      if (mini && !(e.summonXP > 0 && e.xp > 0)) return;
       this.kills++;
       this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
+      const rhythm = this.rank('rhythm');
+      if (rhythm && this.kills % (30 - 5 * rhythm) === 0) this.pendingRhythm = true;
+      if (mini) return;
       if (e.boss) {
         this.bossesDefeated++; this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y, 'weapon', true);
         if (this.rank('trophy')) { this.trophyBosses++; this.player.maxHp += 10; this.player.hp += 10; }
@@ -355,8 +359,6 @@
         const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.random() * pool.length)], e.x, e.y, 'power');
       }
       if (!e.boss && this.random() < MOB_WEAPON_CHANCE) this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y - 20);
-      const rhythm = this.rank('rhythm');
-      if (rhythm && this.kills % (30 - 5 * rhythm) === 0) this.pendingRhythm = true;
     }
     pickup() {
       if (this.mode !== 'playing') return false;
@@ -454,7 +456,7 @@
         e.hatchTime = (e.hatchTime || 0) + dt;
         if (e.hatchTime >= 5) {
           const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp;
-          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
+          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
         }
         return;
       }
@@ -504,9 +506,9 @@
       this.player.slowTime = 0; return true;
     }
     summon(e) {
-      const count = this.enemies.filter(child => !child.dead && child.owner === e.id).length;
-      if (count >= e.summonLimit || !this.spawn(e.summonType, e)) return false;
-      const child = this.enemies.at(-1); child.owner = e.id; child.summoned = true; return true;
+      if ((e.summonsMade || 0) >= e.summonLimit || !this.spawn(e.summonType, e)) return false;
+      const child = this.enemies.at(-1); child.owner = e.id; child.summoned = true; child.summonXP = e.xp / 4;
+      child.xp = child.type === 'voidEgg' ? 0 : child.summonXP; e.summonsMade = (e.summonsMade || 0) + 1; return true;
     }
     rosterTick(e, dt) {
       if (this.active('freeze')) return;
@@ -553,7 +555,7 @@
         if (e.actionTime >= .45) { e.action = 'move'; e.actionTime = 0; }
         return;
       }
-      if (e.summonType && e.summonTimer <= 0) {
+      if (e.summonType && e.summonTimer <= 0 && (e.summonsMade || 0) < e.summonLimit) {
         e.summonTimer = e.summonEvery; e.summoning = true; e.action = 'windup'; e.actionTime = 0; return;
       }
       if (e.attackTimer <= 0 && d <= e.reach + p.r && visible(this, e, p)) {
@@ -744,7 +746,8 @@
       while (this.pendingSummons.length && this.enemies.length < this.enemyLimit) {
         const pending = this.pendingSummons[0];
         if (!this.spawn(pending.type, pending.origin)) break;
-        this.enemies.at(-1).summoned = true; this.pendingSummons.shift();
+        const child = this.enemies.at(-1); child.summoned = true; child.summonXP = child.xp = pending.origin.xp / 4;
+        this.pendingSummons.shift();
       }
       for (const gem of this.gems) {
         gem.age += dt; const d = dist(gem, p);
