@@ -2,13 +2,20 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
-## Gentler spawn progression — 0.14.1
+## Mob movement and faster spawns — 0.14.2
 
-Spawn rate now increases by **20% every ten XP levels**, reduced from 50%. The rate multiplies by 1.2 at levels 10, 20, 30 and 40, then stays capped at **×2.0736**. This changes how often mobs spawn; enemy stats, mobs per wave and the 200-wave endpoint retain their existing rules.
+Ordinary mob movement grows **20% every ten XP levels**, through level 40. **Actual enemy movement never exceeds Joe’s current running speed**, including charges, pounces, sidesteps and crowd separation. The limit follows Joe’s speed upgrades and slows; his dash does not let mobs accelerate. Weapon knockback retains its force.
+
+Base spawns are **25% more frequent**, with a proportionally shorter first-arrival delay. Spawn rate again grows **50% per ten XP levels**, capped at ×5.0625 on that faster baseline from level 40. Existing wave populations, HP/damage scaling, warning times and the 96-enemy active limit remain. Story shares the movement cap while retaining its authored spawn schedule and stats.
+
+## Gentler spawn progression — 0.14.1 (superseded)
+
+
+In 0.14.1, spawn rate increased by **20% every ten XP levels**, reduced from 50%. The rate multiplies by 1.2 at levels 10, 20, 30 and 40, then stays capped at **×2.0736**. This changes how often mobs spawn; enemy stats, mobs per wave and the 200-wave endpoint retain their existing rules.
 
 ## Counterplay balance and Story ideas — 0.14.0
 
-Survival's XP difficulty now has explicit limits: HP/regular damage ×16 at level 40, wave population ×8 at level 30 and spawn rate ×2.0736 at level 40 (as of 0.14.1). Ordinary movement caps at 300 units/second and attack speed at ×2, with at least 0.25 seconds of warned windup. This replaces the earlier unbounded XP multipliers; per-wave growth, all 200 waves, weapon VI, extra perk ranks and uncapped XP remain.
+Survival's XP difficulty now has explicit limits: HP/regular damage ×16 at level 40, wave population ×8 at level 30 and spawn rate ×5.0625 at level 40 on a 25% faster baseline (as of 0.14.2). Enemy movement is capped at Joe’s current running speed and attack speed at ×2, with at least 0.25 seconds of warned windup. This replaces the earlier unbounded XP multipliers; per-wave growth, all 200 waves, weapon VI, extra perk ranks and uncapped XP remain.
 
 Nuke clears ordinary mobs, hostile shots, hazards and pending broods, while removing 50% maximum alpha HP or 20% maximum boss HP. Surviving elites retain their fight and give no early rewards. Selecting an upgrade grants 0.75 active seconds of protection; Breathing Room retains its stronger 1.5 seconds and knockback. Story's authored encounters and Nuke exclusion remain.
 
@@ -24,15 +31,17 @@ Validation: all fourteen automated suites cover the 200-wave schedule, all forty
 
 ## XP-decade difficulty and weapon VI — 0.12.0
 
-In Survival and Arena Run, Joe's XP level (not the wave number) increases difficulty at **10, 20, 30…**. At each threshold, regular enemies double HP, contact/projectile damage, movement speed and attack speed, subject to the caps above. Alphas and bosses double HP only. These multipliers compound on the existing wave scaling. Current enemies retain their health percentage when the tier changes. Spawn rate rises by **20% per tier** immediately (as of 0.14.1); the regular population multiplier is fixed when each new wave begins. Boss/alpha encounter counts retain their existing schedule.
+In Survival and Arena Run, Joe's XP level (not the wave number) increases difficulty at **10, 20, 30…**. At each threshold, regular enemies double HP and contact/projectile damage. Movement grows 20% per tier (as of 0.14.2), and attack speed grows to ×2, subject to the caps above. Alphas and bosses double HP only. These multipliers compound on the existing wave scaling. Current enemies retain their health percentage when the tier changes. Spawn rate rises by **50% per tier** immediately on the 25% faster baseline (as of 0.14.2); the regular population multiplier is fixed when each new wave begins. Boss/alpha encounter counts retain their existing schedule.
 
-| XP level | Regular combat stats and next-wave population | Alpha/boss HP | Spawn rate |
-| --- | --- | --- | --- |
-| 1–9 | ×1 | ×1 | ×1 |
-| 10–19 | ×2 | ×2 | ×1.2 |
-| 20–29 | ×4 | ×4 | ×1.44 |
-| 30–39 | ×8 | ×8 | ×1.728 |
-| 40+ | ×16 stats / ×8 population | ×16 | ×2.0736 |
+| XP level | HP / regular damage | Next-wave population | Ordinary movement growth* | Spawn rate vs unboosted wave cadence |
+| --- | --- | --- | --- | --- |
+| 1–9 | ×1 | ×1 | ×1 | ×1.25 |
+| 10–19 | ×2 | ×2 | ×1.2 | ×1.875 |
+| 20–29 | ×4 | ×4 | ×1.44 | ×2.8125 |
+| 30–39 | ×8 | ×8 | ×1.728 | ×4.21875 |
+| 40+ | ×16 | ×8 | ×2.0736 | ×6.328125 |
+
+*Actual enemy movement, including charges, is always limited by Joe’s current running speed. Alphas/bosses gain HP only; their authored movement is also subject to this limit.
 
 Wave multiplication uses compact repeated slots, so even high XP levels do not allocate exponential arrays. Spawns still wait for a safe position, room under the existing active-enemy cap (at most 96), and the existing bounded simulation batch. Warning arrivals, collision sizes and XP/drop rewards retain their rules. The extra pressure is intentionally steep and has not had human full-run balance testing.
 

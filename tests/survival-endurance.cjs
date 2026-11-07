@@ -14,7 +14,7 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   const g = atWave(wave), mobs = g.queue.filter(type => !TYPES[type].boss).length;
   assert(mobs > lastMobs, 'Ordinary mob count stopped growing at wave ' + wave);
   if (wave > 10) assert(g.queue.length > lastTotal, 'Total pressure stopped growing after a boss wave');
-  assert(g.spawnInterval <= lastInterval && g.spawnInterval >= .1);
+  assert(g.spawnInterval <= lastInterval && g.spawnInterval >= .1 / 1.25);
   assert(g.enemyLimit >= lastLimit && g.enemyLimit <= 96);
   assert.equal(g.queue.filter(type => TYPES[type].boss).length, wave % 5 === 0 ? 1 : 0);
   assert(g.spawn('crab')); const e = g.enemies[0];
@@ -28,7 +28,7 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   if ([1, 10, 40, 100, 140, 150, 199, 200].includes(wave)) table.push({ wave, enemies: g.queue.length, interval: Number(g.spawnInterval.toFixed(3)), cap: g.enemyLimit, crabHP: Number(e.hp.toFixed(1)), hit: Number(e.damage.toFixed(2)), bonus: Math.round(g.enduranceBonus * 100) });
   [lastMobs, lastTotal, lastHP, lastDamage, lastInterval, lastLimit] = [mobs, g.queue.length, e.hp, e.damage, g.spawnInterval, g.enemyLimit];
 }
-const hundred = atWave(100); assert.equal(hundred.spawnInterval, .1); assert.equal(hundred.enemyLimit, 96);
+const hundred = atWave(100); assert.equal(hundred.spawnInterval, .1 / 1.25); assert.equal(hundred.enemyLimit, 96);
 assert.equal(SURVIVAL_WAVES, 200);
 const final = atWave(200); assert.equal(final.totalWaves, 200); assert.equal(final.enduranceBonus, 1); assert.equal(final.player.damage, 38);
 assert.equal(final.queue.length, 325); assert.equal(final.queue[0], 'duende');
@@ -52,7 +52,7 @@ snapshot.wave++; snapshot.refreshStats(); assert(snapshot.player.damage > launch
 function cadence(fps) {
   const g = atWave(100); g.queue = Array(200).fill('crab'); g.spawnTimer = g.spawnInterval;
   for (let i = 0; i < fps * 2; i++) g.update(1 / fps);
-  assert.equal(200 - g.queue.length, 20, 'Free-capacity cadence was not ten enemies per second');
+  assert.equal(200 - g.queue.length, 25, 'Free-capacity cadence was not 12.5 enemies per second');
   return g;
 }
 const sixty = cadence(60), oneTwenty = cadence(120); assert.equal(sixty.enemies.length, oneTwenty.enemies.length);

@@ -144,7 +144,13 @@
     bonusXP: { name: 'Experience Bonus', duration: 0, color: '#d1ff83' },
     reflex: { name: 'Reflex Boost', duration: 7, color: '#80e0e2' }
   };
-  function move(g, e, dx, dy) {
+  function move(g, e, dx, dy, dt) {
+    // Cap enemy locomotion, charges and crowd separation at Joe's current run speed.
+    if (e !== g.player && (dt !== undefined || e.movementLeft != null)) {
+      const distance = Math.hypot(dx, dy), limit = Math.min(dt === undefined ? Infinity : g.player.speed * dt, e.movementLeft ?? Infinity);
+      if (distance > limit) { dx *= limit / distance; dy *= limit / distance; }
+    }
+    const startX = e.x, startY = e.y;
     const n = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / 6)), b = g.arena.bounds;
     for (let i = 0; i < n; i++) {
       const x = clamp(e.x + dx / n, b.x + e.r, b.x + b.w - e.r);
@@ -152,6 +158,7 @@
       const y = clamp(e.y + dy / n, b.y + e.r + (e === g.player ? Base.AIM_HEIGHT : 0), b.y + b.h - e.r);
       if (e.flying || !g.arena.obstacles.some(o => circleRect(e.x, y, e.r, o))) e.y = y;
     }
+    if (e.movementLeft != null) e.movementLeft = Math.max(0, e.movementLeft - Math.hypot(e.x - startX, e.y - startY));
   }
   const visible = (g, a, b, padding = 0) => !g.arena.obstacles.some(o => segmentRect(a, b, o, padding) !== null);
   function route(g, e, p) {
@@ -208,10 +215,10 @@
     powerPool() { return Object.keys(POWERS); }
     difficultyTier() { return Math.min(4, Math.floor(this.level / 10)); }
     applyDifficulty(e) {
-      const tier = this.difficultyTier(), ratio = 2 ** (tier - (e.difficultyTier || 0));
+      const tier = this.difficultyTier(), previousTier = e.difficultyTier || 0, ratio = 2 ** (tier - previousTier);
       e.hp *= ratio; e.maxHp *= ratio;
       if (!e.boss && !e.alpha) {
-        e.damage *= ratio; e.speed = Math.min(300, e.speed * ratio);
+        e.damage *= ratio; e.speed *= 1.2 ** (tier - previousTier);
         e.attackScale = Math.min(2, (e.attackScale || 1) * ratio);
         if (e.windup) e.windup = Math.max(e.windup, .25 * e.attackScale);
       }
@@ -219,7 +226,7 @@
     }
     syncDifficulty() {
       const previousInterval = this.spawnInterval;
-      this.spawnInterval = this.baseSpawnInterval / 1.2 ** this.difficultyTier();
+      this.spawnInterval = this.baseSpawnInterval / 1.25 / 1.5 ** this.difficultyTier();
       if (previousInterval > 0) this.spawnTimer *= this.spawnInterval / previousInterval;
       for (const e of this.enemies) if (!e.dead) this.applyDifficulty(e);
     }
@@ -274,7 +281,7 @@
       }
       if (this.wave % 5 === 0) this.queue.unshift(BOSSES[(this.wave / 5 - 1) % BOSSES.length]);
       this.syncDifficulty();
-      this.spawnTimer = 1.3; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
+      this.spawnTimer = 1.3 / 1.25; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
       if (this.alphaCount) this.banner = 'Wave ' + this.wave + ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
       if (this.stormWave) this.banner += ' · Storm incoming';
       for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
@@ -308,7 +315,7 @@
         const damageScale = 1 + .012 * (early - 1) + .006 * late;
         this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
           shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
-          type, id: this.nextId++, warmup: origin && type === 'voidEgg' ? 0 : spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, action: 'move', actionTime: 0, attackTimer: 1, summonTimer: spec.summonStart });
+          type, id: this.nextId++, warmup: origin && type === 'voidEgg' ? 0 : spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, movementLeft: null, action: 'move', actionTime: 0, attackTimer: 1, summonTimer: spec.summonStart });
         this.applyDifficulty(this.enemies.at(-1));
         return true;
       }
@@ -533,11 +540,11 @@
       if (['shadow', 'miniLlorona'].includes(e.type) && visible(this, e, this.player, 6)) speed *= d < 190 ? -.55 : d < 285 ? 0 : 1;
       if (['jaguarBoss', 'tommy'].includes(e.type)) {
         e.rushTimer -= dt * (e.attackScale || 1);
-        if (e.rushTime > 0) { move(this, e, Math.cos(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * (e.attackScale || 1) * dt, Math.sin(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * (e.attackScale || 1) * dt); e.rushTime -= dt * (e.attackScale || 1); }
+        if (e.rushTime > 0) { move(this, e, Math.cos(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * (e.attackScale || 1) * dt, Math.sin(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * (e.attackScale || 1) * dt, dt); e.rushTime -= dt * (e.attackScale || 1); }
         else if (e.rushWindup > 0) { e.rushWindup -= dt * (e.attackScale || 1); if (e.rushWindup <= 0) e.rushTime = e.type === 'tommy' ? .3 : .48; }
         else if (e.rushTimer <= 0) { e.rushAngle = Math.atan2(this.player.y - e.y, this.player.x - e.x); e.rushX = Math.cos(e.rushAngle); e.rushY = Math.sin(e.rushAngle); e.rushWindup = e.type === 'tommy' ? .5 : .65; e.rushTimer = e.type === 'tommy' ? 3.5 : e.hp < e.maxHp / 2 ? 2.5 : 3.6; }
-        else move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
-      } else move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
+        else move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt, dt);
+      } else move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt, dt);
       if (dist(e, this.player) < e.r + this.player.r) this.hurt(e.damage);
       e.shotTimer -= dt * (e.attackScale || 1); e.casting = e.rushWindup > 0 || e.shotTimer < .45 && (['shadow', 'miniLlorona'].includes(e.type) || e.boss);
       if (e.shotTimer > 0) return;
@@ -581,11 +588,11 @@
       if (e.summonType) e.summonTimer = (e.summonTimer ?? e.summonStart) - dt;
       if (e.action === 'attached') {
         if (e.actionTime >= e.attach || p.dashTime > 0 || d > e.r + p.r + 60) { e.action = 'recover'; e.actionTime = 0; }
-        else { const a = Math.atan2(e.y - p.y, e.x - p.x), gap = e.r + p.r - 4; move(this, e, p.x + Math.cos(a) * gap - e.x, p.y + Math.sin(a) * gap - e.y); }
+        else { const a = Math.atan2(e.y - p.y, e.x - p.x), gap = e.r + p.r - 4; move(this, e, p.x + Math.cos(a) * gap - e.x, p.y + Math.sin(a) * gap - e.y, dt); }
         return;
       }
       if (e.action === 'sidestep') {
-        move(this, e, Math.cos(e.attackAngle + Math.PI / 2) * speed * 2 * dt, Math.sin(e.attackAngle + Math.PI / 2) * speed * 2 * dt);
+        move(this, e, Math.cos(e.attackAngle + Math.PI / 2) * speed * 2 * dt, Math.sin(e.attackAngle + Math.PI / 2) * speed * 2 * dt, dt);
         if (e.actionTime >= .3) { e.action = 'windup'; e.actionTime = 0; e.attackAngle = Math.atan2(p.y - e.y, p.x - e.x); }
         return;
       }
@@ -606,7 +613,7 @@
         return;
       }
       if (e.action === 'active') {
-        move(this, e, Math.cos(e.attackAngle) * e.rushSpeed * (e.attackScale || 1) * dt, Math.sin(e.attackAngle) * e.rushSpeed * (e.attackScale || 1) * dt);
+        move(this, e, Math.cos(e.attackAngle) * e.rushSpeed * (e.attackScale || 1) * dt, Math.sin(e.attackAngle) * e.rushSpeed * (e.attackScale || 1) * dt, dt);
         if (dist(e, p) < e.r + p.r && visible(this, e, p)) this.strike(e);
         if (e.actionTime >= e.rushDuration) {
           if (e.hairs) this.addArea(e, e.x, e.y, 90, .8, 3, '#d381b6', { slow: true });
@@ -631,7 +638,7 @@
       if (e.flying) e.waypoint = p;
       else if (e.routeTimer <= 0) { e.waypoint = route(this, e, p); e.routeTimer = .25; }
       const target = e.waypoint || p, angle = Math.atan2(target.y - e.y, target.x - e.x);
-      if (e.attack !== 'shot' || d > 210 || !visible(this, e, p)) move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
+      if (e.attack !== 'shot' || d > 210 || !visible(this, e, p)) move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt, dt);
     }
     addArea(owner, x, y, radius, delay, life, color, extra = {}) {
       if (this.hazards.length >= 24) return false;
@@ -676,7 +683,7 @@
         e.action = 'recover'; return;
       }
       if (e.action === 'active') {
-        move(this, e, Math.cos(e.attackAngle) * e.skill.speed * dt, Math.sin(e.attackAngle) * e.skill.speed * dt);
+        move(this, e, Math.cos(e.attackAngle) * e.skill.speed * dt, Math.sin(e.attackAngle) * e.skill.speed * dt, dt);
         if (dist(e, p) < e.r + p.r && visible(this, e, p)) this.hurt(e.damage);
         if (e.actionTime >= e.skill.duration) { e.action = 'recover'; e.actionTime = 0; }
         return;
@@ -697,7 +704,7 @@
         e.routeTimer -= dt;
         if (e.routeTimer <= 0) { e.waypoint = e.flying ? p : route(this, e, p); e.routeTimer = .25; }
         const point = e.waypoint || p, angle = Math.atan2(point.y - e.y, point.x - e.x);
-        move(this, e, Math.cos(angle) * e.speed * (e.slow || 1) * dt, Math.sin(angle) * e.speed * (e.slow || 1) * dt);
+        move(this, e, Math.cos(angle) * e.speed * (e.slow || 1) * dt, Math.sin(angle) * e.speed * (e.slow || 1) * dt, dt);
       }
       e.slow = 1;
       if (dist(e, p) < e.r + p.r) this.hurt(e.damage);
@@ -734,13 +741,18 @@
         }
       }
       const enemyDt = dt * (this.active('reflex') ? .5 : 1);
-      for (const e of this.enemies) { if (!e.dead) this.enemyTick(e, enemyDt); if (this.mode !== 'playing') return; }
-      this.tickAreas(enemyDt); if (this.mode !== 'playing') return;
-      for (let i = 0; i < this.enemies.length; i++) for (let j = i + 1; j < this.enemies.length; j++) {
-        const a = this.enemies[i], b = this.enemies[j], d = dist(a, b), min = a.r + b.r;
-        if (a.dead || b.dead || a.warmup > 0 || b.warmup > 0 || d >= min) continue;
-        const angle = d > .01 ? Math.atan2(b.y - a.y, b.x - a.x) : 0, push = Math.min((min - d) / 2, 60 * dt);
-        move(this, a, -Math.cos(angle) * push, -Math.sin(angle) * push); move(this, b, Math.cos(angle) * push, Math.sin(angle) * push);
+      for (const e of this.enemies) e.movementLeft = p.speed * dt;
+      try {
+        for (const e of this.enemies) { if (!e.dead) this.enemyTick(e, enemyDt); if (this.mode !== 'playing') return; }
+        this.tickAreas(enemyDt); if (this.mode !== 'playing') return;
+        for (let i = 0; i < this.enemies.length; i++) for (let j = i + 1; j < this.enemies.length; j++) {
+          const a = this.enemies[i], b = this.enemies[j], d = dist(a, b), min = a.r + b.r;
+          if (a.dead || b.dead || a.warmup > 0 || b.warmup > 0 || d >= min) continue;
+          const angle = d > .01 ? Math.atan2(b.y - a.y, b.x - a.x) : 0, push = Math.min((min - d) / 2, 60 * dt);
+          move(this, a, -Math.cos(angle) * push, -Math.sin(angle) * push); move(this, b, Math.cos(angle) * push, Math.sin(angle) * push);
+        }
+      } finally {
+        for (const e of this.enemies) e.movementLeft = null;
       }
       for (const b of this.bullets) {
         const step = Math.min(b.life, b.hostile ? enemyDt : dt);
