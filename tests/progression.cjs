@@ -8,7 +8,7 @@ function game(level = 1, wave = 23) {
   g.level = level; g.wave = wave - 1; g.enemies = []; g.beginWave(); g.spawnTimer = 999; return g;
 }
 // Compare the same wave at both sides of every milestone; wave scaling stays independent.
-for (const [level, factor, rate] of [[1,1,1], [9,1,1], [10,2,1.5], [19,2,1.5], [20,4,2.25], [29,4,2.25], [30,8,3.375], [40,16,5.0625]]) {
+for (const [level, factor, rate] of [[1,1,1], [9,1,1], [10,2,1.2], [19,2,1.2], [20,4,1.44], [29,4,1.44], [30,8,1.728], [40,16,2.0736]]) {
   const g = game(level), baseline = game();
   const ordinary = baseline.queue.filter(id => !TYPES[id].boss && !TYPES[id].alpha).length;
   const specials = baseline.queue.length - ordinary;
@@ -75,4 +75,4 @@ const storage = { value: null, getItem() { return this.value; }, setItem(_, valu
 const story = new Story.Game(seeded(3)), store = new Story.Store(storage); story.startStory(store); story.level = 20;
 assert.equal(story.difficultyTier(), 0); story.weaponLevels.slingshot = 6; assert(store.checkpoint(story));
 const restored = new Story.Store(storage); assert(!restored.readOnly); assert.equal(restored.data.checkpoint.weaponLevels.slingshot, 6);
-console.log('PASS: exact XP-decade thresholds, bounded ordinary stats/population/1.5x cadence, HP-only alphas/bosses, wounded-enemy transitions, lazy repeated spawns, attack clocks, hatch scaling, all twelve VI caps and healing, useful extra perk ranks, Story save compatibility.');
+console.log('PASS: exact XP-decade thresholds, bounded ordinary stats/population/1.2x cadence, HP-only alphas/bosses, wounded-enemy transitions, lazy repeated spawns, attack clocks, hatch scaling, all twelve VI caps and healing, useful extra perk ranks, Story save compatibility.');

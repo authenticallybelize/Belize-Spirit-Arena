@@ -219,7 +219,7 @@
     }
     syncDifficulty() {
       const previousInterval = this.spawnInterval;
-      this.spawnInterval = this.baseSpawnInterval / 1.5 ** this.difficultyTier();
+      this.spawnInterval = this.baseSpawnInterval / 1.2 ** this.difficultyTier();
       if (previousInterval > 0) this.spawnTimer *= this.spawnInterval / previousInterval;
       for (const e of this.enemies) if (!e.dead) this.applyDifficulty(e);
     }

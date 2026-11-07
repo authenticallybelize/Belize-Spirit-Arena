@@ -1,4 +1,4 @@
-# Balance review — 0.14.0
+# Balance review — 0.14.1
 
 Reviewed with the Ponytail workflow: keep the existing engine and assets; change the rules that remove counterplay. No new dependency or parallel difficulty system.
 
@@ -24,7 +24,7 @@ Unbounded speed and warning compression remove the ability to dodge. Unbounded p
 | Ordinary movement | Maximum 300 units/s; ordinary pounces remain below Joe's dash speed. |
 | Ordinary attack clock | Maximum ×2, with at least 250 ms of warned windup. Alpha/boss attack timings retain their authored values. |
 | Wave population | Doubles at 10, 20 and 30, capped at ×8. Wave-100 queue remains 1,313 even at XP level 200. |
-| Spawn cadence | +50% per tier through XP level 40, capped at ×5.0625. Existing active-enemy and simulation limits still apply. |
+| Spawn cadence | +20% per tier through XP level 40, capped at ×2.0736. Existing active-enemy and simulation limits still apply. |
 | Nuke | Clears ordinary mobs/minis, hostile shots, hazards and pending broods; removes 50% maximum alpha HP or 20% maximum boss HP. Only a defeated elite awards its reward. Legend Hunter does not multiply this percentage. Arrival warnings do not protect against Nuke. |
 | Upgrade selection | 0.75 active seconds of protection after returning from cards; Breathing Room retains 1.5 seconds plus knockback. Chained cards do not consume this time while paused. |
 
