@@ -8,7 +8,7 @@ const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>
 function playing(weapon = 'slingshot') { const g = new Game(seeded(7)); g.start({ mode: 'survival' }); g.player.weapon = weapon; g.refreshStats(); g.queue = ['crab']; g.spawnTimer = 999; return g; }
 for (const [id, hp] of Object.entries(oldHP)) near(TYPES[id].hp, hp * 1.15 * (TYPES[id].alpha ? 1.5 : id === 'duende' ? 5 : 1));
 assert.equal(Base.TYPES.crab.hp, 42); assert.equal(Base.TYPES.duende.hp, 1050, 'Survival mutated Story/classic stats');
-for (const p of PERKS) assert.equal(p.max, oldCaps[p.id] === 1 ? 1 : oldCaps[p.id] + 1, p.id);
+for (const p of PERKS) assert.equal(p.max, oldCaps[p.id] === 1 ? 1 : oldCaps[p.id] + 2, p.id);
 assert.equal(PERKS.filter(p => p.max === 1).length, 7); assert.equal(PERKS.length, 31);
 for (let level = 1; level <= 200; level++) {
   assert(Number.isInteger(xpForLevel(level))); assert(xpForLevel(level + 1) > xpForLevel(level));
@@ -52,4 +52,4 @@ for (const weapon of ['claw', 'cohune']) {
   for (let i = 0; i < 200; i++) { late.xp = late.xpNeeded; assert(late.levelUp()); assert(late.choices.length); assert(late.choices.every(p => p.id === 'overflowHeal' || late.eligible(p))); assert(late.choose(0)); }
   assert.equal(late.level, 201, 'A late build stopped offering useful upgrades');
 }
-console.log('PASS: +1 stack caps/unique preservation, all HP multipliers, accelerating XP beyond level 200, XP powers/gems, queued upgrades, repeatable permanent vitality, bounded final-rank fire/ricochet bonuses.');
+console.log('PASS: expanded stack caps/unique preservation, all HP multipliers, accelerating XP beyond level 200, XP powers/gems, queued upgrades, repeatable permanent vitality, bounded final-rank fire/ricochet bonuses.');

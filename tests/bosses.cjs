@@ -1,11 +1,11 @@
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path'), vm = require('node:vm'), crypto = require('node:crypto');
-const { Game, TYPES, BOSSES, WEAPONS, MOB_WEAPON_CHANCE, ARENAS } = require('../survival.js');
+const { Game, SURVIVAL_WAVES, TYPES, BOSSES, WEAPONS, MOB_WEAPON_CHANCE, ARENAS } = require('../survival.js');
 const Base = require('../core.js');
 const seed = n => () => ((n = (Math.imul(n, 1664525) + 1013904223) >>> 0) / 4294967296);
 function game(wave = 1) { const g = new Game(seed(91)); g.start({ mode: 'survival' }); g.wave = wave - 1; g.beginWave(); g.queue = ['crab']; g.spawnTimer = 999; return g; }
 function boss(g, type) { assert(g.spawn(type)); const e = g.enemies.at(-1); Object.assign(e, { x: g.player.x - 110, y: g.player.y, warmup: 0, attackTimer: 0, shotTimer: 0, routeTimer: 0 }); return e; }
 assert.equal(BOSSES.length, 9); assert.equal(new Set(BOSSES).size, 9); assert.equal(BOSSES[3], 'duende');
-for (let wave = 1; wave <= 140; wave++) {
+for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   const g = game(); g.wave = wave - 1; g.beginWave();
   assert.deepEqual(g.queue.filter(id => TYPES[id].boss), wave % 5 ? [] : [BOSSES[(wave / 5 - 1) % 9]]);
   if (wave < 20) assert(!g.queue.includes('duende'));

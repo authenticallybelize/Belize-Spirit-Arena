@@ -11,6 +11,11 @@
     bees: { name: 'Africanized Bee Swarm', hp: 28, speed: 135, r: 16, damage: 8, xp: 7, height: 44, flying: true, attack: 'bite', reach: 30, windup: .3, cooldown: 1.5 },
     rootling: { name: 'Corrupted Rootling', hp: 42, speed: 58, r: 14, damage: 10, xp: 7, height: 39, attack: 'shot', reach: 280, windup: .6, cooldown: 3 },
     owlShade: { name: 'Owl Shade', hp: 30, speed: 110, r: 13, damage: 9, xp: 7, height: 41, flying: true, attack: 'pounce', reach: 150, windup: .55, cooldown: 3.2, rushSpeed: 280, rushDuration: .35 },
+    grasshopper: { name: 'Grasshopper', hp: 22, speed: 105, r: 11, damage: 6, xp: 4, height: 33, attack: 'pounce', reach: 155, windup: .45, cooldown: 2.4, rushSpeed: 290, rushDuration: .3 },
+    corruptedHen: { name: 'Corrupted Hen', hp: 38, speed: 100, r: 14, damage: 9, xp: 6, height: 43, attack: 'bite', reach: 32, windup: .35, cooldown: 1.5 },
+    corruptedGrackle: { name: 'Corrupted Great-tailed Grackle', hp: 30, speed: 130, r: 12, damage: 8, xp: 6, height: 42, flying: true, attack: 'pounce', reach: 175, windup: .5, cooldown: 3.1, rushSpeed: 310, rushDuration: .32 },
+    corruptedMonkey: { name: 'Corrupted Howler Monkey', hp: 45, speed: 95, r: 15, damage: 11, xp: 8, height: 48, attack: 'shot', reach: 310, windup: .65, cooldown: 2.6, shotColor: '#ac73d4', shotSpeed: 235 },
+    corruptedToad: { name: 'Corrupted Toad', hp: 48, speed: 60, r: 15, damage: 10, xp: 7, height: 36, attack: 'pounce', reach: 165, windup: .6, cooldown: 2.8, rushSpeed: 260, rushDuration: .38 },
     alphaCrab: { name: 'Armored Mangrove Crab', hp: Base.TYPES.crab.hp * 4, speed: 48, r: 29, damage: Base.TYPES.crab.damage * 1.5, xp: 20, height: 75, alpha: true, attack: 'slam', reach: 85, windup: 1, cooldown: 3 },
     alphaJaguar: { name: 'Jaguar Sentinel', hp: Base.TYPES.jaguar.hp * 4, speed: 110, r: 25, damage: Base.TYPES.jaguar.damage * 1.5, xp: 28, height: 81, alpha: true, attack: 'pounce', reach: 230, windup: .85, cooldown: 3.5, rushSpeed: 350, rushDuration: .5 },
     shadowBrute: { name: 'Shadow Brute', hp: Base.TYPES.shadow.hp * 4, speed: 45, r: 30, damage: Base.TYPES.shadow.damage * 1.5, xp: 40, height: 88, alpha: true, attack: 'slam', reach: 105, windup: 1.15, cooldown: 3.6 },
@@ -34,7 +39,7 @@
     sochBoss: { name: 'The Soch / La Lechuza', hp: 2900, speed: 98, r: 30, damage: 26, xp: 95, height: 116, flying: true, boss: true, bossAI: true },
     xtabaiBoss: { name: 'La Xtabai', hp: 3100, speed: 70, r: 29, damage: 25, xp: 100, height: 116, boss: true, bossAI: true }
   };
-  const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade'];
+  const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade', 'grasshopper', 'corruptedHen', 'corruptedGrackle', 'corruptedMonkey', 'corruptedToad'];
   const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute', 'chiwoj', 'tigerSpider', 'soldierAnt', 'bulletAnt', 'giantCentipede', 'hiveGuardian', 'giantTommy', 'rotTapir', 'jabiruReaper'];
   for (const [id, spec] of Object.entries(TYPES)) TYPES[id] = { ...spec, hp: spec.hp * 1.15 * (spec.alpha ? 1.5 : 1) };
   TYPES.duende.hp *= 5; TYPES.duende.damage *= 5;
@@ -50,7 +55,7 @@
   };
   const MOB_WEAPON_CHANCE = .06;
   const xpForLevel = level => Math.ceil(25 + 13 * (level - 1) + .5 * (level - 1) ** 2);
-  const W = 2400, H = 2400, SURVIVAL_WAVES = 140, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const W = 2400, H = 2400, SURVIVAL_WAVES = 200, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
     open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', width: W, height: H, scrolling: true, bounds: { x: 88, y: 88, w: 2224, h: 2224 }, obstacles: [], spawn: { x: 1200, y: 1200 } },
@@ -90,7 +95,9 @@
     { id: 'cohune', name: 'Cohune Bomb Launcher', damage: 400, rate: .125, speed: 450, range: 530, r: 9, explosive: true, tags: ['projectile', 'explosive', 'area'], color: '#ffbc5c', art: [635, 816, 85, 108] },
     { id: 'staff', name: 'Duende Staff', damage: 30.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
   ];
-  const FEATHER_HOMING = [1.1, 1.75, 2.45, Math.PI];
+  const WEAPON_RANKS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+  const MAX_WEAPON_RANK = WEAPON_RANKS.length;
+  const FEATHER_HOMING = [1.1, 1.75, 2.45, Math.PI, Math.PI, Math.PI];
   const weapon = id => WEAPONS.find(w => w.id === id) || WEAPONS[0];
   const PERKS = [
     ['damage', 'Heart of the Jungle', '+25% compounded damage', 5, 'Common'],
@@ -108,23 +115,23 @@
     ['second', 'Second Wind', 'Below 35% HP: speed, fire and damage', 1, 'Uncommon'],
     ['duplicate', 'Duende Trick', '+8% phantom-shot chance · 60% damage', 3, 'Uncommon', 'projectile'],
     ['resonance', 'Guardian Resonance', '+20% temporary power duration', 3, 'Uncommon'],
-    ['rhythm', 'Belizean Rhythm', 'Kill-triggered spirit pulse: 25 → 20 → 15 → 10', 3, 'Uncommon'],
+    ['rhythm', 'Belizean Rhythm', 'Kill-triggered spirit pulse: 25 → 20 → 15 → 10 → 5', 3, 'Uncommon'],
     ['breathing', 'Breathing Room', 'Knock back foes · 1.5s protection on resume', 1, 'Uncommon'],
     ['pierce', 'Obsidian Edge', 'Pierce one more target · 15% falloff', 3, 'Rare', 'projectile'],
-    ['ricochet', 'Macal Ricochet', 'Two bounces maximum; rank III adds +15% bounced damage', 2, 'Rare', 'projectile'],
-    ['overflow', 'Spirit Overflow', 'Bonus shot every 6 → 5 → 4 → 3 attacks', 3, 'Rare', 'projectile'],
+    ['ricochet', 'Macal Ricochet', 'Two bounces maximum; later ranks add +15% bounced damage', 2, 'Rare', 'projectile'],
+    ['overflow', 'Spirit Overflow', 'Bonus shot every 6 → 5 → 4 → 3 → 2 attacks', 3, 'Rare', 'projectile'],
     ['blast', 'Cohune Blast', '+25% radius (160 cap) · +15% bomb damage', 4, 'Rare', 'explosive'],
     ['poison', 'Fer-de-Lance Venom', 'Poison: 6 DPS / rank for 3 seconds', 3, 'Uncommon', 'projectile'],
     ['fire', 'Bushfire Blessing', '15% / rank chance: burn 10 DPS / rank', 3, 'Uncommon', 'projectile'],
     ['homing', 'Kukulkan Wind', 'Stronger gentle projectile homing', 3, 'Rare', 'projectile'],
-    ['ward', 'Maya Ward', 'Block a hit every 25 → 20 → 15 → 10 seconds', 3, 'Rare'],
+    ['ward', 'Maya Ward', 'Block a hit every 25 → 20 → 15 → 10 → 5 seconds', 3, 'Rare'],
     ['bossDamage', 'Legend Hunter', '+20% boss damage', 3, 'Rare', 'boss'],
     ['courage', 'Jaguar Courage', 'While boss lives: speed, fire and damage', 1, 'Uncommon', 'boss'],
     ['trophy', 'Trophy Keeper', 'Each future boss: +5% damage · +10 max HP', 1, 'Legendary', 'boss'],
     ['sacred', 'Sacred Return', 'Boss death: heal 35% · guaranteed power', 1, 'Legendary', 'boss'],
     ['grandma', 'Grandma Knows Best', 'Fourth card with improved rarity odds', 1, 'Legendary'],
     ['commit', 'One Tool, One Path', 'Lock weapon · +40% damage · +20% fire', 1, 'Legendary']
-  ].map(([id, name, detail, max, rarity, tag]) => ({ id, name, detail, max: max > 1 ? max + 1 : max, rarity, tag, icon: '✦' }));
+  ].map(([id, name, detail, max, rarity, tag]) => ({ id, name, detail, max: max > 1 ? max + 2 : max, rarity, tag, icon: '✦' }));
   const POWERS = {
     heavy: { name: 'Heavy Bullets', duration: 8, color: '#ffe197' },
     freeze: { name: 'Freeze', duration: 5, color: '#9adfff' },
@@ -187,7 +194,8 @@
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
       this.xpNeeded = xpForLevel(this.level);
-      this.spawnInterval = .882; this.enemyLimit = 32; this.view = null;
+      this.baseSpawnInterval = this.spawnInterval = .882; this.waveMobMultiplier = 1; this.copiesLeft = 0;
+      this.enemyLimit = 32; this.view = null;
       this.refreshStats();
     }
     start(options = {}) {
@@ -198,6 +206,32 @@
     rank(id) { return this.ranks[id] || 0; }
     active(id) { return (this.powers[id] || 0) > 0; }
     powerPool() { return Object.keys(POWERS); }
+    difficultyTier() { return Math.floor(this.level / 10); }
+    applyDifficulty(e) {
+      const tier = this.difficultyTier(), ratio = 2 ** (tier - (e.difficultyTier || 0));
+      e.hp *= ratio; e.maxHp *= ratio;
+      if (!e.boss && !e.alpha) { e.damage *= ratio; e.speed *= ratio; e.attackScale = (e.attackScale || 1) * ratio; }
+      e.difficultyTier = tier;
+    }
+    syncDifficulty() {
+      const previousInterval = this.spawnInterval;
+      this.spawnInterval = this.baseSpawnInterval / 1.5 ** this.difficultyTier();
+      if (previousInterval > 0) this.spawnTimer *= this.spawnInterval / previousInterval;
+      for (const e of this.enemies) if (!e.dead) this.applyDifficulty(e);
+    }
+    queuedEnemies() {
+      const regular = this.queue.filter(type => !TYPES[type].boss && !TYPES[type].alpha).length;
+      return regular * this.waveMobMultiplier + this.queue.length - regular - (this.copiesLeft ? this.waveMobMultiplier - this.copiesLeft : 0);
+    }
+    consumeQueuedEnemy() {
+      const spec = TYPES[this.queue[0]];
+      if (spec.boss || spec.alpha) this.queue.shift();
+      else {
+        // Repeat ordinary slots lazily: high XP levels never allocate exponential arrays.
+        if (!this.copiesLeft) this.copiesLeft = this.waveMobMultiplier;
+        if (--this.copiesLeft <= 0) this.queue.shift();
+      }
+    }
     normalInterval(rank = this.rank('rate')) {
       const w = weapon(this.player.weapon), low = this.player.hp < this.player.maxHp * .35 && this.rank('second');
       const boss = this.enemies.some(e => e.boss && !e.dead);
@@ -220,7 +254,8 @@
       this.stormWave = this.wave % 10 === 0; this.weatherTime = 0;
       const late = this.totalWaves > 10 ? Math.max(0, this.wave - 10) : 0;
       const count = Math.ceil((6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5)) * 1.1);
-      this.spawnInterval = late ? Math.max(.1, .72 - .62 * late / 90) : Math.max(.32, .9 - .018 * this.wave);
+      this.baseSpawnInterval = late ? Math.max(.1, .72 - .62 * late / 90) : Math.max(.32, .9 - .018 * this.wave);
+      this.waveMobMultiplier = 2 ** this.difficultyTier(); this.copiesLeft = 0;
       this.enemyLimit = 32 + Math.min(64, Math.floor(late * 64 / 90));
       this.queue = Array.from({ length: count }, (_, i) => this.wave < 3 ? i % 3 === 0 ? 'jaguar' : 'crab' : ['crab', 'jaguar', 'shadow'][i % 3]);
       if (this.wave >= 4) this.queue = this.queue.map((type, i) => i % 7 === 3 ? 'tommy' : this.wave >= 7 && i % 7 === 6 ? 'miniLlorona' : type);
@@ -234,6 +269,7 @@
         this.queue.splice(0, this.alphaCount, ...Array.from({ length: this.alphaCount }, (_, i) => ALPHAS[(offset + i) % ALPHAS.length]));
       }
       if (this.wave % 5 === 0) this.queue.unshift(BOSSES[(this.wave / 5 - 1) % BOSSES.length]);
+      this.syncDifficulty();
       this.spawnTimer = 1.3; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
       if (this.alphaCount) this.banner = 'Wave ' + this.wave + ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
       if (this.stormWave) this.banner += ' · Storm incoming';
@@ -269,6 +305,7 @@
         this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
           shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
           type, id: this.nextId++, warmup: origin && type === 'voidEgg' ? 0 : spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, action: 'move', actionTime: 0, attackTimer: 1, summonTimer: spec.summonStart });
+        this.applyDifficulty(this.enemies.at(-1));
         return true;
       }
       return false;
@@ -277,7 +314,7 @@
       const w = weapon(this.player.weapon);
       if ((w.explosive || w.cloud) && ['pierce', 'ricochet', 'poison', 'fire'].includes(perk.id)) return false;
       if (perk.tag && perk.tag !== 'boss' && !w.tags.includes(perk.tag)) return false;
-      if (perk.id === 'homing' && w.homing && this.weaponLevels[w.id] === 4) return false;
+      if (perk.id === 'homing' && w.homing && this.weaponLevels[w.id] >= 4) return false;
       return true;
     }
     eligible(perk) {
@@ -300,6 +337,8 @@
     levelUp() {
       if (this.xp < this.xpNeeded) return false;
       this.xp -= this.xpNeeded; this.level++; this.xpNeeded = xpForLevel(this.level);
+      this.syncDifficulty();
+      if (this.level % 10 === 0) { this.banner = 'Level ' + this.level + ' · The corruption grows stronger'; this.bannerTime = 5; }
       let available = PERKS.filter(p => this.eligible(p)); this.choices = [];
       const n = this.rank('grandma') ? 4 : 3;
       for (let i = 0; i < n; i++) {
@@ -379,7 +418,7 @@
       if (!drop || this.commitWeapon && drop.id !== this.commitWeapon) return false;
       this.drops.splice(this.drops.indexOf(drop), 1);
       if (drop.id === this.player.weapon) {
-        if (this.weaponLevels[drop.id] < 4) this.weaponLevels[drop.id]++;
+        if (this.weaponLevels[drop.id] < MAX_WEAPON_RANK) this.weaponLevels[drop.id]++;
         else this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * .1);
       } else {
         const old = { ...this.player, r: 8 };
@@ -387,7 +426,7 @@
         this.addDrop(this.player.weapon, old.x, old.y);
         this.player.weapon = drop.id;
       }
-      this.player.fireCooldown = 0; this.refreshStats(); this.banner = weapon(drop.id).name + ' · Rank ' + this.weaponLevels[drop.id]; this.bannerTime = 2;
+      this.player.fireCooldown = 0; this.refreshStats(); this.banner = weapon(drop.id).name + ' · Rank ' + WEAPON_RANKS[this.weaponLevels[drop.id] - 1]; this.bannerTime = 2;
       this.events.push({ type: 'weapon' }); return true;
     }
     collectStaff() { return false; }
@@ -436,7 +475,7 @@
       else {
         const launch = (angle, multiplier = 1, secondary = false) => this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
           w.speed * (1 + .2 * this.rank('harpy')), { kind: w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: w.range * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
-            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: Math.min(2, this.rank('ricochet')), ricochetBoost: this.rank('ricochet') > 2 ? 1.15 : 1, homing: Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
+            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: Math.min(2, this.rank('ricochet')), ricochetBoost: 1 + .15 * Math.max(0, this.rank('ricochet') - 2), homing: Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
             targetId: w.homing ? this.homingTarget(origin, angle)?.id : undefined, seekingRank: w.homing ? rank : 0,
             poison: (w.poison || 0) + 6 * this.rank('poison'), burn: this.random() < .15 * this.rank('fire') ? 10 * this.rank('fire') : 0,
             explosive: w.explosive, cloud: w.cloud, secondary });
@@ -470,6 +509,7 @@
         if (e.hatchTime >= 5) {
           const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp;
           Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
+          const factor = 2 ** (e.difficultyTier || 0); e.speed *= factor; e.damage *= factor; e.attackScale = factor;
         }
         return;
       }
@@ -483,19 +523,19 @@
       if (this.active('freeze')) { if (!e.boss) return; speed *= .5; }
       if (['shadow', 'miniLlorona'].includes(e.type) && visible(this, e, this.player, 6)) speed *= d < 190 ? -.55 : d < 285 ? 0 : 1;
       if (['jaguarBoss', 'tommy'].includes(e.type)) {
-        e.rushTimer -= dt;
-        if (e.rushTime > 0) { move(this, e, Math.cos(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * dt, Math.sin(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * dt); e.rushTime -= dt; }
-        else if (e.rushWindup > 0) { e.rushWindup -= dt; if (e.rushWindup <= 0) e.rushTime = e.type === 'tommy' ? .3 : .48; }
+        e.rushTimer -= dt * (e.attackScale || 1);
+        if (e.rushTime > 0) { move(this, e, Math.cos(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * (e.attackScale || 1) * dt, Math.sin(e.rushAngle) * (e.type === 'tommy' ? 300 : 420) * (e.attackScale || 1) * dt); e.rushTime -= dt * (e.attackScale || 1); }
+        else if (e.rushWindup > 0) { e.rushWindup -= dt * (e.attackScale || 1); if (e.rushWindup <= 0) e.rushTime = e.type === 'tommy' ? .3 : .48; }
         else if (e.rushTimer <= 0) { e.rushAngle = Math.atan2(this.player.y - e.y, this.player.x - e.x); e.rushX = Math.cos(e.rushAngle); e.rushY = Math.sin(e.rushAngle); e.rushWindup = e.type === 'tommy' ? .5 : .65; e.rushTimer = e.type === 'tommy' ? 3.5 : e.hp < e.maxHp / 2 ? 2.5 : 3.6; }
         else move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
       } else move(this, e, Math.cos(angle) * speed * dt, Math.sin(angle) * speed * dt);
       if (dist(e, this.player) < e.r + this.player.r) this.hurt(e.damage);
-      e.shotTimer -= dt; e.casting = e.rushWindup > 0 || e.shotTimer < .45 && (['shadow', 'miniLlorona'].includes(e.type) || e.boss);
+      e.shotTimer -= dt * (e.attackScale || 1); e.casting = e.rushWindup > 0 || e.shotTimer < .45 && (['shadow', 'miniLlorona'].includes(e.type) || e.boss);
       if (e.shotTimer > 0) return;
       const aim = Math.atan2(this.player.y - e.y, this.player.x - e.x);
-      if (e.type === 'shadow' && visible(this, e, this.player, 6)) { this.shot(e.x, e.y, aim, true, e.damage, 205); e.shotTimer = 2.35; }
+      if (e.type === 'shadow' && visible(this, e, this.player, 6)) { this.shot(e.x, e.y, aim, true, e.damage, 205 * (e.attackScale || 1)); e.shotTimer = 2.35; }
       if (e.type === 'miniLlorona' && visible(this, e, this.player, 6)) {
-        for (const offset of [-.13, 0, .13]) this.shot(e.x, e.y, aim + offset, true, e.damage * .7, 190);
+        for (const offset of [-.13, 0, .13]) this.shot(e.x, e.y, aim + offset, true, e.damage * .7, 190 * (e.attackScale || 1));
         e.shotTimer = 3.1;
       }
       if (e.type === 'duende') {
@@ -527,7 +567,8 @@
       if (this.active('freeze')) return;
       const p = this.player, d = dist(e, p);
       const speed = e.speed * (e.slow || 1); e.slow = 1;
-      e.actionTime += dt; e.attackTimer -= dt;
+      const attackStep = dt * (e.attackScale || 1);
+      e.actionTime += attackStep; e.attackTimer -= attackStep;
       if (e.summonType) e.summonTimer = (e.summonTimer ?? e.summonStart) - dt;
       if (e.action === 'attached') {
         if (e.actionTime >= e.attach || p.dashTime > 0 || d > e.r + p.r + 60) { e.action = 'recover'; e.actionTime = 0; }
@@ -547,7 +588,7 @@
         else {
           e.action = 'recover';
           if (e.attack === 'shot') {
-            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, e.damage, 200, { color: e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9', r: 5 });
+            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, e.damage, (e.shotSpeed || 200) * (e.attackScale || 1), { color: e.shotColor || (e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9'), r: 5 });
           } else {
             if (e.attack === 'slam') this.addArea(e, e.x, e.y, e.reach, 0, .35, '#f5a06c');
             if (d <= e.reach + p.r && visible(this, e, p)) this.strike(e);
@@ -556,7 +597,7 @@
         return;
       }
       if (e.action === 'active') {
-        move(this, e, Math.cos(e.attackAngle) * e.rushSpeed * dt, Math.sin(e.attackAngle) * e.rushSpeed * dt);
+        move(this, e, Math.cos(e.attackAngle) * e.rushSpeed * (e.attackScale || 1) * dt, Math.sin(e.attackAngle) * e.rushSpeed * (e.attackScale || 1) * dt);
         if (dist(e, p) < e.r + p.r && visible(this, e, p)) this.strike(e);
         if (e.actionTime >= e.rushDuration) {
           if (e.hairs) this.addArea(e, e.x, e.y, 90, .8, 3, '#d381b6', { slow: true });
@@ -680,7 +721,7 @@
         let attempts = 0;
         while (this.spawnTimer <= 1e-8 && this.queue.length && this.enemies.length < this.enemyLimit && attempts++ < 4) {
           if (!this.spawn(this.queue[0])) { this.spawnTimer = Math.min(.2, this.spawnInterval); break; }
-          this.queue.shift(); this.spawnTimer += this.spawnInterval;
+          this.consumeQueuedEnemy(); this.spawnTimer += this.spawnInterval;
         }
       }
       const enemyDt = dt * (this.active('reflex') ? .5 : 1);
@@ -701,7 +742,7 @@
             const a = Math.atan2(b.vy, b.vx), wanted = Math.atan2(target.y - b.y, target.x - b.x), delta = Math.atan2(Math.sin(wanted - a), Math.cos(wanted - a));
             const turn = clamp(delta, -b.homing * dt, b.homing * dt);
             b.speed ||= Math.hypot(b.vx, b.vy);
-            const speed = b.seekingRank === 4 && Math.abs(delta) > .2 ? Math.min(b.speed, Math.max(180, dist(b, target) * Math.PI * .7)) : b.speed;
+            const speed = b.seekingRank >= 4 && Math.abs(delta) > .2 ? Math.min(b.speed, Math.max(180, dist(b, target) * Math.PI * .7)) : b.speed;
             b.vx = Math.cos(a + turn) * speed; b.vy = Math.sin(a + turn) * speed;
           }
         }
@@ -787,6 +828,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, WEAPONS, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

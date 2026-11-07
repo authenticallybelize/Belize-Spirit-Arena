@@ -41,7 +41,7 @@ for (const position of [150, 1200, 2250]) for (const type of [...Run.COMMONS, ..
   assert(!grove.obstacles.some(o => Base.circleRect(e.x, e.y, e.r, o)));
   assert(e.x <= g.view.x - margin || e.x >= g.view.x + g.view.w + margin || e.y <= g.view.y - margin || e.y >= g.view.y + g.view.h + margin, 'Grove spawn appeared inside following camera');
 }
-for (let wave = 1; wave <= 140; wave++) {
+for (let wave = 1; wave <= Run.SURVIVAL_WAVES; wave++) {
   const g = game(wave); assert.equal(g.stormWave, wave % 10 === 0); assert.equal(g.banner.includes('Storm incoming'), wave % 10 === 0);
 }
 const storm = game(10); storm.random = () => { throw Error('Weather consumed combat randomness'); };
@@ -52,7 +52,7 @@ storm.resume(); storm.mode = 'upgrade'; storm.update(.25); assert.equal(storm.we
 storm.collectPower('freeze'); advance(storm, .25); assert(storm.weatherTime > clock, 'Freeze unexpectedly stopped ambient weather');
 storm.finishedWave = true; storm.breakTime = 4; advance(storm, 2.1); assert.equal(storm.storm, 0);
 storm.start({ arena: 'grove', mode: 'survival' }); assert.equal(storm.storm, 0); assert.equal(storm.weatherTime, 0); assert(!storm.stormWave);
-for (const [wave, mode] of [[10, 'run'], [140, 'survival']]) {
+for (const [wave, mode] of [[10, 'run'], [Run.SURVIVAL_WAVES, 'survival']]) {
   const g = game(wave, mode); g.queue = []; g.storm = 1; g.update(.01); assert.equal(g.mode, 'victory'); assert.equal(g.storm, 0); assert(!g.stormWave);
 }
 const story = new Story.Game(seeded(17)); story.startStory(null);
@@ -77,4 +77,4 @@ for (const item of manifest.entries) {
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), item.runtimeSHA256); assert.equal(bytes[25], 6);
   assert.equal(bytes.readUInt32BE(16), item.width); assert.equal(bytes.readUInt32BE(20), item.height);
 }
-console.log('PASS: scrolling Ceiba Grove, real cover/flight/shot blocking, connected large-enemy paths, fair corner spawning, all 140 storm milestones, fade/pause/upgrade/freeze/restart/victory, unchanged Story, no combat RNG, bounded deterministic rain/lightning and reduced motion, four prop hashes.');
+console.log('PASS: scrolling Ceiba Grove, real cover/flight/shot blocking, connected large-enemy paths, fair corner spawning, all 200 storm milestones, fade/pause/upgrade/freeze/restart/victory, unchanged Story, no combat RNG, bounded deterministic rain/lightning and reduced motion, four prop hashes.');

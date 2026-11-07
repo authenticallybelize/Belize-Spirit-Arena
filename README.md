@@ -2,6 +2,42 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Complete features release and Survival 200 — 0.13.0
+
+Survival now runs for **200 waves**, adding sixty beyond the previous 140-wave endpoint. Waves 141–200 continue the existing enemy growth, nine-boss rotation, twelve scheduled alphas and storms every tenth wave. Victory requires clearing wave 200; clearing wave 140 continues the run. Joe's XP levels remain uncapped. Arena Run retains ten waves and Story retains its twenty-wave chapter.
+
+This release brings the complete `features` build into `main`, including Story, all arenas and weather, mobile controls, the five new wildlife mobs and sprites, XP-decade difficulty, weapon VI and the additional stackable perk rank described below. `main` is the release branch; the source history is retained on `features`.
+
+Validation: all fourteen automated suites cover the 200-wave schedule, all forty boss milestones, alpha/weather schedules, progression through the former endpoint, wave 199→200, final victory/restart, and the previous gameplay/save/asset regressions. `npm run build` produces the static release. Browser fixtures check the 200-wave menu/HUD, late-wave transitions and victory/restart alongside desktop/touch mob rendering and the actual weapon/perk input checks. These controlled checks do not establish human full-run balance or physical-phone performance.
+
+## XP-decade difficulty and weapon VI — 0.12.0
+
+In Survival and Arena Run, Joe's XP level (not the wave number) increases difficulty at **10, 20, 30…**. At each threshold, regular enemies double HP, contact/projectile damage, movement speed and attack speed. Alphas and bosses double HP only. These multipliers compound on the existing wave scaling. Current enemies retain their health percentage when the tier changes. Spawn rate rises by **50% per tier** immediately; the regular population multiplier is fixed when each new wave begins. Boss/alpha encounter counts retain their existing schedule.
+
+| XP level | Regular combat stats and next-wave population | Alpha/boss HP | Spawn rate |
+| --- | --- | --- | --- |
+| 1–9 | ×1 | ×1 | ×1 |
+| 10–19 | ×2 | ×2 | ×1.5 |
+| 20–29 | ×4 | ×4 | ×2.25 |
+| 30–39 | ×8 | ×8 | ×3.375 |
+| 40–49 | ×16 | ×16 | ×5.0625 |
+
+Wave multiplication uses compact repeated slots, so even high XP levels do not allocate exponential arrays. Spawns still wait for a safe position, room under the existing active-enemy cap (at most 96), and the existing bounded simulation batch. Warning arrivals, collision sizes and XP/drop rewards retain their rules. The extra pressure is intentionally steep and has not had human full-run balance testing.
+
+All twelve weapons now enhance to **VI**. Duplicate pickups advance I→VI; duplicates after VI heal 10% maximum HP. The damage curve is 1.00 / 1.15 / 1.30 / 1.45 / 1.60 / 1.75. Rank V/VI Feather retains fully functional seeking, Cacao cloud duration and Drum/Claw reach continue their existing rank curves, and ranks survive swaps. Each of the 24 stackable perks gains one rank over 0.11.0; the seven unique perks remain unique. The final Ricochet rank improves bounced damage while retaining the two-bounce cap. Temporary pickup identities remain unchanged; their duration benefits from the extra Resonance rank.
+
+Story retains its authored encounter pressure and roster. Its save validator accepts the expanded weapon ranks while preserving existing saves. Classic retains its existing rules.
+
+Validation: all fourteen `npm test` suites pass, including exact milestone boundaries, wounded-enemy health preservation, actual repeated spawns, HP-only elite scaling, attack clocks, hatch scaling, all twelve VI caps, post-cap healing and Story save compatibility. Desktop browser fixtures verify actual E pickups IV→V→VI, XP 9→10 scaling and selecting the seventh Heart rank with the real choice key. Five-mob desktop/touch rendering and desktop movement/fire/pause have no application or asset errors. Browser runtime tools are unavailable in this session; installed Playwright/Chromium supplies the browser checks. Physical phones and earned late-run balance remain unverified.
+
+## Five wildlife mobs — 0.11.0
+
+Survival and Arena Run now naturally spawn Grasshoppers, Corrupted Hens, Corrupted Great-tailed Grackles, Corrupted Howler Monkeys and Corrupted Toads. They leap, peck, dive, throw corrupted fruit and hop respectively. Grackles fly over cover; ground creatures follow the existing collision/navigation rules. All five use regular mob XP, weapon/power drops and damage/status rules. Story and classic retain their encounter rosters.
+
+The five transparent runtime sprite atlases each contain six original poses adapted to the existing animation slots. Source art and hashes are preserved; see `assets/ART-SOURCES.md`. All thirteen logic/asset suites pass, including every weapon against the new mobs, all arena spawn paths, statuses, cleanup and sprite hashes. Browser checks cover desktop and landscape touch rendering, desktop movement/fire/pause, and Story/classic entry. Physical devices and an earned full-run balance test remain unverified.
+
+`npm run build` exports runtime files to `dist/` for Vercel. The root URL opens Story, matching the previous host's root routing; `/survival.html` opens the updated game. Authoring images, tests and documentation are excluded from the deployed output.
+
 ## Ceiba Grove and boss-wave storms — 0.10.0
 
 Choose **Ceiba Grove Clearing · New** for another large scrolling arena: mossy rocks, fallen ceiba logs, broken stone markers and walkable puddles around broad fighting lanes. Storms roll in on boss waves 10, 20, 30 and onward, with cloud cover, slanted rain, distant lightning and optional thunder, then fade after the wave clears. Attack warnings remain readable, and reduced motion removes moving rain/lightning. The pause menu's whole-map button is also usable on touch screens. [Map, weather timing, artwork and checks](MAP-AND-WEATHER.md).

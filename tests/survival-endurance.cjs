@@ -25,11 +25,25 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
     assert(Math.abs(e.hp - TYPES.crab.hp * (1 + .065 * (wave - 1))) < 1e-8);
     assert(Math.abs(e.damage - TYPES.crab.damage * (1 + .012 * (wave - 1))) < 1e-8);
   }
-  if ([1, 10, 40, 100, 140].includes(wave)) table.push({ wave, enemies: g.queue.length, interval: Number(g.spawnInterval.toFixed(3)), cap: g.enemyLimit, crabHP: Number(e.hp.toFixed(1)), hit: Number(e.damage.toFixed(2)), bonus: Math.round(g.enduranceBonus * 100) });
+  if ([1, 10, 40, 100, 140, 150, 199, 200].includes(wave)) table.push({ wave, enemies: g.queue.length, interval: Number(g.spawnInterval.toFixed(3)), cap: g.enemyLimit, crabHP: Number(e.hp.toFixed(1)), hit: Number(e.damage.toFixed(2)), bonus: Math.round(g.enduranceBonus * 100) });
   [lastMobs, lastTotal, lastHP, lastDamage, lastInterval, lastLimit] = [mobs, g.queue.length, e.hp, e.damage, g.spawnInterval, g.enemyLimit];
 }
 const hundred = atWave(100); assert.equal(hundred.spawnInterval, .1); assert.equal(hundred.enemyLimit, 96);
-const final = atWave(140); assert.equal(final.totalWaves, 140); assert.equal(final.enduranceBonus, 1); assert.equal(final.player.damage, 38);
+assert.equal(SURVIVAL_WAVES, 200);
+const final = atWave(200); assert.equal(final.totalWaves, 200); assert.equal(final.enduranceBonus, 1); assert.equal(final.player.damage, 38);
+assert.equal(final.queue.length, 325); assert.equal(final.queue[0], 'duende');
+// The old endpoint and penultimate wave must advance; only clearing wave 200 wins.
+for (const wave of [140, 141, 199]) {
+  const g = atWave(wave); g.queue = []; g.update(1 / 120);
+  assert.equal(g.mode, 'playing', 'Survival ended early at wave ' + wave);
+  assert(g.finishedWave && g.breakTime > 0);
+  while (g.wave === wave) g.update(.25);
+  assert.equal(g.wave, wave + 1);
+}
+final.queue = []; final.update(1 / 120); assert.equal(final.mode, 'victory');
+final.update(.25); assert.equal(final.wave, 200);
+final.start({ mode: 'survival' }); assert.equal(final.wave, 1); assert.equal(final.totalWaves, 200);
+final.start({ mode: 'run' }); assert.equal(final.totalWaves, 10);
 const forty = atWave(40); assert.equal(forty.enduranceBonus, 0); forty.queue = []; forty.update(1 / 120);
 assert.equal(forty.enduranceBonus, .01, 'Clearing wave forty did not begin endurance growth');
 const snapshot = atWave(100); snapshot.fire(); const launchedDamage = snapshot.bullets[0].damage;
@@ -102,6 +116,6 @@ for (let i = 0; i < 200; i++) stress.shot(1200, 1168, i * Math.PI / 100, false, 
 for (let i = 0; i < 150; i++) { const a = i * Math.PI / 75; stress.shot(1200 + Math.cos(a) * 300, 1200 + Math.sin(a) * 300, a, true, 1, 170); }
 const started = performance.now(); for (let i = 0; i < 240; i++) stress.update(1 / 120);
 assert(stress.enemies.length <= 96 && stress.bullets.length <= 350);
-console.log('PASS: 140-wave increasing pressure, updated ten-wave Arena Run, bounded cadence/cap/retry, safe offscreen spawning, uncapped progression, all powers and damage snapshots.');
+console.log('PASS: 200-wave increasing pressure, updated ten-wave Arena Run, bounded cadence/cap/retry, safe offscreen spawning, uncapped progression, all powers and damage snapshots.');
 console.table(table);
 console.log('Logic-only stress: ' + ((performance.now() - started) / 240).toFixed(2) + ' ms / 120Hz step with up to 96 mobs and 350 projectiles; excludes browser rendering and physical devices.');
