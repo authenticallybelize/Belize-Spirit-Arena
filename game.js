@@ -77,6 +77,7 @@
       const size = roster.cell, scale = height / roster.bodyHeight;
       ctx.save(); ctx.globalAlpha = alpha; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
       ctx.translate(Math.round(x), Math.round(bottom));
+      if (roster.directional && flip) ctx.scale(-1, 1);
       if (hurt) ctx.filter = 'brightness(1.8)';
       ctx.drawImage(images[roster.file], index % 6 * size, Math.floor(index / 6) * size, size, size,
         -roster.pivot[0] * scale, -roster.pivot[1] * scale, size * scale, size * scale);
@@ -134,7 +135,7 @@
       const actionFrame = enemy.action === 'windup' ? Math.min(2, Math.floor(enemy.actionTime / (skill?.warning || enemy.windup) * 3))
         : enemy.action === 'active' ? 3 : Math.min(5, 3 + Math.floor(enemy.actionTime / .45 * 3));
       const index = enemy.form === 'transform' ? Math.min(17, Math.floor(enemy.formTime / 1.2 * 18)) : enemy.warmup > 0 ? 0 : enemy.hit > 0 ? (type === 'rotTapir' ? 12 : type === 'jabiruReaper' ? 0 : 18) : enemy.action !== 'move' && enemy.action !== 'sidestep' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
-      drawSprite(sprite, index, x, bottom, height, false, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
+      drawSprite(sprite, index, x, bottom, height, game.player.x < x, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
       if (enemy.warmup <= 0 && !enemy.boss) {
         const width = enemy.r * 2 + 10;
         ctx.fillStyle = '#102416'; ctx.fillRect(x - width / 2 - 1, y - height - 2, width + 2, 6);

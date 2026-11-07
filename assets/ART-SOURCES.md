@@ -1,5 +1,11 @@
 # Spirit Arena artwork and references
 
+## Five wildlife commons — 2026-11-07
+
+`sources/wildlife-atlas.png` is an original transparent atlas created with the built-in ImageGen tool, using the existing Spiderling atlas as a style reference. It contains five rows (Grasshopper, Corrupted Hen, Corrupted Great-tailed Grackle, Corrupted Howler Monkey, Corrupted Toad) and six authored poses per row: idle, two movement poses, attack, hurt and defeat. No existing creature art was overwritten.
+
+Each creature has a 768×512 RGBA runtime atlas in `ready/roster/`. The six authored poses are arranged/repeated into the renderer's existing 24 animation slots; these are six unique poses, not 24 unique drawings. Cells have transparent gutters and a shared foot anchor; directional mirroring faces the creatures toward Joe. Faint alpha noise is removed during export. Source/runtime SHA-256 hashes, anchors and dimensions are recorded in `ready/roster/manifest.json`. The unmodified generated source is preserved in Git and excluded from the static deployment.
+
 ## Full boss integration — 0.7.0
 
 Six existing generated folklore sheets are copied into measured runtime derivatives for El Cadejo, Male/Female Sisimite, Anansi, Soch and La Xtabai. Soch also uses the already prepared transformation and harpy combat sheets. Originals and prompts remain untouched under `C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated`. La Llorona uses the original `llorona.png` frames already prepared for Mini Llorona, drawn at full boss scale; Duende/Jaguar preserve their existing art.

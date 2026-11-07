@@ -261,5 +261,80 @@
     ],
     "bodyHeight": 59,
     "derivation": "Two isolated existing hatchling poses, shared foot anchor, hit flash and fading defeat."
+  },
+  {
+    "id": "grasshopper",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "8d3e39968b60dfdca4f4e37e662ffd2aec66e64f8ba46749dae918af22754614",
+    "file": "ready/roster/grasshopper.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 59,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedHen",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "2c5a8227f5d2657c259a0bec87c6f8036908898e2ed1435cca12354f6f911098",
+    "file": "ready/roster/corruptedHen.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 98,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedGrackle",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "c89f62589ce3fbec017a49809c009d5246a3697b2941ff83fbb33b46492eb98c",
+    "file": "ready/roster/corruptedGrackle.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 72,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedMonkey",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "7e97c6b51f6b1aa22733514a2a9901bd861157ba610ce853e7fb318c45be38ef",
+    "file": "ready/roster/corruptedMonkey.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 85,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedToad",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "2a1c4016f2605f4a6684716e4cbb384d36b7daac02a2231c467379a08fdecfba",
+    "file": "ready/roster/corruptedToad.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 60,
+    "directional": true,
+    "authoredFrames": 6
   }
 ]

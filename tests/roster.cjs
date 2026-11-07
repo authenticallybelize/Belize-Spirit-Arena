@@ -16,7 +16,7 @@ function foe(g, type, x = g.player.x + 50, y = g.player.y) {
     warmup: 0, statuses: {}, hit: 0, routeTimer: 0, action: 'move', actionTime: 0, attackTimer: 0 };
   g.enemies.push(e); return e;
 }
-assert.equal(COMMONS.length, 5); assert.equal(ALPHAS.length, 12);
+assert.equal(COMMONS.length, 10); assert.equal(ALPHAS.length, 12);
 for (let wave = 1; wave <= 140; wave++) {
   for (const roll of [0, .999999]) {
     const g = game(wave, roll), count = g.queue.filter(id => TYPES[id].alpha).length;
@@ -30,7 +30,7 @@ for (let wave = 1; wave <= 140; wave++) {
   }
 }
 assert.equal(game(23).alphaCount, 2); assert.equal(game(33).alphaCount, 3);
-assert.equal(new Set([...Array(5)].flatMap((_, i) => game(i + 1).queue.filter(id => COMMONS.includes(id)))).size, 5);
+assert.equal(new Set([...Array(5)].flatMap((_, i) => game(i + 1).queue.filter(id => COMMONS.includes(id)))).size, 10);
 for (const [alpha, normal] of [['alphaCrab', 'crab'], ['alphaJaguar', 'jaguar'], ['shadowBrute', 'shadow']]) {
   for (const wave of [13, 23, 33, 100, 140]) {
     const g = game(wave); assert(g.spawn(alpha)); assert(g.spawn(normal));

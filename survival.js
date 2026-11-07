@@ -11,6 +11,11 @@
     bees: { name: 'Africanized Bee Swarm', hp: 28, speed: 135, r: 16, damage: 8, xp: 7, height: 44, flying: true, attack: 'bite', reach: 30, windup: .3, cooldown: 1.5 },
     rootling: { name: 'Corrupted Rootling', hp: 42, speed: 58, r: 14, damage: 10, xp: 7, height: 39, attack: 'shot', reach: 280, windup: .6, cooldown: 3 },
     owlShade: { name: 'Owl Shade', hp: 30, speed: 110, r: 13, damage: 9, xp: 7, height: 41, flying: true, attack: 'pounce', reach: 150, windup: .55, cooldown: 3.2, rushSpeed: 280, rushDuration: .35 },
+    grasshopper: { name: 'Grasshopper', hp: 22, speed: 105, r: 11, damage: 6, xp: 4, height: 33, attack: 'pounce', reach: 155, windup: .45, cooldown: 2.4, rushSpeed: 290, rushDuration: .3 },
+    corruptedHen: { name: 'Corrupted Hen', hp: 38, speed: 100, r: 14, damage: 9, xp: 6, height: 43, attack: 'bite', reach: 32, windup: .35, cooldown: 1.5 },
+    corruptedGrackle: { name: 'Corrupted Great-tailed Grackle', hp: 30, speed: 130, r: 12, damage: 8, xp: 6, height: 42, flying: true, attack: 'pounce', reach: 175, windup: .5, cooldown: 3.1, rushSpeed: 310, rushDuration: .32 },
+    corruptedMonkey: { name: 'Corrupted Howler Monkey', hp: 45, speed: 95, r: 15, damage: 11, xp: 8, height: 48, attack: 'shot', reach: 310, windup: .65, cooldown: 2.6, shotColor: '#ac73d4', shotSpeed: 235 },
+    corruptedToad: { name: 'Corrupted Toad', hp: 48, speed: 60, r: 15, damage: 10, xp: 7, height: 36, attack: 'pounce', reach: 165, windup: .6, cooldown: 2.8, rushSpeed: 260, rushDuration: .38 },
     alphaCrab: { name: 'Armored Mangrove Crab', hp: Base.TYPES.crab.hp * 4, speed: 48, r: 29, damage: Base.TYPES.crab.damage * 1.5, xp: 20, height: 75, alpha: true, attack: 'slam', reach: 85, windup: 1, cooldown: 3 },
     alphaJaguar: { name: 'Jaguar Sentinel', hp: Base.TYPES.jaguar.hp * 4, speed: 110, r: 25, damage: Base.TYPES.jaguar.damage * 1.5, xp: 28, height: 81, alpha: true, attack: 'pounce', reach: 230, windup: .85, cooldown: 3.5, rushSpeed: 350, rushDuration: .5 },
     shadowBrute: { name: 'Shadow Brute', hp: Base.TYPES.shadow.hp * 4, speed: 45, r: 30, damage: Base.TYPES.shadow.damage * 1.5, xp: 40, height: 88, alpha: true, attack: 'slam', reach: 105, windup: 1.15, cooldown: 3.6 },
@@ -34,7 +39,7 @@
     sochBoss: { name: 'The Soch / La Lechuza', hp: 2900, speed: 98, r: 30, damage: 26, xp: 95, height: 116, flying: true, boss: true, bossAI: true },
     xtabaiBoss: { name: 'La Xtabai', hp: 3100, speed: 70, r: 29, damage: 25, xp: 100, height: 116, boss: true, bossAI: true }
   };
-  const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade'];
+  const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade', 'grasshopper', 'corruptedHen', 'corruptedGrackle', 'corruptedMonkey', 'corruptedToad'];
   const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute', 'chiwoj', 'tigerSpider', 'soldierAnt', 'bulletAnt', 'giantCentipede', 'hiveGuardian', 'giantTommy', 'rotTapir', 'jabiruReaper'];
   for (const [id, spec] of Object.entries(TYPES)) TYPES[id] = { ...spec, hp: spec.hp * 1.15 * (spec.alpha ? 1.5 : 1) };
   TYPES.duende.hp *= 5; TYPES.duende.damage *= 5;
@@ -547,7 +552,7 @@
         else {
           e.action = 'recover';
           if (e.attack === 'shot') {
-            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, e.damage, 200, { color: e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9', r: 5 });
+            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, e.damage, e.shotSpeed || 200, { color: e.shotColor || (e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9'), r: 5 });
           } else {
             if (e.attack === 'slam') this.addArea(e, e.x, e.y, e.reach, 0, .35, '#f5a06c');
             if (d <= e.reach + p.r && visible(this, e, p)) this.strike(e);

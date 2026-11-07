@@ -2,6 +2,14 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Five wildlife mobs — 0.11.0
+
+Survival and Arena Run now naturally spawn Grasshoppers, Corrupted Hens, Corrupted Great-tailed Grackles, Corrupted Howler Monkeys and Corrupted Toads. They leap, peck, dive, throw corrupted fruit and hop respectively. Grackles fly over cover; ground creatures follow the existing collision/navigation rules. All five use regular mob XP, weapon/power drops and damage/status rules. Story and classic retain their encounter rosters.
+
+The five transparent runtime sprite atlases each contain six original poses adapted to the existing animation slots. Source art and hashes are preserved; see `assets/ART-SOURCES.md`. All thirteen logic/asset suites pass, including every weapon against the new mobs, all arena spawn paths, statuses, cleanup and sprite hashes. Browser checks cover desktop and landscape touch rendering, desktop movement/fire/pause, and Story/classic entry. Physical devices and an earned full-run balance test remain unverified.
+
+`npm run build` exports runtime files to `dist/` for Vercel. The root URL opens Story, matching the previous host's root routing; `/survival.html` opens the updated game. Authoring images, tests and documentation are excluded from the deployed output.
+
 ## Ceiba Grove and boss-wave storms — 0.10.0
 
 Choose **Ceiba Grove Clearing · New** for another large scrolling arena: mossy rocks, fallen ceiba logs, broken stone markers and walkable puddles around broad fighting lanes. Storms roll in on boss waves 10, 20, 30 and onward, with cloud cover, slanted rain, distant lightning and optional thunder, then fade after the wave clears. Attack warnings remain readable, and reduced motion removes moving rain/lightning. The pause menu's whole-map button is also usable on touch screens. [Map, weather timing, artwork and checks](MAP-AND-WEATHER.md).
