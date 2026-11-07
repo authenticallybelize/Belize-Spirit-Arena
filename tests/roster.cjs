@@ -109,4 +109,4 @@ for (let i = 0; i < 150; i++) stress.shot(1200, 1200, i * Math.PI / 75, true, .1
 for (let i = 0; i < 240; i++) stress.update(1 / 120);
 assert(stress.enemies.length <= 96 && stress.bullets.length <= 350 && stress.corpses.length <= 16);
 assert(stress.enemies.every(e => Number.isFinite(e.x + e.y + e.hp + e.actionTime)));
-console.log('PASS: five commons/twelve alphas, all 140 wave schedules and random extremes, 6x family HP/1.5x damage, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');
+console.log('PASS: ten added commons/twelve alphas, all 140 wave schedules and random extremes, 6x family HP/1.5x damage at baseline tier, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');

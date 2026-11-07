@@ -2,6 +2,26 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## XP-decade difficulty and weapon VI — 0.12.0
+
+In Survival and Arena Run, Joe's XP level (not the wave number) increases difficulty at **10, 20, 30…**. At each threshold, regular enemies double HP, contact/projectile damage, movement speed and attack speed. Alphas and bosses double HP only. These multipliers compound on the existing wave scaling. Current enemies retain their health percentage when the tier changes. Spawn rate rises by **50% per tier** immediately; the regular population multiplier is fixed when each new wave begins. Boss/alpha encounter counts retain their existing schedule.
+
+| XP level | Regular combat stats and next-wave population | Alpha/boss HP | Spawn rate |
+| --- | --- | --- | --- |
+| 1–9 | ×1 | ×1 | ×1 |
+| 10–19 | ×2 | ×2 | ×1.5 |
+| 20–29 | ×4 | ×4 | ×2.25 |
+| 30–39 | ×8 | ×8 | ×3.375 |
+| 40–49 | ×16 | ×16 | ×5.0625 |
+
+Wave multiplication uses compact repeated slots, so even high XP levels do not allocate exponential arrays. Spawns still wait for a safe position, room under the existing active-enemy cap (at most 96), and the existing bounded simulation batch. Warning arrivals, collision sizes and XP/drop rewards retain their rules. The extra pressure is intentionally steep and has not had human full-run balance testing.
+
+All twelve weapons now enhance to **VI**. Duplicate pickups advance I→VI; duplicates after VI heal 10% maximum HP. The damage curve is 1.00 / 1.15 / 1.30 / 1.45 / 1.60 / 1.75. Rank V/VI Feather retains fully functional seeking, Cacao cloud duration and Drum/Claw reach continue their existing rank curves, and ranks survive swaps. Each of the 24 stackable perks gains one rank over 0.11.0; the seven unique perks remain unique. The final Ricochet rank improves bounced damage while retaining the two-bounce cap. Temporary pickup identities remain unchanged; their duration benefits from the extra Resonance rank.
+
+Story retains its authored encounter pressure and roster. Its save validator accepts the expanded weapon ranks while preserving existing saves. Classic retains its existing rules.
+
+Validation: all fourteen `npm test` suites pass, including exact milestone boundaries, wounded-enemy health preservation, actual repeated spawns, HP-only elite scaling, attack clocks, hatch scaling, all twelve VI caps, post-cap healing and Story save compatibility. Desktop browser fixtures verify actual E pickups IV→V→VI, XP 9→10 scaling and selecting the seventh Heart rank with the real choice key. Five-mob desktop/touch rendering and desktop movement/fire/pause have no application or asset errors. Browser runtime tools are unavailable in this session; installed Playwright/Chromium supplies the browser checks. Physical phones and earned late-run balance remain unverified.
+
 ## Five wildlife mobs — 0.11.0
 
 Survival and Arena Run now naturally spawn Grasshoppers, Corrupted Hens, Corrupted Great-tailed Grackles, Corrupted Howler Monkeys and Corrupted Toads. They leap, peck, dive, throw corrupted fruit and hop respectively. Grackles fly over cover; ground creatures follow the existing collision/navigation rules. All five use regular mob XP, weapon/power drops and damage/status rules. Story and classic retain their encounter rosters.

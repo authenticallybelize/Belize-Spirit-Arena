@@ -68,16 +68,16 @@ aimedClaw.update(1 / 120, { shooting: true, aimX: closeTarget.x, aimY: closeTarg
 assert.equal(closeTarget.hp, 976, 'Claw missed the cursor target because its arc used a different origin');
 assert.equal(aimedClaw.flashes[0].y, aimedClaw.player.y - AIM_HEIGHT);
 const groundedDrum = field('drum'); groundedDrum.fire(); assert.equal(groundedDrum.flashes[0].y, groundedDrum.player.y, 'Drum radial pulse lost its ground origin');
-for (let i = 0; i < 6; i++) assert(pick(a, 'damage'));
+for (let i = 0; i < 7; i++) assert(pick(a, 'damage'));
 assert(!a.eligible(PERKS.find(p => p.id === 'damage'))); assert(!pick(a, 'damage'));
-assert(Math.abs(a.player.damage - 19 * 1.25 ** 6) < 1e-8);
+assert(Math.abs(a.player.damage - 19 * 1.25 ** 7) < 1e-8);
 const rolls = playing('claw'); rolls.wave = 1; rolls.xp = 25; assert(rolls.levelUp());
 assert.equal(new Set(rolls.choices.map(p => p.id)).size, 3); assert(rolls.choices.every(p => p.tag !== 'projectile' && p.tag !== 'boss'));
 rolls.choose(0); assert(pick(rolls, 'grandma')); rolls.xp = rolls.xpNeeded; assert(rolls.levelUp()); assert.equal(rolls.choices.length, 4);
 const pickup = playing(); pickup.addDrop('bow', pickup.player.x, pickup.player.y); assert(pickup.pickup()); assert.equal(pickup.player.weapon, 'bow');
-for (let i = 0; i < 3; i++) { pickup.addDrop('bow', pickup.player.x, pickup.player.y); assert(pickup.pickup()); }
-assert.equal(pickup.weaponLevels.bow, 4); pickup.player.hp = 50; pickup.addDrop('bow', pickup.player.x, pickup.player.y); assert(pickup.pickup()); assert.equal(pickup.player.hp, 60);
-pickup.drops = []; pickup.addDrop('crystal', pickup.player.x, pickup.player.y); assert(pickup.pickup()); pickup.drops = []; pickup.addDrop('bow', pickup.player.x, pickup.player.y); pickup.pickup(); assert.equal(pickup.weaponLevels.bow, 4);
+for (let i = 0; i < 5; i++) { pickup.addDrop('bow', pickup.player.x, pickup.player.y); assert(pickup.pickup()); }
+assert.equal(pickup.weaponLevels.bow, 6); pickup.player.hp = 50; pickup.addDrop('bow', pickup.player.x, pickup.player.y); assert(pickup.pickup()); assert.equal(pickup.player.hp, 60);
+pickup.drops = []; pickup.addDrop('crystal', pickup.player.x, pickup.player.y); assert(pickup.pickup()); pickup.drops = []; pickup.addDrop('bow', pickup.player.x, pickup.player.y); pickup.pickup(); assert.equal(pickup.weaponLevels.bow, 6);
 const lock = playing(); lock.wave = 5; assert(pick(lock, 'commit')); lock.addDrop('staff', lock.player.x, lock.player.y, 'weapon', true); assert(!lock.pickup());
 lock.queue = []; lock.enemies = []; lock.update(1 / 120); assert.equal(lock.finishedWave, true); assert(lock.breakTime > 0, 'Optional staff blocked next wave');
 const expiry = playing(); expiry.addDrop('bow', 900, 700); expiry.addDrop('staff', 900, 750, 'weapon', true);
@@ -181,8 +181,8 @@ const exhausted = playing(); for (const p of PERKS) exhausted.ranks[p.id] = p.ma
 assert.equal(exhausted.choices.length, 1, 'Exhausted pool repeated the same fallback card');
 const capped = playing(); for (const p of PERKS) capped.ranks[p.id] = p.max; capped.ranks.speed--; capped.xp = capped.xpNeeded; capped.levelUp();
 assert.deepEqual(capped.choices.map(p => p.id), ['speed'], 'Max-rank perks were offered');
-assert(capped.choices[0].detail.includes('Current 5/6 · +1 rank'), 'Final available rank looked like an already-maxed perk');
-assert(capped.choose(0)); assert.equal(capped.rank('speed'), 6);
+assert(capped.choices[0].detail.includes('Current 6/7 · +1 rank'), 'Final available rank looked like an already-maxed perk');
+assert(capped.choose(0)); assert.equal(capped.rank('speed'), 7);
 capped.xp = capped.xpNeeded; capped.levelUp(); assert(!capped.choices.some(p => p.id === 'speed'), 'Choosing the final rank did not remove the perk');
 const progression = playing(); const bossWaves = [];
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
