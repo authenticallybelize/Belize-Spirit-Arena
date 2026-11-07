@@ -6,7 +6,7 @@ The new map adds eight solid landmark groups: three mossy boulder clusters, two 
 
 ## Storm timing
 
-Boss **waves 10, 20, 30 … 140** bring storms in Survival; the ten-wave Arena Run also gets its wave-10 storm. These are wave milestones, independent of Joe's XP level. Storms start with that boss wave, build over two active seconds, stay through the remaining enemies and fade over two seconds during the intermission after the wave clears. Victory clears the weather immediately. Restart resets it. Pausing or choosing upgrades freezes the weather clock; enemy Freeze power does not stop the atmosphere.
+Boss **waves 10, 20, 30 … 200** bring storms in Survival; the ten-wave Arena Run also gets its wave-10 storm. These are wave milestones, independent of Joe's XP level. Storms start with that boss wave, build over two active seconds, stay through the remaining enemies and fade over two seconds during the intermission after the wave clears. Victory clears the weather immediately. Restart resets it. Pausing or choosing upgrades freezes the weather clock; enemy Freeze power does not stop the atmosphere.
 
 The storm adds blue-grey cloud cover, wind-slanted rain, a distant lightning stroke roughly every nine active seconds and a low thunder tone when the existing sound toggle is enabled. Weather is atmospheric: it creates no damage zones, slows, collision changes or extra attacks. Enemy ground-warning areas, bullets and Joe render above the weather. Directional/spawn warnings remain readable through the light cloud tint. There is no full-screen lightning flash. Reduced motion keeps the cloud tint and removes animated rain/lightning. Rain is capped at 96 short lines and uses no combat RNG. Story Chapter I and the original ten-wave game keep their existing atmosphere.
 
@@ -31,3 +31,7 @@ Local Edge/Playwright checks at 1440×1000 desktop and 844×390 touch, including
 Controlled fixtures verify state transitions; physical-phone performance and human balance on the new cover layout remain unverified.
 
 Published as gameplay commit `3d00361`, verified against the live Hostinger site in the same desktop, touch and reduced-motion contexts. All prop files decode before play, storms visibly render at waves 10/20, the reduced-motion renderer draws no rain/lightning strokes, the touch pause/overview button works, and weather clears or resets at the expected transitions. No game errors or failed game assets were recorded. Hosted scripts, HTML, CSS, prop manifest and `.htaccess` match the release. Obsidian’s project home, camera/scrolling references and new `35 - Ceiba Grove and Boss Wave Storms` note are synchronized; all 72 bestiary notes are unchanged and 80 links in the updated notes validate. The QA folder retains reports/screenshots, a complete previous-site archive and note backups; Git tag `backup-before-0.10.0` retains the earlier checkout. Reload between runs, then select the new map from the Arena menu.
+
+## 200-wave release — 0.13.0
+
+Survival now runs through wave 200. Storm milestones continue every ten waves through 200; late-wave enemy growth, the nine-boss rotation and scheduled alphas continue through all sixty added waves. Arena Run remains ten waves and Story remains twenty. Automated schedule/weather checks cover all 200 waves, including final victory weather cleanup.

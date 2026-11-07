@@ -2,6 +2,14 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Complete features release and Survival 200 — 0.13.0
+
+Survival now runs for **200 waves**, adding sixty beyond the previous 140-wave endpoint. Waves 141–200 continue the existing enemy growth, nine-boss rotation, twelve scheduled alphas and storms every tenth wave. Victory requires clearing wave 200; clearing wave 140 continues the run. Joe's XP levels remain uncapped. Arena Run retains ten waves and Story retains its twenty-wave chapter.
+
+This release brings the complete `features` build into `main`, including Story, all arenas and weather, mobile controls, the five new wildlife mobs and sprites, XP-decade difficulty, weapon VI and the additional stackable perk rank described below. `main` is the release branch; the source history is retained on `features`.
+
+Validation: all fourteen automated suites cover the 200-wave schedule, all forty boss milestones, alpha/weather schedules, progression through the former endpoint, wave 199→200, final victory/restart, and the previous gameplay/save/asset regressions. `npm run build` produces the static release. Browser fixtures check the 200-wave menu/HUD, late-wave transitions and victory/restart alongside desktop/touch mob rendering and the actual weapon/perk input checks. These controlled checks do not establish human full-run balance or physical-phone performance.
+
 ## XP-decade difficulty and weapon VI — 0.12.0
 
 In Survival and Arena Run, Joe's XP level (not the wave number) increases difficulty at **10, 20, 30…**. At each threshold, regular enemies double HP, contact/projectile damage, movement speed and attack speed. Alphas and bosses double HP only. These multipliers compound on the existing wave scaling. Current enemies retain their health percentage when the tier changes. Spawn rate rises by **50% per tier** immediately; the regular population multiplier is fixed when each new wave begins. Boss/alpha encounter counts retain their existing schedule.

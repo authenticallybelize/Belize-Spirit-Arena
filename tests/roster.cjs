@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
-const { Game, TYPES, COMMONS, ALPHAS, WEAPONS, ARENAS, move } = require('../survival.js');
+const { Game, SURVIVAL_WAVES, TYPES, COMMONS, ALPHAS, WEAPONS, ARENAS, move } = require('../survival.js');
 const Base = require('../core.js');
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
 function game(wave = 1, roll) {
@@ -17,7 +17,7 @@ function foe(g, type, x = g.player.x + 50, y = g.player.y) {
   g.enemies.push(e); return e;
 }
 assert.equal(COMMONS.length, 10); assert.equal(ALPHAS.length, 12);
-for (let wave = 1; wave <= 140; wave++) {
+for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   for (const roll of [0, .999999]) {
     const g = game(wave, roll), count = g.queue.filter(id => TYPES[id].alpha).length;
     const max = Math.min(4, Math.floor(wave / 10));
@@ -32,7 +32,7 @@ for (let wave = 1; wave <= 140; wave++) {
 assert.equal(game(23).alphaCount, 2); assert.equal(game(33).alphaCount, 3);
 assert.equal(new Set([...Array(5)].flatMap((_, i) => game(i + 1).queue.filter(id => COMMONS.includes(id)))).size, 10);
 for (const [alpha, normal] of [['alphaCrab', 'crab'], ['alphaJaguar', 'jaguar'], ['shadowBrute', 'shadow']]) {
-  for (const wave of [13, 23, 33, 100, 140]) {
+  for (const wave of [13, 23, 33, 100, 140, 200]) {
     const g = game(wave); assert(g.spawn(alpha)); assert(g.spawn(normal));
     const [a, n] = g.enemies;
     assert(Math.abs(a.hp - n.hp * 6) < 1e-8); assert(Math.abs(a.damage - n.damage * 1.5) < 1e-8);
@@ -109,4 +109,4 @@ for (let i = 0; i < 150; i++) stress.shot(1200, 1200, i * Math.PI / 75, true, .1
 for (let i = 0; i < 240; i++) stress.update(1 / 120);
 assert(stress.enemies.length <= 96 && stress.bullets.length <= 350 && stress.corpses.length <= 16);
 assert(stress.enemies.every(e => Number.isFinite(e.x + e.y + e.hp + e.actionTime)));
-console.log('PASS: ten added commons/twelve alphas, all 140 wave schedules and random extremes, 6x family HP/1.5x damage at baseline tier, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');
+console.log('PASS: ten added commons/twelve alphas, all 200 wave schedules and random extremes, 6x family HP/1.5x damage at baseline tier, all arenas/weapons, statuses, single rewards, warnings/dodges, pause/freeze, flight/cover, death cleanup and runtime sprite hashes.');

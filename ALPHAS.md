@@ -16,7 +16,7 @@ All twelve recorded alphas are now reachable in Survival. The nine added identit
 
 These are pre-wave values. Every new alpha includes the existing 15% general HP increase and additional 50% alpha increase. Spider/ant/bee/snake variants use four times their family’s original HP before those multipliers (six times the upgraded ordinary family). Centipede, Tapir and Jabiru use original archetype baselines of 40/60/45 respectively because their regular family counterparts are not installed. Damage is tuned per attack; only the original Crab/Jaguar/Shadow family variants retain an exact 1.5× damage ratio. Venom follows a successful hit with three one-second ticks of 15% attack damage, subject to normal immunity, shield and armor.
 
-Alphas replace ordinary wave slots on waves ending in 3, 6 and 9 after wave 10. Wave 13 introduces one, wave 23 guarantees two, wave 33 three, and wave 43 four. Ending-6/9 encounters randomize from one to the current maximum; four remains the cap. Existing wave counts, 10% crowd increase, bosses every five waves, wave-20 Duende, Sling-only start, random weapon rules and 140-wave endpoint remain.
+Alphas replace ordinary wave slots on waves ending in 3, 6 and 9 after wave 10. Wave 13 introduces one, wave 23 guarantees two, wave 33 three, and wave 43 four. Ending-6/9 encounters randomize from one to the current maximum; four remains the cap. Existing wave counts, 10% crowd increase, bosses every five waves, wave-20 Duende, Sling-only start, random weapon rules remain; Survival now ends at wave 200.
 
 ## Summons and cleanup
 

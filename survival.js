@@ -55,7 +55,7 @@
   };
   const MOB_WEAPON_CHANCE = .06;
   const xpForLevel = level => Math.ceil(25 + 13 * (level - 1) + .5 * (level - 1) ** 2);
-  const W = 2400, H = 2400, SURVIVAL_WAVES = 140, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const W = 2400, H = 2400, SURVIVAL_WAVES = 200, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const ARENAS = {
     open: { name: 'Open Jungle Clearing', image: 'open-survival-arena.png', width: W, height: H, scrolling: true, bounds: { x: 88, y: 88, w: 2224, h: 2224 }, obstacles: [], spawn: { x: 1200, y: 1200 } },

@@ -191,12 +191,12 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   progression.queue = []; progression.enemies = []; progression.update(1 / 120);
   if (wave < SURVIVAL_WAVES) { assert.equal(progression.mode, 'playing'); while (progression.wave === wave) progression.update(.25); }
 }
-assert.deepEqual(bossWaves, Array.from({ length: 28 }, (_, i) => (i + 1) * 5)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
+assert.deepEqual(bossWaves, Array.from({ length: SURVIVAL_WAVES / 5 }, (_, i) => (i + 1) * 5)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
 progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equal(progression.wave, 1); assert.equal(progression.totalWaves, 10); assert.equal(progression.player.weapon, 'slingshot'); assert.equal(progression.rank('damage'), 0);
 progression.level = 40; progression.xp = progression.xpNeeded; assert(progression.levelUp()); assert.equal(progression.level, 41);
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);
 for (const w of WEAPONS.filter(w => w.art)) { const [x, y, ww, hh] = w.art; assert(x >= 0 && y >= 0 && x + ww <= width && y + hh <= height); }
-console.log('PASS: 12 weapons, five arenas, collisions, perk caps/eligibility/fallback, four cards, enhancements, powers, statuses, cover/budgets, 140 waves, uncapped XP and restart.');
+console.log('PASS: 12 weapons, five arenas, collisions, perk caps/eligibility/fallback, four cards, enhancements, powers, statuses, cover/budgets, 200 waves, uncapped XP and restart.');
 
 const snake = playing(); snake.spawn('tommy'); const striker = snake.enemies.at(-1);
 Object.assign(striker, { x: 650, y: 575, warmup: 0, rushTimer: 0, routeTimer: 99 });
