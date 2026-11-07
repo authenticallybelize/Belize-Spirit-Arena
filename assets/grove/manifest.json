@@ -1,0 +1,62 @@
+{
+  "source": "assets/source/grove/landmarks-v1.png",
+  "sourceSHA256": "dfcfee14e8577f8696ea33323572a8357ee88341868903162f1b41f911460297",
+  "entries": [
+    {
+      "name": "boulder",
+      "file": "grove/boulder.png",
+      "width": 256,
+      "height": 159,
+      "cell": 0,
+      "crop": {
+        "left": 39,
+        "top": 177,
+        "width": 558,
+        "height": 347
+      },
+      "runtimeSHA256": "3f9598078a9b6278ba86f24de2fd1965085f9fabebd9de4b9842388ee9a1eb81"
+    },
+    {
+      "name": "log",
+      "file": "grove/log.png",
+      "width": 256,
+      "height": 97,
+      "cell": 1,
+      "crop": {
+        "left": 20,
+        "top": 280,
+        "width": 571,
+        "height": 217
+      },
+      "runtimeSHA256": "5c9d05661b386ff3ce0e7d5d303a33ed0594026bad1ceb7cf4b90793c0e81f90"
+    },
+    {
+      "name": "marker",
+      "file": "grove/marker.png",
+      "width": 253,
+      "height": 256,
+      "cell": 2,
+      "crop": {
+        "left": 114,
+        "top": 93,
+        "width": 426,
+        "height": 431
+      },
+      "runtimeSHA256": "ccc51e1d150d7aa97ebd40bf3e2f59e8d3d5a22d73fd73e7ffe1937f96b759c4"
+    },
+    {
+      "name": "puddle",
+      "file": "grove/puddle.png",
+      "width": 256,
+      "height": 150,
+      "cell": 3,
+      "crop": {
+        "left": 37,
+        "top": 160,
+        "width": 535,
+        "height": 314
+      },
+      "runtimeSHA256": "10f8c163c873adf4b1e1baca9e95d5ce98d9fdfd6136953a89202f5ae9aa8b75"
+    }
+  ]
+}

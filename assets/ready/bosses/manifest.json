@@ -1,0 +1,106 @@
+[
+  {
+    "id": "cadejoBoss",
+    "source": "folklore-creatures-v1/el-cadejo-v1.png",
+    "sourceSHA256": "76955e893b00bd315810d497d56e0fc5008a5dec43814b33b91e84e00e8366e5",
+    "runtimeSHA256": "ae5ffe24374da980859bae42f326b5f8e2a8cdb4aa81d25e5d1de339d47dc116",
+    "file": "ready/bosses/cadejoBoss.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      127
+    ],
+    "bodyHeight": 116
+  },
+  {
+    "id": "maleSisimite",
+    "source": "folklore-creatures-v1/male-sisimite-v1.png",
+    "sourceSHA256": "a1ecf018d4c475f10a48408cd822cd04c70143ee876746f75f6f965051feb6c9",
+    "runtimeSHA256": "5ff562ef20eb76f21b45370f24de947ff4d807af5e08efd7e2ce77224b735f5d",
+    "file": "ready/bosses/maleSisimite.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      122
+    ],
+    "bodyHeight": 114
+  },
+  {
+    "id": "femaleSisimite",
+    "source": "folklore-creatures-v1/female-sisimite-v1.png",
+    "sourceSHA256": "b29762cf72d5525c236d9ebc5a5ca176ccb94fed0624fe9581c488ce5fdb483a",
+    "runtimeSHA256": "9f079cbf80f50d15d62a8bae6dfb14deb7655868130864b2d0b35eaed8a8a7f0",
+    "file": "ready/bosses/femaleSisimite.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      125
+    ],
+    "bodyHeight": 120
+  },
+  {
+    "id": "anansiBoss",
+    "source": "folklore-creatures-v1/anansi-v1.png",
+    "sourceSHA256": "0f0d99c9df3b56aec2352725c3767d5a0af2cf7f109ed89395def36056eb73a2",
+    "runtimeSHA256": "e31cacb0ef52d20742a697a57ff2435226a24451dfae84c5bbe4885d0f739a11",
+    "file": "ready/bosses/anansiBoss.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      118
+    ],
+    "bodyHeight": 109
+  },
+  {
+    "id": "sochBoss",
+    "source": "folklore-creatures-v1/soch-la-lechuza-v1.png",
+    "sourceSHA256": "24025daa6f83fe839f3b08a84b0bdeb158982230ca8bf75bc3eb1a4bc7d03559",
+    "runtimeSHA256": "1f28d46dc01be51ca62399ad97fc37910d357035c168fd86cb0429a77fd02927",
+    "file": "ready/bosses/sochBoss.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      125
+    ],
+    "bodyHeight": 103
+  },
+  {
+    "id": "xtabaiBoss",
+    "source": "folklore-creatures-v1/la-xtabai-v1.png",
+    "sourceSHA256": "546e1181681a62cbe5267ca80082dc9b5de19ba98d204e0467b152352db9ff50",
+    "runtimeSHA256": "20100854d5ed7b59d29096d01e2d09305c2b2ea0ff5d5b5acea600dfe3e3686f",
+    "file": "ready/bosses/xtabaiBoss.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      119
+    ],
+    "bodyHeight": 115
+  },
+  {
+    "id": "sochHarpy",
+    "source": "soch-shapeshifter-v1/soch-harpy-combat-v1.png",
+    "sourceSHA256": "e2d94b6a582ef1524c6cda1ff2dfca305ba0fc4704aa06e7ac2fe75d507fce2d",
+    "runtimeSHA256": "a96429cb0e770bf22d8ae1adda4247cc6469486ad1d09ed83659e21e32840e22",
+    "file": "ready/bosses/sochHarpy.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      127
+    ],
+    "bodyHeight": 117
+  },
+  {
+    "id": "sochTransform",
+    "source": "soch-shapeshifter-v1/soch-transformation-v1.png",
+    "sourceSHA256": "3097a75896f2f9ca06be3225afd21e760bc0eff4326b49b0301be5b122e7eb87",
+    "runtimeSHA256": "d0805978b9d7036ad200872d21c16861826ab289b81de0779ccc3fcca6649c76",
+    "file": "ready/bosses/sochTransform.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      125
+    ],
+    "bodyHeight": 109
+  }
+]

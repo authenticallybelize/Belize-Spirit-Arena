@@ -1,5 +1,23 @@
 # Spirit Arena artwork and references
 
+## Five wildlife commons — 2026-11-07
+
+`sources/wildlife-atlas.png` is an original transparent atlas created with the built-in ImageGen tool, using the existing Spiderling atlas as a style reference. It contains five rows (Grasshopper, Corrupted Hen, Corrupted Great-tailed Grackle, Corrupted Howler Monkey, Corrupted Toad) and six authored poses per row: idle, two movement poses, attack, hurt and defeat. No existing creature art was overwritten.
+
+Each creature has a 768×512 RGBA runtime atlas in `ready/roster/`. The six authored poses are arranged/repeated into the renderer's existing 24 animation slots; these are six unique poses, not 24 unique drawings. Cells have transparent gutters and a shared foot anchor; directional mirroring faces the creatures toward Joe. Faint alpha noise is removed during export. Source/runtime SHA-256 hashes, anchors and dimensions are recorded in `ready/roster/manifest.json`. The unmodified generated source is preserved in Git and excluded from the static deployment.
+
+## Full boss integration — 0.7.0
+
+Six existing generated folklore sheets are copied into measured runtime derivatives for El Cadejo, Male/Female Sisimite, Anansi, Soch and La Xtabai. Soch also uses the already prepared transformation and harpy combat sheets. Originals and prompts remain untouched under `C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated`. La Llorona uses the original `llorona.png` frames already prepared for Mini Llorona, drawn at full boss scale; Duende/Jaguar preserve their existing art.
+
+`ready/bosses/manifest.json` records each source path/SHA-256, runtime hash, cell size, body height and pivot. `bosses.js` extends the original roster without changing its eight atlases or metadata. Runtime sheets use the same alpha threshold, disconnected-fragment cleanup, three-source-pixel cell margin and 50% downsampling as the 0.6.0 roster preparation. No artwork was regenerated. The eight sheets remain single-facing 6×4 source animations, not newly authored multi-directional cycles. Boss effects deal damage through bounded simulation areas/projectiles, independent of illustrative particles in the sheets.
+
+## Eight-enemy roster — 0.6.0
+
+User-approved generated sheets from the Legends of Belize workspace are integrated only for Spiderling, Sompopo Worker, Africanized Bee Swarm, Corrupted Rootling, Owl Shade, Armored Mangrove Crab, Jaguar Sentinel and Shadow Brute. Originals remain under `spirit-arena/assets/generated/beta-common-v1` and `alpha-corrupted-v1`, with generation prompts in each folder's `PROMPTS.md`. No new designs were generated for this integration. Source and runtime SHA-256 hashes, source-relative filenames, cell sizes and stable anchors are in `ready/roster/manifest.json`.
+
+Runtime packing preserves whole equal-cell poses, drops alpha noise below 16/255, removes small disconnected neighboring fragments (except the multi-insect swarm), clears a three-source-pixel cell margin, then downsamples proportionally by half. The original sheets remain unchanged. The eight atlases are 768x512 RGBA PNGs with six columns and four rows. Gameplay draws existing effects/projectiles separately rather than relying on the illustrated projectile to deal damage. Unused large roar/slash effects in other source rows are not routed as attacks. Animation remains single-facing source artwork; it is not newly authored eight-direction movement.
+
 ## Canyon & Survival edition
 
 - User-supplied Ancient Forest Canyon Arena.png is copied intact as canyon-arena.png. Its full square view is rendered without cropping; code-native collisions follow the clearing's main rocks.

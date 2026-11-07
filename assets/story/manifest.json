@@ -1,0 +1,34 @@
+[
+  {
+    "id": "hollow-keeper",
+    "file": "story/hollow-keeper.png",
+    "generator": "built-in image_gen",
+    "source": "exec-c742844b-6ff8-4059-bef0-ae31a2b53721.png",
+    "sourceSHA256": "a265ba60e87ca729b8fdf3bffde314fbda632d964c71d4fffeade5223b54cfbd",
+    "runtimeSHA256": "6a0269c0fc2a304ec66dda741d975c017b356bb83e03df06b9bc51d8281a5dd8"
+  },
+  {
+    "id": "tide-warden",
+    "file": "story/tide-warden.png",
+    "generator": "built-in image_gen",
+    "source": "exec-be99a537-4327-48e9-92ea-984bb90664eb.png",
+    "sourceSHA256": "1e5a220099ffca5dc01f9da4d30cf0660fe19fa4761fabbcd89c352e6d1edb77",
+    "runtimeSHA256": "8a9dc38225c74930cf975575234e48344048d54a72c0dc59c2e042e3e5bc6f35"
+  },
+  {
+    "id": "pine-ridge",
+    "file": "story/pine-ridge.png",
+    "generator": "built-in image_gen",
+    "source": "exec-1f0164dc-df1d-44d9-91c5-0120de7f060b.png",
+    "sourceSHA256": "6a11604012c452178ab3c27ac131e3a18360cf872b5d27f7bbecca39ec85e43e",
+    "runtimeSHA256": "5c707d736ecedfdb09c3f31675961e2f5f12cd84c0ecc81baa208b7b4373a36f"
+  },
+  {
+    "id": "ending",
+    "file": "story/ending.png",
+    "generator": "built-in image_gen",
+    "source": "exec-ca0f1d42-4354-4ccf-ad6a-de7b472fd857.png",
+    "sourceSHA256": "651eede3d234159a7366a94aea987fcb3d76870d8fc41b277ad8e331c77687c5",
+    "runtimeSHA256": "ed07d7e6c3369652cc5971ee48c2b9d7403fbf6999668b17028c317084ac756e"
+  }
+]

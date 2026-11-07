@@ -1,0 +1,340 @@
+[
+  {
+    "id": "spiderling",
+    "source": "beta-common-v1/spiderling-beta-v1.png",
+    "sourceSHA256": "5197c9d8037120f72352027fbb2cb031899a9fa9158ecaf49ae73b143e68a022",
+    "runtimeSHA256": "8d60f1ede18f0e75cf69986b8186cb13f8dd8b723ce8cf8761dc9cc07cd15c86",
+    "file": "ready/roster/spiderling.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 73
+  },
+  {
+    "id": "worker",
+    "source": "beta-common-v1/sompopo-worker-beta-v1.png",
+    "sourceSHA256": "33e66493928973c27f066398cb7c8581e77d6b8c8180f28cb5f6b4f811c5fc4e",
+    "runtimeSHA256": "acd7303f4615270432712e3b3d5645c12d06290183bdda1f923b1422a14076de",
+    "file": "ready/roster/worker.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 98
+  },
+  {
+    "id": "bees",
+    "source": "beta-common-v1/africanized-bee-swarm-beta-v1.png",
+    "sourceSHA256": "3703ab7fd95d0d9d6b0056d5f9655746e5460dcfc209eb1752bd7b3a59f97090",
+    "runtimeSHA256": "3b31ffec5623734b5acdb3460659e6305407282da2656f2702c3c7db17401dee",
+    "file": "ready/roster/bees.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      103
+    ],
+    "bodyHeight": 81
+  },
+  {
+    "id": "rootling",
+    "source": "beta-common-v1/corrupted-rootling-beta-v1.png",
+    "sourceSHA256": "ed3a6e3e8a6a03298123a6365012176c41f3896734f9ddd8f6bde5ed0c76b21c",
+    "runtimeSHA256": "f0c93ba7f029641c08926c7970cc2a38a08e1d29fb20f3f18bd27cb545955306",
+    "file": "ready/roster/rootling.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 93
+  },
+  {
+    "id": "owlShade",
+    "source": "beta-common-v1/owl-shade-beta-v1.png",
+    "sourceSHA256": "1460632ffe1e7ffcc7eb27dd685fa755432192c02d592ed390d2c5afe92c5b6b",
+    "runtimeSHA256": "fa07ce077325a514d5ff6b6ce1c317da724e4f034ab0b9afffbeaab496805264",
+    "file": "ready/roster/owlShade.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 74
+  },
+  {
+    "id": "alphaCrab",
+    "source": "alpha-corrupted-v1/armored-mangrove-crab-alpha-v1.png",
+    "sourceSHA256": "deb5a2c68955f8cbad209c93ff480b4701dfe06296298a53fe7708a802700640",
+    "runtimeSHA256": "e4a612cd98e2440e32c01af4694f924843f2101f9e4e2b118b5236e1ea18f3e4",
+    "file": "ready/roster/alphaCrab.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      107
+    ],
+    "bodyHeight": 97
+  },
+  {
+    "id": "alphaJaguar",
+    "source": "alpha-corrupted-v1/jaguar-sentinel-alpha-v1.png",
+    "sourceSHA256": "438fefcd3cfe1de94e57a5f029c221fb0cfaf1d9e40dd519aafd504eb186fcef",
+    "runtimeSHA256": "de36cf59cebd32c678e3a3d349aad2407b2aba806a45f9d4258b2be644fb5196",
+    "file": "ready/roster/alphaJaguar.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      121
+    ],
+    "bodyHeight": 114
+  },
+  {
+    "id": "shadowBrute",
+    "source": "alpha-corrupted-v1/shadow-brute-alpha-v1.png",
+    "sourceSHA256": "a1aa6ea63eb7ef2af8939cf71474639dec6c669db27a57974395bd8f360f8bd7",
+    "runtimeSHA256": "fa266fd66c241bfa0482257f9e009525d62a73fb472f0e376a168bacafa10549",
+    "file": "ready/roster/shadowBrute.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      111
+    ],
+    "bodyHeight": 103
+  },
+  {
+    "id": "chiwoj",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/chiwoj-alpha-v1.png",
+    "sourceSHA256": "04ff7104570c6f3b6850c6a8c99ff9ea7da107afe39f3110ee83872fac313674",
+    "runtimeSHA256": "0d78264cf1475c89a451f4e880190e07212eb94647f06690e7d3dae33797cf53",
+    "file": "ready/roster/chiwoj.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      115
+    ],
+    "bodyHeight": 107
+  },
+  {
+    "id": "tigerSpider",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/tiger-wandering-spider-alpha-v1.png",
+    "sourceSHA256": "95ddd188457e0d0475e0137b0f24890895e1489dbbdcee4ce8e5e3eccf2b80aa",
+    "runtimeSHA256": "75ea3cd982f02773565b317f38a22c86545bc9639cf4aeb54e2d15ccc233cacb",
+    "file": "ready/roster/tigerSpider.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      121
+    ],
+    "bodyHeight": 105
+  },
+  {
+    "id": "soldierAnt",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/wee-wee-soldier-ant-alpha-v1.png",
+    "sourceSHA256": "1077f18e47ba6de39d7888aa02ec4cf7033b97ce23ba8a96e14c4cb28aab2ded",
+    "runtimeSHA256": "cd1b2c798ef49bf88f88d355e5aef5edd0702e41886503a22ba08876e592c479",
+    "file": "ready/roster/soldierAnt.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      116
+    ],
+    "bodyHeight": 114
+  },
+  {
+    "id": "bulletAnt",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/bullet-ant-champion-alpha-v1.png",
+    "sourceSHA256": "e5d028e61c90fd2bf5487cfb26a7bca60a8b43ec85928b5b151db462a5fee59d",
+    "runtimeSHA256": "0d569ede32581c9d131eab548377af9912074ea772d384bdf9d6950f9867a966",
+    "file": "ready/roster/bulletAnt.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      124
+    ],
+    "bodyHeight": 120
+  },
+  {
+    "id": "giantCentipede",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/giant-centipede-alpha-v1.png",
+    "sourceSHA256": "090a8b9b85ef55d286c066c78ec809bc5589a5cd923161d4a7b667ef7c52f1fb",
+    "runtimeSHA256": "479d6249580e2fd3c234d0be721892272db5e844c0227e7af58d3cbf85cf72d6",
+    "file": "ready/roster/giantCentipede.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      123
+    ],
+    "bodyHeight": 119
+  },
+  {
+    "id": "hiveGuardian",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/hive-guardian-alpha-v1.png",
+    "sourceSHA256": "2c8903715c41d2f58abe2d6674c6def7177b61da03ca25d1c1357480595d43cf",
+    "runtimeSHA256": "881e6d46714fa726b50f1f3c4418e26fb3aa70675c7d3eeb9467b36139e70b50",
+    "file": "ready/roster/hiveGuardian.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      108
+    ],
+    "bodyHeight": 101
+  },
+  {
+    "id": "giantTommy",
+    "source": "C:/Users/holis/OneDrive/Documents/The Legends of Belize/spirit-arena/assets/generated/alpha-corrupted-v1/giant-tommy-goff-alpha-v1.png",
+    "sourceSHA256": "a0405cbcdbadebecab565d5ec744705b198597506ba4b135b5e5f03563c1bb3c",
+    "runtimeSHA256": "2b75feafa8fdbf6853b9dbba6a044a22d123b14626a0e9b8e4ab7c4bebe1e003",
+    "file": "ready/roster/giantTommy.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      122
+    ],
+    "bodyHeight": 116
+  },
+  {
+    "id": "rotTapir",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/rot-tapir-transparent-v1.png",
+    "sourceSHA256": "cddd906ff3f5890842e8df2809fcfefc088f47476d50ec0efc5374ea442c26a6",
+    "runtimeSHA256": "1200d9c6774233c86deae3075e801fa9de12506e4097b38e85b9fa9699c1ef65",
+    "file": "ready/roster/rotTapir.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      117
+    ],
+    "bodyHeight": 112
+  },
+  {
+    "id": "jabiruReaper",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/jabiru-reaper-transparent-v1.png",
+    "sourceSHA256": "bbb71a5467f93f07e5bf0dad12e257a7cf90d966346b41b8f6a615e5f968a0b6",
+    "runtimeSHA256": "478261047018515272c4931e97161608011e5d51073ddda5170e78a6633489b1",
+    "file": "ready/roster/jabiruReaper.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      109
+    ],
+    "bodyHeight": 90
+  },
+  {
+    "id": "parasiteTapir",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/rot-tapir-transparent-v1.png",
+    "sourceSHA256": "cddd906ff3f5890842e8df2809fcfefc088f47476d50ec0efc5374ea442c26a6",
+    "runtimeSHA256": "45f6de9f985fcdc13f7a879fdc997c192ce09a83edd826704096014715c76629",
+    "file": "ready/roster/parasiteTapir.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      114
+    ],
+    "bodyHeight": 99,
+    "derivation": "One isolated existing miniature pose, shared foot anchor, hit flash and fading defeat."
+  },
+  {
+    "id": "voidEgg",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/jabiru-reaper-transparent-v1.png",
+    "sourceSHA256": "bbb71a5467f93f07e5bf0dad12e257a7cf90d966346b41b8f6a615e5f968a0b6",
+    "runtimeSHA256": "e06e42c4bde61ea9d49f2529d9d5be03e619c620cc296dbaf91e0b4c523120dc",
+    "file": "ready/roster/voidEgg.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      113
+    ],
+    "bodyHeight": 93,
+    "derivation": "Existing egg pose, shared foot anchor; immediately destructible."
+  },
+  {
+    "id": "nightHatchling",
+    "source": "C:/Users/holis/.codex/workspaces/bsa-enemy-roster-20261016/assets/source/alphas/jabiru-reaper-transparent-v1.png",
+    "sourceSHA256": "bbb71a5467f93f07e5bf0dad12e257a7cf90d966346b41b8f6a615e5f968a0b6",
+    "runtimeSHA256": "3b7648bdb4c249fb671bcabd7dd132be45ca0a5a31da6ca85fd2a781eb3f38bc",
+    "file": "ready/roster/nightHatchling.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      115
+    ],
+    "bodyHeight": 59,
+    "derivation": "Two isolated existing hatchling poses, shared foot anchor, hit flash and fading defeat."
+  },
+  {
+    "id": "grasshopper",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "8d3e39968b60dfdca4f4e37e662ffd2aec66e64f8ba46749dae918af22754614",
+    "file": "ready/roster/grasshopper.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 59,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedHen",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "2c5a8227f5d2657c259a0bec87c6f8036908898e2ed1435cca12354f6f911098",
+    "file": "ready/roster/corruptedHen.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 98,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedGrackle",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "c89f62589ce3fbec017a49809c009d5246a3697b2941ff83fbb33b46492eb98c",
+    "file": "ready/roster/corruptedGrackle.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 72,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedMonkey",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "7e97c6b51f6b1aa22733514a2a9901bd861157ba610ce853e7fb318c45be38ef",
+    "file": "ready/roster/corruptedMonkey.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 85,
+    "directional": true,
+    "authoredFrames": 6
+  },
+  {
+    "id": "corruptedToad",
+    "source": "sources/wildlife-atlas.png",
+    "sourceSHA256": "81234b361e1b948284a52caa28c5cc208a273fe7769bdea48834295c40a387b9",
+    "runtimeSHA256": "2a1c4016f2605f4a6684716e4cbb384d36b7daac02a2231c467379a08fdecfba",
+    "file": "ready/roster/corruptedToad.png",
+    "cell": 128,
+    "pivot": [
+      64,
+      120
+    ],
+    "bodyHeight": 60,
+    "directional": true,
+    "authoredFrames": 6
+  }
+]

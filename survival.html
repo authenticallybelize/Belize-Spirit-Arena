@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#091712">
-  <title>Belize: Spirit Arena — Canyon & Survival</title>
-  <link rel="icon" href="assets/teenage-joe.png" type="image/png">
+  <title>Belize: Spirit Arena — Survival & Arena Trials</title>
+  <link rel="icon" href="favicon.ico?v=0.5.2" sizes="16x16 32x32" type="image/x-icon">
+  <link rel="icon" href="assets/branding/icon-32.png?v=0.5.2" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/branding/icon-180.png?v=0.5.2" sizes="180x180">
+  <link rel="icon" href="assets/branding/icon-192.png?v=0.5.2" sizes="192x192" type="image/png">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="survival.css">
-  <script defer src="core.js"></script>
-  <script defer src="assets/sprites.js"></script>
-  <script defer src="survival.js"></script>
-  <script defer src="survival-ui.js"></script>
-  <script defer src="game.js"></script>
+  <link rel="stylesheet" href="survival.css?v=0.5.2">
+  <link rel="stylesheet" href="touch.css?v=0.10.0">
+  <link rel="stylesheet" href="branding.css?v=0.5.2">
+  <script defer src="core.js?v=0.5.2"></script>
+  <script defer src="assets/sprites.js?v=0.5.2"></script>
+  <script defer src="assets/ready-assets.js?v=0.5.2"></script>
+  <script defer src="assets/roster.js?v=0.9.0"></script>
+  <script defer src="assets/bosses.js?v=0.7.0"></script>
+  <script defer src="viewport.js?v=0.5.2"></script>
+  <script defer src="survival.js?v=0.10.0"></script>
+  <script defer src="story-campaign.js?v=0.8.0-r2"></script>
+  <script defer src="story-access.js?v=0.8.0-r2"></script>
+  <script defer src="survival-ui.js?v=0.10.0"></script>
+  <script defer src="touch.js?v=0.5.2"></script>
+  <script defer src="weather.js?v=0.10.0"></script>
+  <script defer src="game.js?v=0.10.0"></script>
 </head>
 <body class="survival-edition">
   <main class="shell">
     <header class="masthead">
-      <a class="brand" href="./index.html" aria-label="Belize: Spirit Arena home"><span>BELIZE</span><i></i><small>SPIRIT ARENA</small></a>
+      <a class="brand" href="./story.html" aria-label="Belize: Spirit Arena home"><img src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="140px" width="1774" height="887" alt="" decoding="async"></a>
       <nav aria-label="Game settings">
         <button id="helpButton" class="text-button">How to play</button>
         <button id="soundButton" class="icon-button" aria-label="Enable sound" aria-pressed="false" title="Sound off">♫</button>
@@ -25,15 +38,16 @@
       </nav>
     </header>
     <section class="intro">
-      <h1>The canyon calls.</h1>
-      <p>Two arenas. Forty waves. Find your build.</p>
+      <p><a href="story.html" style="color:var(--mint)">Story Mode · canon prologue ↗</a></p>
+      <h1>The jungle opens.</h1>
+      <p>Two open fields. Four original arenas. One hundred forty waves.</p>
     </section>
-    <div class="survival-layout"><aside class="expedition" id="config"><h2>Choose your expedition</h2><label for="arenaSelect">Arena</label><select id="arenaSelect"><option value="canyon">Ancient Forest Canyon</option><option value="jungle">Jungle Ruins</option></select><label for="modeSelect">Edition</label><select id="modeSelect"><option value="survival">Survival · 40 waves</option><option value="run">Arena Run · 10 waves</option></select><label for="starterWeapon">Starting weapon</label><select id="starterWeapon"></select><p class="setup-note">All twelve starters are available for testing. XP level and wave count are separate.</p><a class="classic-link" href="./index.html">Original ten-wave game ↗</a><div class="build"><h2>Your build</h2><strong id="buildWeapon">Joe’s Sling I</strong><p id="buildStats"></p><p id="arenaName"></p><p id="activePowers">No temporary powers active</p><p id="buildEmpty">Collect gems to grow your build.</p><ul id="buildPerks"></ul></div></aside><section class="game-frame" aria-label="Belize: Spirit Arena game">
+    <div class="survival-layout"><aside class="expedition" id="config"><h2>Choose your expedition</h2><label for="arenaSelect">Arena</label><select id="arenaSelect"><option value="open">Open Jungle Clearing</option><option value="grove">Ceiba Grove Clearing · New</option><option value="canyon">Ancient Forest Canyon</option><option value="jungle">Jungle Ruins</option><option value="underworld">The Corrupted Underworld</option><option value="coast">Spirit Coast · Hopkins</option></select><label for="modeSelect">Edition</label><select id="modeSelect"><option value="survival">Survival · 200 waves</option><option value="run">Arena Run · 10 waves</option></select><p class="setup-note">Start with Joe’s Sling. Mobs can drop weapons; every boss guarantees one random weapon. Boss waves 10, 20, 30 and onward bring storms. XP level and wave count are separate.</p><a class="classic-link" href="./index.html">Original ten-wave game ↗</a><label class="view-option"><input id="entireArena" type="checkbox"> Show entire arena</label><div class="build"><h2>Your build</h2><strong id="buildWeapon">Joe’s Sling I</strong><p id="buildStats"></p><p id="arenaName"></p><p id="activePowers">No temporary powers active</p><p id="buildEmpty">Collect gems to grow your build.</p><ul id="buildPerks"></ul></div></aside><section class="game-frame" aria-label="Belize: Spirit Arena game">
       <div class="hud">
         <div class="hero"><canvas class="joe-portrait" width="64" height="64" aria-label="Teenage Joe Grind"></canvas><div><strong>JOE GRIND</strong><span id="levelLabel">LEVEL 1</span></div></div>
         <div class="meter health"><div class="meter-label"><span>HEALTH</span><b id="healthLabel">100 / 100</b></div><div class="track" id="healthMeter" role="progressbar" aria-label="Health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="healthFill"></i></div></div>
         <div class="meter experience"><div class="meter-label"><span>EXPERIENCE</span><b id="xpLabel">0 / 25</b></div><div class="track" id="xpMeter" role="progressbar" aria-label="Experience" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0"><i id="xpFill"></i></div></div>
-        <div class="wave"><strong id="waveLabel">WAVE 1 / 40</strong><div id="waveDots" aria-hidden="true"></div></div>
+        <div class="wave"><strong id="waveLabel">WAVE 1 / 200</strong><div id="waveDots" aria-hidden="true"></div></div>
       </div>
       <div class="arena-wrap">
         <canvas id="arena" width="1200" height="1200" tabindex="0" aria-label="Jungle arena. Move with WASD or arrow keys, aim with your mouse and hold left-click to shoot. Space dashes. Escape pauses.">Canvas support is required to play.</canvas>
@@ -42,8 +56,8 @@
         <div class="arena-status"><span id="killsLabel">0 spirits released</span><span id="weaponLabel">SLINGSHOT</span><span id="dashLabel">SPACE · DASH READY</span></div>
         <section id="overlay" class="overlay" aria-label="Game menu" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
           <div class="dialog" id="dialogContent">
-            <canvas class="joe-portrait menu-portrait" width="64" height="64" aria-hidden="true"></canvas>
-            <h2 id="overlayTitle">Enter the canyon.</h2>
+            <img class="menu-logo" src="assets/branding/logo.png?v=0.5.2" srcset="assets/branding/logo.png?v=0.5.2 886w, assets/branding/logo@2x.png?v=0.5.2 1774w" sizes="280px" width="1774" height="887" alt="" decoding="async">
+            <h2 id="overlayTitle">Enter the clearing.</h2>
             <p>Choose an arena and weapon.<br>Gather power. Face the guardians. Survive.</p>
             <button id="startButton" class="primary" disabled>Loading the jungle…</button>
             <span class="small-note">E picks up weapons · 1–4 choose perks</span>
@@ -58,7 +72,7 @@
       <span><kbd>SPACE</kbd> Dash</span><span><kbd>E</kbd> Weapon</span><span><kbd>ESC</kbd> Pause</span>
     </div>
     <footer><span>Inspired by Belizean folklore. Made for the arena.</span><span>SURVIVAL TEST EDITION</span></footer>
-    <p class="mobile-note">This prototype uses a keyboard and mouse. Play on a desktop or laptop.</p>
+    <p class="mobile-note">Touch: left stick moves; right stick aims and fires. Dash and weapon pickup have touch buttons.</p>
     <noscript>Please enable JavaScript to enter the arena.</noscript>
   </main>
 </body>
