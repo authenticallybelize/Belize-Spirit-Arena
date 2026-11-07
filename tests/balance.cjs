@@ -53,3 +53,25 @@ for (const weapon of ['claw', 'cohune']) {
   assert.equal(late.level, 201, 'A late build stopped offering useful upgrades');
 }
 console.log('PASS: expanded stack caps/unique preservation, all HP multipliers, accelerating XP beyond level 200, XP powers/gems, queued upgrades, repeatable permanent vitality, bounded final-rank fire/ricochet bonuses.');
+
+// Nuke clears crowd pressure but cannot skip a full-health elite encounter or farm its reward.
+const blast = playing(); blast.wave = 199; blast.beginWave(); blast.level = 40; blast.ranks.bossDamage = 5;
+for (const type of ['crab', 'alphaCrab', 'duende']) assert(blast.spawn(type));
+const [mob, alpha, guardian] = blast.enemies, alphaHP = alpha.maxHp, guardianHP = guardian.maxHp, queue = [...blast.queue];
+blast.shot(blast.player.x, blast.player.y, 0, true, 20); blast.addArea(guardian, blast.player.x, blast.player.y, 100, 0, 5, '#ffffff');
+blast.collectPower('nuke');
+assert(mob.dead); near(alpha.hp, alphaHP * .5); near(guardian.hp, guardianHP * .8);
+assert.equal(blast.bossesDefeated, 0); assert(!blast.drops.some(d => d.boss));
+assert.equal(blast.hazards.length, 0); assert(!blast.bullets.some(b => b.hostile)); assert.deepEqual(blast.queue, queue);
+blast.collectPower('nuke'); assert(alpha.dead); assert(!guardian.dead);
+for (let i = 0; i < 3; i++) blast.collectPower('nuke');
+assert(guardian.dead, 'Five Nukes should remove one full boss health bar'); assert.equal(blast.bossesDefeated, 1); assert.equal(blast.drops.filter(d => d.boss).length, 1);
+
+// Selecting an upgrade gives time to return from the card UI; the protection expires.
+const grace = playing(); grace.mode = 'upgrade'; grace.choices = [PERKS.find(p => p.id === 'damage')];
+assert(grace.choose(0)); grace.hurt(20); assert.equal(grace.player.hp, 100);
+for (let i = 0; i < 4; i++) grace.update(.25);
+grace.hurt(20); assert.equal(grace.player.hp, 80);
+const breathing = playing(); breathing.mode = 'upgrade'; breathing.choices = [PERKS.find(p => p.id === 'breathing')];
+assert(breathing.choose(0)); assert.equal(breathing.player.invincible, 1.5);
+console.log('PASS: Nuke elite damage/rewards and crowd/shot/hazard clearance; upgrade protection expires and Breathing Room stays stronger.');
