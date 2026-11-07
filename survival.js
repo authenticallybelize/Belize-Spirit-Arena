@@ -206,11 +206,15 @@
     rank(id) { return this.ranks[id] || 0; }
     active(id) { return (this.powers[id] || 0) > 0; }
     powerPool() { return Object.keys(POWERS); }
-    difficultyTier() { return Math.floor(this.level / 10); }
+    difficultyTier() { return Math.min(4, Math.floor(this.level / 10)); }
     applyDifficulty(e) {
       const tier = this.difficultyTier(), ratio = 2 ** (tier - (e.difficultyTier || 0));
       e.hp *= ratio; e.maxHp *= ratio;
-      if (!e.boss && !e.alpha) { e.damage *= ratio; e.speed *= ratio; e.attackScale = (e.attackScale || 1) * ratio; }
+      if (!e.boss && !e.alpha) {
+        e.damage *= ratio; e.speed = Math.min(300, e.speed * ratio);
+        e.attackScale = Math.min(2, (e.attackScale || 1) * ratio);
+        if (e.windup) e.windup = Math.max(e.windup, .25 * e.attackScale);
+      }
       e.difficultyTier = tier;
     }
     syncDifficulty() {
@@ -255,7 +259,7 @@
       const late = this.totalWaves > 10 ? Math.max(0, this.wave - 10) : 0;
       const count = Math.ceil((6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5)) * 1.1);
       this.baseSpawnInterval = late ? Math.max(.1, .72 - .62 * late / 90) : Math.max(.32, .9 - .018 * this.wave);
-      this.waveMobMultiplier = 2 ** this.difficultyTier(); this.copiesLeft = 0;
+      this.waveMobMultiplier = 2 ** Math.min(3, this.difficultyTier()); this.copiesLeft = 0;
       this.enemyLimit = 32 + Math.min(64, Math.floor(late * 64 / 90));
       this.queue = Array.from({ length: count }, (_, i) => this.wave < 3 ? i % 3 === 0 ? 'jaguar' : 'crab' : ['crab', 'jaguar', 'shadow'][i % 3]);
       if (this.wave >= 4) this.queue = this.queue.map((type, i) => i % 7 === 3 ? 'tommy' : this.wave >= 7 && i % 7 === 6 ? 'miniLlorona' : type);
@@ -338,7 +342,7 @@
       if (this.xp < this.xpNeeded) return false;
       this.xp -= this.xpNeeded; this.level++; this.xpNeeded = xpForLevel(this.level);
       this.syncDifficulty();
-      if (this.level % 10 === 0) { this.banner = 'Level ' + this.level + ' · The corruption grows stronger'; this.bannerTime = 5; }
+      if (this.level % 10 === 0 && this.level <= 40) { this.banner = 'Level ' + this.level + ' · The corruption grows stronger'; this.bannerTime = 5; }
       let available = PERKS.filter(p => this.eligible(p)); this.choices = [];
       const n = this.rank('grandma') ? 4 : 3;
       for (let i = 0; i < n; i++) {
@@ -362,6 +366,7 @@
         if (id === 'commit') this.commitWeapon = this.player.weapon;
       }
       this.choices = []; this.mode = 'playing'; this.refreshStats();
+      this.player.invincible = Math.max(this.player.invincible, .75);
       if (!this.levelUp() && this.rank('breathing')) { this.player.invincible = Math.max(this.player.invincible, 1.5); this.pulse(this.player, 140, 0, '#a5f2d3', true); }
       return true;
     }
@@ -434,9 +439,13 @@
       if (!POWERS[id]) return;
       if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5), false);
       else if (id === 'nuke') {
-        for (const e of [...this.enemies]) if (!e.dead) { e.hp = 0; this.defeat(e, true, true); }
+        for (const e of [...this.enemies]) if (!e.dead) {
+          e.hp = e.boss || e.alpha ? Math.max(0, e.hp - e.maxHp * (e.boss ? .2 : .5)) : 0;
+          e.hit = .12;
+          if (e.hp <= 0) this.defeat(e, true, true);
+        }
         this.pendingSummons = [];
-        this.enemies = []; this.bullets = this.bullets.filter(b => !b.hostile);
+        this.enemies = this.enemies.filter(e => !e.dead); this.hazards = []; this.bullets = this.bullets.filter(b => !b.hostile);
         this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
       } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
       if (id === 'shock') this.shockClock = 0;
@@ -507,9 +516,9 @@
         if (this.active('freeze')) return;
         e.hatchTime = (e.hatchTime || 0) + dt;
         if (e.hatchTime >= 5) {
-          const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp;
-          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
-          const factor = 2 ** (e.difficultyTier || 0); e.speed *= factor; e.damage *= factor; e.attackScale = factor;
+          const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp / 2 ** (e.difficultyTier || 0);
+          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, difficultyTier: 0, attackScale: 1, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
+          this.applyDifficulty(e);
         }
         return;
       }

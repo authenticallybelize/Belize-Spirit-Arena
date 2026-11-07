@@ -2,6 +2,14 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Counterplay balance and Story ideas — 0.14.0
+
+Survival's XP difficulty now has explicit limits: HP/regular damage ×16 at level 40, wave population ×8 at level 30 and spawn rate ×5.0625 at level 40. Ordinary movement caps at 300 units/second and attack speed at ×2, with at least 0.25 seconds of warned windup. This replaces the earlier unbounded XP multipliers; per-wave growth, all 200 waves, weapon VI, extra perk ranks and uncapped XP remain.
+
+Nuke clears ordinary mobs, hostile shots, hazards and pending broods, while removing 50% maximum alpha HP or 20% maximum boss HP. Surviving elites retain their fight and give no early rewards. Selecting an upgrade grants 0.75 active seconds of protection; Breathing Room retains its stronger 1.5 seconds and knockback. Story's authored encounters and Nuke exclusion remain.
+
+[Balance findings, measured before/after bounds and checks](BALANCE-REVIEW.md). [Story mode ideas for creator review](STORY-MODE-IDEAS.md) propose Chapter I pacing improvements and a four-trial Chapter II, beginning with one Ceiba Grove slice. These Story proposals are not implemented missions or new canon.
+
 ## Complete features release and Survival 200 — 0.13.0
 
 Survival now runs for **200 waves**, adding sixty beyond the previous 140-wave endpoint. Waves 141–200 continue the existing enemy growth, nine-boss rotation, twelve scheduled alphas and storms every tenth wave. Victory requires clearing wave 200; clearing wave 140 continues the run. Joe's XP levels remain uncapped. Arena Run retains ten waves and Story retains its twenty-wave chapter.

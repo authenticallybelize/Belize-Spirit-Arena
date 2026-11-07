@@ -95,9 +95,9 @@ const nuke = playing(); enemy(nuke, 710, 575, 10); nuke.collectPower('nuke'); as
 const clearing = playing(); const queued = [...clearing.queue], waiting = enemy(clearing, 500, 480); waiting.warmup = 1;
 const boss = enemy(clearing, 800, 900, 5000); Object.assign(boss, { boss: true, type: 'jaguarBoss', warmup: 1.7 });
 clearing.shot(610, 575, 0, true, 5); clearing.collectPower('nuke');
-assert.equal(clearing.enemies.length, 0); assert.equal(clearing.kills, 2); assert.equal(clearing.bossesDefeated, 1);
+assert.equal(clearing.enemies.length, 1); assert.equal(clearing.kills, 1); assert.equal(clearing.bossesDefeated, 0); assert.equal(boss.hp, 4000);
 assert.equal(clearing.bullets.length, 0); assert.deepEqual(clearing.queue, queued, 'Nuke consumed future enemies');
-assert(clearing.drops.some(d => d.kind === 'weapon' && d.boss)); assert.equal(clearing.mode, 'playing', 'Nuke fabricated a wave victory');
+assert(!clearing.drops.some(d => d.kind === 'weapon' && d.boss)); assert.equal(clearing.mode, 'playing', 'Nuke fabricated a wave victory');
 const shield = playing(); shield.collectPower('shield'); shield.hurt(20); assert.equal(shield.player.hp, 100); shield.powers = {}; shield.hurt(20); assert.equal(shield.player.hp, 80);
 const trophy = playing(); const firstBoss = enemy(trophy); firstBoss.boss = true; firstBoss.type = 'duende'; trophy.defeat(firstBoss);
 assert(pick(trophy, 'trophy')); assert.equal(trophy.player.damage, 19, 'Trophy applied to a boss killed before acquiring it');

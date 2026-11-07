@@ -12,7 +12,7 @@ for (const [level, factor, rate] of [[1,1,1], [9,1,1], [10,2,1.5], [19,2,1.5], [
   const g = game(level), baseline = game();
   const ordinary = baseline.queue.filter(id => !TYPES[id].boss && !TYPES[id].alpha).length;
   const specials = baseline.queue.length - ordinary;
-  assert.equal(g.queuedEnemies(), ordinary * factor + specials);
+  assert.equal(g.queuedEnemies(), ordinary * Math.min(8, factor) + specials);
   assert.equal(g.queue.length, baseline.queue.length, 'Expanded waves must remain compact in memory');
   assert.equal(g.alphaCount, baseline.alphaCount); near(g.spawnInterval, baseline.spawnInterval / rate);
   for (const type of ['crab', 'shadow', 'tommy', 'miniLlorona', 'grasshopper', 'corruptedHen', 'corruptedGrackle', 'corruptedMonkey', 'corruptedToad', ...ALPHAS, ...BOSSES]) {
@@ -20,8 +20,9 @@ for (const [level, factor, rate] of [[1,1,1], [9,1,1], [10,2,1.5], [19,2,1.5], [
     const scaled = a.enemies[0], original = b.enemies[0], normal = !scaled.boss && !scaled.alpha;
     near(scaled.maxHp, original.maxHp * factor, type + ' HP');
     near(scaled.damage, original.damage * (normal ? factor : 1), type + ' damage');
-    near(scaled.speed, original.speed * (normal ? factor : 1), type + ' speed');
-    near(scaled.attackScale || 1, normal ? factor : 1);
+    near(scaled.speed, normal ? Math.min(300, original.speed * factor) : original.speed, type + ' speed');
+    near(scaled.attackScale || 1, normal ? Math.min(2, factor) : 1);
+    if (normal && scaled.windup) assert(scaled.windup / scaled.attackScale >= .25);
     assert.equal(scaled.r, original.r); assert.equal(scaled.xp, original.xp);
   }
 }
@@ -48,9 +49,15 @@ for (const type of ['corruptedHen', 'corruptedMonkey', 'grasshopper', 'corrupted
   if (e.attack === 'shot') { assert.equal(g.bullets.length, 1); near(Math.hypot(g.bullets[0].vx, g.bullets[0].vy), TYPES[type].shotSpeed * 2); }
 }
 const eggs = game(20); assert(eggs.spawn('voidEgg')); const egg = eggs.enemies[0]; egg.warmup = 0; egg.summonXP = 9;
-eggs.enemyTick(egg, 5); assert.equal(egg.type, 'nightHatchling'); near(egg.speed, TYPES.nightHatchling.speed * 4); near(egg.damage, TYPES.nightHatchling.damage * 4); assert.equal(egg.xp, 9);
-// No exponential allocation even when a saved/debug build has a very high XP level.
-const large = game(200, 100); assert(large.queue.length < 250); assert(large.queuedEnemies() > 100000000); assert.equal(large.enemyLimit, 96);
+eggs.enemyTick(egg, 5); assert.equal(egg.type, 'nightHatchling'); near(egg.speed, 300); near(egg.damage, TYPES.nightHatchling.damage * 4); assert.equal(egg.xp, 9); assert.equal(egg.attackScale, 2);
+// High XP levels retain bounded pressure without allocating exponential arrays.
+const large = game(200, 100); assert(large.queue.length < 250); assert.equal(large.queuedEnemies(), 1313); assert.equal(large.enemyLimit, 96);
+assert.equal(large.difficultyTier(), 4); assert.equal(large.waveMobMultiplier, 8);
+const capped = game(40, 100); near(large.spawnInterval, capped.spawnInterval);
+for (const type of ['jaguar', 'corruptedMonkey', 'nightHatchling', 'alphaCrab', 'duende']) {
+  large.enemies = []; capped.enemies = []; assert(large.spawn(type)); assert(capped.spawn(type));
+  for (const field of ['hp', 'maxHp', 'damage', 'speed']) near(large.enemies[0][field], capped.enemies[0][field]);
+}
 assert.equal(MAX_WEAPON_RANK, 6); assert.equal(WEAPON_RANKS.at(-1), 'VI');
 for (const w of WEAPONS) {
   const g = game(); g.player.weapon = w.id; g.refreshStats(); const base = g.player.damage;
@@ -68,4 +75,4 @@ const storage = { value: null, getItem() { return this.value; }, setItem(_, valu
 const story = new Story.Game(seeded(3)), store = new Story.Store(storage); story.startStory(store); story.level = 20;
 assert.equal(story.difficultyTier(), 0); story.weaponLevels.slingshot = 6; assert(store.checkpoint(story));
 const restored = new Story.Store(storage); assert(!restored.readOnly); assert.equal(restored.data.checkpoint.weaponLevels.slingshot, 6);
-console.log('PASS: exact XP-decade thresholds, compounded ordinary stats/population/1.5x cadence, HP-only alphas/bosses, wounded-enemy transitions, lazy repeated spawns, attack clocks, hatch scaling, all twelve VI caps and healing, useful extra perk ranks, Story save compatibility.');
+console.log('PASS: exact XP-decade thresholds, bounded ordinary stats/population/1.5x cadence, HP-only alphas/bosses, wounded-enemy transitions, lazy repeated spawns, attack clocks, hatch scaling, all twelve VI caps and healing, useful extra perk ranks, Story save compatibility.');
