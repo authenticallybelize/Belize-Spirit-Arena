@@ -93,7 +93,7 @@
     { id: 'crystal', name: 'Crystal Staff', damage: 48, rate: 2.5, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#82ddff', art: [574, 345, 90, 124] },
     { id: 'cacao', name: 'Staff of Cacao Smoke', damage: 12, rate: 3, speed: 460, range: 420, r: 9, cloud: true, tags: ['projectile', 'cloud', 'spirit'], color: '#bf9a76', art: [1137, 347, 83, 121] },
     { id: 'drum', name: 'Drum of Calling', damage: 65, rate: 1.2, range: 140, pulse: true, tags: ['area', 'spirit'], color: '#ffd57c', art: [13, 587, 94, 108] },
-    { id: 'claw', name: 'Jaguar Spirit Claw', damage: 24, rate: 5, range: 90, melee: true, tags: ['melee', 'spirit'], color: '#8df38b', art: [576, 584, 89, 115] },
+    { id: 'claw', name: 'Jaguar Spirit Claws', damage: 24, rate: 5, range: 480, speed: 600, r: 6, waveRadius: 90, melee: true, wave: true, tags: ['melee', 'projectile', 'spirit'], color: '#8df38b', art: [576, 584, 89, 115] },
     { id: 'feather', name: 'Kukulkan Feather Cast', damage: 28, rate: 4.5, speed: 620, range: 950, r: 5, homing: true, tags: ['projectile', 'spirit'], color: '#ffc765', art: [1126, 586, 93, 112] },
     { id: 'obsidian', name: 'Obsidian Spirit Shard', damage: 110, rate: 2, speed: 650, range: 1000, r: 8, pierce: 2, tags: ['projectile', 'spirit'], color: '#c996ff', art: [12, 820, 75, 103] },
     { id: 'cohune', name: 'Cohune Bomb Launcher', damage: 400, rate: .125, speed: 450, range: 530, r: 9, explosive: true, tags: ['projectile', 'explosive', 'area'], color: '#ffbc5c', art: [635, 816, 85, 108] },
@@ -165,6 +165,17 @@
     if (e.movementLeft != null) e.movementLeft = Math.max(0, e.movementLeft - Math.hypot(e.x - startX, e.y - startY));
   }
   const visible = (g, a, b, padding = 0) => !g.arena.obstacles.some(o => segmentRect(a, b, o, padding) !== null);
+  function clawHit(g, b, start, end, enemy) {
+    const length = Math.hypot(end.x - start.x, end.y - start.y), speed = Math.hypot(b.vx, b.vy);
+    const ux = b.vx / speed, uy = b.vy / speed, dx = enemy.x - start.x, dy = enemy.y - start.y;
+    const signedSide = -dx * uy + dy * ux, side = Math.abs(signedSide), width = b.waveRadius * Math.sin(Math.PI * 70 / 360);
+    const edge = Math.min(side, width), bend = b.waveRadius - Math.sqrt(b.waveRadius ** 2 - edge ** 2);
+    const forward = dx * ux + dy * uy + bend, past = Math.max(0, -forward, forward - length);
+    if (Math.hypot(past, Math.max(0, side - width)) > enemy.r + b.r) return null;
+    const lane = clamp(signedSide, -width, width);
+    if (!visible(g, { x: b.waveOrigin.x - uy * lane, y: b.waveOrigin.y + ux * lane }, enemy)) return null;
+    return length ? clamp((forward - enemy.r - b.r) / length, 0, 1) : 0;
+  }
   function route(g, e, p) {
     if (visible(g, e, p, e.r + 1)) return p;
     g.navigation ||= {};
@@ -201,6 +212,7 @@
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.hazards = []; this.attackCount = 0;
       this.navigation = {}; this.pendingSummons = [];
+      this.player.specialCooldown = 0; this.clawRush = null;
       this.storm = 0; this.stormWave = false; this.weatherTime = 0;
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
@@ -333,6 +345,8 @@
     }
     compatible(perk) {
       const w = weapon(this.player.weapon);
+      if (w.wave && this.weaponLevels.claw < 3 && perk.tag === 'projectile') return false;
+      if (w.wave && ['pierce', 'ricochet', 'homing'].includes(perk.id)) return false;
       if ((w.explosive || w.cloud) && ['pierce', 'ricochet', 'poison', 'fire'].includes(perk.id)) return false;
       if (perk.tag && perk.tag !== 'boss' && !w.tags.includes(perk.tag)) return false;
       if (perk.id === 'homing' && w.homing && this.weaponLevels[w.id] >= 4) return false;
@@ -494,15 +508,16 @@
     }
     fire() {
       const p = this.player, w = weapon(p.weapon); this.attackCount++;
-      const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id];
+      const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id], wave = w.wave && rank >= 3;
       let damage = p.damage;
       if (!w.cloud) for (let i = 1; i <= this.rank('rate'); i++) if (this.normalInterval(i) >= this.normalInterval(i - 1) - .000001) damage *= 1.05;
       if (this.random() < Math.min(.5, .08 * this.rank('crit'))) damage *= 2;
-      if (w.melee || w.pulse) this.pulse(w.melee ? origin : p, w.range + (this.weaponLevels[w.id] - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
+      if (w.melee && !wave || w.pulse) this.pulse(w.melee ? origin : p, (w.wave ? w.waveRadius : w.range) + (rank - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
       else {
         const launch = (angle, multiplier = 1, secondary = false) => this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
-          w.speed * (1 + .2 * this.rank('harpy')), { kind: w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: w.range * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
-            pierce: (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: Math.min(2, this.rank('ricochet')), ricochetBoost: 1 + .15 * Math.max(0, this.rank('ricochet') - 2), homing: Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
+          w.speed * (1 + .2 * this.rank('harpy')), { kind: w.wave ? 'clawWave' : w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: (w.range + (w.wave ? (rank - 1) * 20 : 0)) * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
+            waveRadius: w.wave ? w.waveRadius + (rank - 1) * 5 : undefined, waveOrigin: w.wave ? origin : undefined,
+            pierce: w.wave ? Infinity : (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: w.wave ? 0 : Math.min(2, this.rank('ricochet')), ricochetBoost: 1 + .15 * Math.max(0, this.rank('ricochet') - 2), homing: w.wave ? 0 : Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
             targetId: w.homing ? this.homingTarget(origin, angle)?.id : undefined, seekingRank: w.homing ? rank : 0,
             poison: (w.poison || 0) + 6 * this.rank('poison'), burn: this.random() < .15 * this.rank('fire') ? 10 * this.rank('fire') : 0,
             explosive: w.explosive, cloud: w.cloud, secondary });
@@ -592,6 +607,21 @@
       if (!super.dash(input)) return false;
       for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
       this.player.slowTime = 0; return true;
+    }
+    special(input = {}) {
+      const p = this.player;
+      if (this.mode !== 'playing' || p.weapon !== 'claw' || p.specialCooldown > 0 || p.dashTime > 0) return false;
+      const absolute = Number.isFinite(input.aimX) && Number.isFinite(input.aimY);
+      let dx = (input.relativeAim ? input.aimDX : absolute ? input.aimX - p.x : input.dx) || 0;
+      let dy = (input.relativeAim ? input.aimDY : absolute ? input.aimY - p.y : input.dy) || 0;
+      if (!Number.isFinite(dx) || !Number.isFinite(dy)) return false;
+      if (!(Math.hypot(dx || 0, dy || 0) > .0001)) { dx = Math.cos(p.angle); dy = Math.sin(p.angle); }
+      const length = Math.hypot(dx, dy);
+      p.dashX = dx / length; p.dashY = dy / length; p.dashTime = .24;
+      p.dashCooldown = Math.max(p.dashCooldown, 1.65); p.specialCooldown = 6; p.invincible = Math.max(p.invincible, .32); p.slowTime = 0;
+      for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
+      this.clawRush = { damage: p.damage * 2, radius: 35 + (this.weaponLevels.claw - 1) * 3, hitIds: new Set() };
+      this.events.push({ type: 'shot' }); return true;
     }
     summon(e) {
       if ((e.summonsMade || 0) >= e.summonLimit || !this.spawn(e.summonType, e)) return false;
@@ -747,6 +777,8 @@
       if (raining && this.storm > .5 && Math.floor(this.weatherTime / 9) > thunderCycle) this.events.push({ type: 'thunder' });
       this.corpses = this.corpses.filter(e => { e.life -= dt; return e.life > 0; });
       const p = this.player; p.invincible = Math.max(0, p.invincible - dt); p.dashCooldown = Math.max(0, p.dashCooldown - dt); p.fireCooldown -= dt;
+      p.specialCooldown = Math.max(0, (p.specialCooldown || 0) - dt);
+      if (this.clawRush && p.weapon !== 'claw') { this.clawRush = null; p.dashTime = 0; }
       p.slowTime = Math.max(0, (p.slowTime || 0) - dt);
       if (p.venomTime > 0) {
         p.venomTime = Math.max(0, p.venomTime - dt); p.venomClock -= dt;
@@ -760,8 +792,17 @@
       if (p.dashTime > 0) { move(this, p, p.dashX * 940 * dt, p.dashY * 940 * dt); p.dashTime -= dt; }
       else move(this, p, len ? (input.dx || 0) / len * p.speed * dt : 0, len ? (input.dy || 0) / len * p.speed * dt : 0);
       this.recordMovement(startX, startY);
+      if (this.clawRush) {
+        const rush = this.clawRush, start = { x: startX, y: startY };
+        for (const e of [...this.enemies]) if (!e.dead && e.warmup <= 0 && !rush.hitIds.has(e.id) &&
+          segmentCircle(start, p, { ...e, r: e.r + rush.radius }) !== null && visible(this, start, e)) {
+          rush.hitIds.add(e.id); this.damageEnemy(e, rush.damage);
+        }
+        this.flashes.push({ kind: 'clawRush', x: p.x, y: p.y, angle: Math.atan2(p.dashY, p.dashX), r: rush.radius, life: .14, color: '#8df38b' });
+        if (p.dashTime <= 0 || Math.hypot(p.x - startX, p.y - startY) < .0001) { this.clawRush = null; p.dashTime = 0; }
+      }
       Base.aimAt(p, input);
-      if (input.shooting && p.fireCooldown <= 0) this.fire();
+      if (input.shooting && p.fireCooldown <= 0 && !this.clawRush) this.fire();
       if (this.breakTime > 0) { this.breakTime -= dt; if (this.breakTime <= 0) this.beginWave(); }
       else if (this.queue.length && this.enemies.length < this.enemyLimit) {
         this.spawnTimer -= dt;
@@ -806,7 +847,7 @@
           const lo = bounds[key] + b.r, hi = bounds[key] + bounds[size] - b.r, delta = end[key] - start[key];
           if (end[key] < lo || end[key] > hi) wallT = Math.min(wallT, delta ? clamp(((delta > 0 ? hi : lo) - start[key]) / delta, 0, 1) : 0);
         }
-        const hits = (b.hostile ? [p] : this.enemies).filter(e => !e.dead && !(e.warmup > 0) && !b.hitIds.has(e.id)).map(e => ({ e, t: segmentCircle(start, end, { ...e, r: e.r + b.r }) })).filter(h => h.t !== null && h.t < wallT).sort((a, e) => a.t - e.t);
+        const hits = (b.hostile ? [p] : this.enemies).filter(e => !e.dead && !(e.warmup > 0) && !b.hitIds.has(e.id)).map(e => ({ e, t: b.kind === 'clawWave' ? clawHit(this, b, start, end, e) : segmentCircle(start, end, { ...e, r: e.r + b.r }) })).filter(h => h.t !== null && h.t < wallT).sort((a, e) => a.t - e.t);
         b.x = end.x; b.y = end.y; b.life -= step;
         let stoppedAtHit = false;
         for (const hit of hits) {
@@ -814,6 +855,7 @@
           b.hitIds.add(hit.e.id);
           if (b.explosive || b.cloud) { b.x = start.x + (end.x - start.x) * hit.t; b.y = start.y + (end.y - start.y) * hit.t; b.life = 0; stoppedAtHit = true; break; }
           this.damageEnemy(hit.e, b.damage, { poison: b.poison || 0, burn: b.burn || 0 });
+          if (b.kind === 'clawWave') continue;
           if (b.pierce > 0) { b.pierce--; b.damage *= .85; continue; }
           if (b.bounces > 0) {
             const next = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !b.hitIds.has(e.id) && visible(this, hit.e, e)).sort((a, e) => dist(a, hit.e) - dist(e, hit.e))[0];

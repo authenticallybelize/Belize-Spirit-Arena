@@ -17,7 +17,7 @@
     let prefs; try { prefs = load(localStorage); } catch { prefs = settings(); }
     const frame = canvas.closest('.game-frame');
     const panel = document.createElement('div'); panel.className = 'touch-controls'; panel.setAttribute('aria-label', 'Touch controls');
-    panel.innerHTML = '<div class="stick" id="moveStick" role="group" aria-label="Move joystick"><i></i><span>MOVE</span></div><div class="touch-actions"><button id="touchDash">DASH</button><button id="touchPickup">PICK UP</button><button id="touchPause">PAUSE</button></div><div class="stick" id="aimStick" role="group" aria-label="Aim and shoot joystick"><i></i><span>AIM / FIRE</span></div>';
+    panel.innerHTML = '<div class="stick" id="moveStick" role="group" aria-label="Move joystick"><i></i><span>MOVE</span></div><div class="touch-actions"><button id="touchDash">DASH</button><button id="touchSpecial" hidden>CLAW RUSH</button><button id="touchPickup">PICK UP</button><button id="touchPause">PAUSE</button></div><div class="stick" id="aimStick" role="group" aria-label="Aim and shoot joystick"><i></i><span>AIM / FIRE</span></div>';
     frame.append(panel);
     const rotate = document.createElement('div'); rotate.className = 'rotate-prompt'; rotate.setAttribute('role', 'status');
     rotate.innerHTML = '<strong>Turn your phone sideways</strong><p>Your run is paused and stays right here.<br>Landscape gives both thumbs room to play.</p>';
@@ -99,6 +99,10 @@
       if (shownWeapon !== game.player.weapon) { shownWeapon = game.player.weapon; weapon.src = 'assets/' + ARENA_READY.weapons[shownWeapon].pickup; weapon.alt = 'Equipped: ' + (root.SurvivalCore ? SurvivalCore.weapon(shownWeapon).name : shownWeapon === 'staff' ? 'Duende Staff' : 'Joe’s Sling'); }
       const dash = panel.querySelector('#touchDash'), cooldown = game.player.dashCooldown;
       dash.textContent = cooldown > 0 ? 'DASH ' + cooldown.toFixed(1) + 's' : 'DASH'; dash.disabled = cooldown > 0 || game.mode !== 'playing'; dash.style.setProperty('--dash-ready', (1 - Math.min(1, cooldown / 1.65)) * 100 + '%');
+      const special = panel.querySelector('#touchSpecial'), specialCooldown = game.player.specialCooldown || 0;
+      special.hidden = game.player.weapon !== 'claw' || !game.special;
+      special.textContent = specialCooldown > 0 ? 'RUSH ' + specialCooldown.toFixed(1) + 's' : 'CLAW RUSH';
+      special.disabled = game.mode !== 'playing' || specialCooldown > 0 || game.player.dashTime > 0;
       if (game.mode !== 'playing') { if (wasMoving || wasAiming) reset(); return; }
       if (mobile && portrait) { reset(); togglePause(); return; }
       const [move, aim] = sticks;
@@ -115,6 +119,7 @@
       wasAiming = aim.pointer !== null;
     }
     panel.querySelector('#touchDash').addEventListener('pointerdown', event => { event.preventDefault(); if (!dialog.hidden) return; update(); game.dash(input); });
+    panel.querySelector('#touchSpecial').addEventListener('pointerdown', event => { event.preventDefault(); if (!dialog.hidden) return; update(); game.special?.(input); });
     panel.querySelector('#touchPickup').addEventListener('pointerdown', event => { event.preventDefault(); if (game.mode === 'playing' && game.pickup) game.pickup(); });
     panel.querySelector('#touchPickup').hidden = typeof game.pickup !== 'function';
     panel.querySelector('#touchPause').onclick = () => { if (['playing', 'paused'].includes(game.mode)) togglePause(); };

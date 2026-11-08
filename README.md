@@ -2,6 +2,14 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Jaguar Claws III waves and horde rush — 0.16.0
+
+Jaguar Spirit Claws **I–II retain the close-range swipe**. **III unlocks travelling projectiles** shaped as three broad claw crescents, matching the width of the old swipe. Each wave hits every mob across its path **once at full damage**, passes through further mobs, expires at range and respects solid cover. IV–VI retain their damage upgrades and increase the wave width/range. Base wave speed is 600 units/s, and III range is 520 units (VI 580).
+
+**Claw Rush** works at every claw rank: double-click or right-click the playfield, press **Q**, or use the contextual **CLAW RUSH** touch button. It charges about 226 units in 0.24 seconds with brief protection, hits each enemy in the corridor once for **2× current damage**, breaks a latch/slow and stops at cover. Its **six-second cooldown** advances only during active play. Other weapons keep their normal controls, and Space/touch Dash remains available with its usual cooldown.
+
+Wave damage/crit/rate, Harpy Eye, Duplicate, Overflow, poison and burn work normally from III. Piercing is intrinsic and has no per-target falloff; additional Pierce, Ricochet and Homing cards are excluded for this weapon. All existing projectile budgets, weapon VI limits, mob movement caps, boss and brood rules remain. Joe’s original sprites are reused; the wave and rush are drawn as vector spirit effects.
+
 ## Broods, late bosses and Joe’s walking animation — 0.15.0
 
 Power-up drop chance increases **15% relative**, from 3.5% to **4.025%**. Fishing Spear damage rises **100 → 115 per hit** and Duende Staff **30.4 → 45.4 per hit**; their firing rates and VI enhancement curve remain. All hostile projectiles travel **15% slower**, while Joe’s projectiles retain their speed.

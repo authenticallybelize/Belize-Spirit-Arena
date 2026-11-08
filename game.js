@@ -269,6 +269,12 @@
     if (extended) SurvivalUI.draw(game, ctx, images);
     if (story) StoryUI.draw(game, ctx);
     for (const b of game.bullets) {
+      if (b.kind === 'clawWave') {
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(Math.atan2(b.vy, b.vx));
+        ctx.globalAlpha = Math.min(1, b.life * 8); ctx.strokeStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = 10; ctx.lineWidth = 3;
+        for (const offset of [0, 8, 16]) { ctx.beginPath(); ctx.arc(-b.waveRadius - offset, 0, b.waveRadius, -Math.PI * 70 / 360, Math.PI * 70 / 360); ctx.stroke(); }
+        ctx.restore(); continue;
+      }
       const len = Math.hypot(b.vx, b.vy), color = b.color || (b.hostile ? '#d99cfa' : b.kind === 'magic' ? '#9fffd0' : '#c5b39a');
       ctx.lineWidth = b.hostile ? 3 : 3.5; ctx.strokeStyle = b.hostile ? '#8948b5aa' : b.kind === 'magic' ? '#58dca88c' : '#77664e66';
       ctx.beginPath(); ctx.moveTo(b.x - b.vx / len * (b.kind === 'stone' ? 7 : 18), b.y - b.vy / len * (b.kind === 'stone' ? 7 : 18)); ctx.lineTo(b.x, b.y); ctx.stroke();
@@ -308,6 +314,7 @@
     $('killsLabel').textContent = `${game.kills} spirit${game.kills === 1 ? '' : 's'} released`;
     $('dashLabel').textContent = p.dashCooldown > 0 ? `SPACE · DASH ${p.dashCooldown.toFixed(1)}s` : 'SPACE · DASH READY';
     $('dashLabel').style.color = p.dashCooldown > 0 ? '#aeb7a4' : '#bcf3cf';
+    if (extended && p.weapon === 'claw' && !document.body.classList.contains('touch-enabled')) $('dashLabel').textContent += p.specialCooldown > 0 ? ` · Q / RMB · RUSH ${p.specialCooldown.toFixed(1)}s` : ' · Q / RMB · CLAW RUSH READY';
     $('weaponLabel').textContent = p.weapon === 'staff' ? 'DUENDE STAFF' : 'SLINGSHOT';
     if (story) StoryUI.hud(game); else if (extended) SurvivalUI.hud(game);
     const bosses = game.enemies.filter(e => e.boss && !e.dead), boss = bosses[0]; $('bossHud').hidden = !boss;
@@ -410,7 +417,9 @@
     if (event.pointerType === 'touch' || event.button !== 0 || game.mode !== 'playing') return;
     canvas.focus(); canvas.setPointerCapture(event.pointerId); mousePointer = event.pointerId; input.shooting = true; mouseAim(event);
   });
-  function mouseRelease(event) { if (event.pointerId === mousePointer) { input.shooting = false; mousePointer = null; } }
+  canvas.addEventListener('mousedown', event => { if (event.button === 2 && game.mode === 'playing' && game.special) { event.preventDefault(); mouseAim(event); game.special(input); } });
+  canvas.addEventListener('dblclick', event => { if (event.button === 0 && game.mode === 'playing' && game.special) { event.preventDefault(); mouseAim(event); game.special(input); } });
+  function mouseRelease(event) { if (event.type === 'pointerup' && event.button !== 0) return; if (event.pointerId === mousePointer) { input.shooting = false; mousePointer = null; } }
   window.addEventListener('pointerup', mouseRelease);
   canvas.addEventListener('pointercancel', mouseRelease);
   canvas.addEventListener('lostpointercapture', mouseRelease);
@@ -428,6 +437,7 @@
     if (game.mode !== 'playing') return;
     if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(key)) event.preventDefault();
     if (extended && key === 'e' && !event.repeat) { event.preventDefault(); game.pickup(); return; }
+    if (extended && key === 'q' && !event.repeat) { event.preventDefault(); game.special(input); return; }
     keys.add(key); movement(); if (key === ' ' && !event.repeat) game.dash(input);
   });
   window.addEventListener('keyup', event => { keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key); movement(); });
