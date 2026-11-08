@@ -13,12 +13,12 @@ const player={x:1200,y:1200,r:18,dashTime:0,invincible:0},input={dx:0,dy:0,shoot
 Object.assign(sandbox,{ctx,images,game:{player,mode:'playing'},input,joeHeight:112.5,shadow(){}});
 vm.runInNewContext(source.slice(start,end)+'\nthis.renderJoe=drawJoe;',sandbox);
 for(const weapon of Object.keys(ready.holding))for(let i=0;i<32;i++)for(const firing of [false,true])for(const walking of [false,true])for(const time of [0,.125]) {
- const angle=Math.atan2(Math.sin(i*Math.PI/16-.01),Math.cos(i*Math.PI/16-.01));Object.assign(player,{weapon,angle,walking});Object.assign(input,{shooting:firing,dx:Math.cos(angle),dy:Math.sin(angle)});draws=[];translation=[0,0];stack=[];
+ const angle=Math.atan2(Math.sin(i*Math.PI/16-.01),Math.cos(i*Math.PI/16-.01));Object.assign(player,{weapon,angle,walking,walkDistance:time*216});Object.assign(input,{shooting:firing,dx:Math.cos(angle),dy:Math.sin(angle)});draws=[];translation=[0,0];stack=[];
  sandbox.renderJoe(time);assert.equal(stack.length,0,'Canvas transform leaked after Joe');assert.deepEqual(translation,[0,0]);
- const bodies=draws.filter(d=>firing?d.image.file.includes('/holding/'):d.image.file===native.file&&d.args[3]>200);
+ const held=firing&&!walking,bodies=draws.filter(d=>held?d.image.file.includes('/holding/'):d.image.file===native.file&&d.args[3]>200);
  assert.equal(bodies.length,1,'Each Joe pose must contain one complete character');
  const d=bodies[0];let foot;
- if(firing) {
+ if(held) {
   assert.equal(d.args.length,4,'Firing must draw the whole existing PNG');
   const pose=sandbox.ArenaArt.holdingPose(ready.holding[weapon],angle,112.5);
   assert.equal(d.image.file,pose.file);const [x,y,w,h]=d.args;
@@ -33,3 +33,12 @@ for(const weapon of Object.keys(ready.holding))for(let i=0;i<32;i++)for(const fi
  assert(Math.abs(foot[0]-player.x)<1e-8&&Math.abs(foot[1]-player.y-13)<1e-8,'Foot anchor shifted between poses');
 }
 console.log('PASS: whole-body Joe draw, variable crops, all weapons/directions/aim boundaries, idle/walk/fire, stable foot anchor and balanced Canvas transforms.');
+const Base=require('../core.js'),Run=require('../survival.js');
+for(const Engine of [Base.Game,Run.Game]) {
+ const g=new Engine(()=>.5);g.start({mode:'survival'});g.queue=['crab'];g.spawnTimer=999;
+ const x=g.player.x;g.update(.2,{dx:1,shooting:true});assert(g.player.walking);assert(Math.abs(g.player.walkDistance-(g.player.x-x))<1e-8);
+ const phase=g.player.walkDistance;g.update(.1,{shooting:true});assert(!g.player.walking);assert.equal(g.player.walkDistance,phase);
+ g.pause();g.update(.2,{dx:1});assert.equal(g.player.walkDistance,phase);g.resume();
+ g.player.x=(g.arena?.bounds||Base.BOUNDS).x+g.player.r;g.update(.2,{dx:-1,shooting:true});assert(!g.player.walking);assert.equal(g.player.walkDistance,phase);
+}
+console.log('PASS: walking while firing uses moving whole-body frames; stride follows actual distance and stops at walls, idle and pause.');

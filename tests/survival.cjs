@@ -191,7 +191,7 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   progression.queue = []; progression.enemies = []; progression.update(1 / 120);
   if (wave < SURVIVAL_WAVES) { assert.equal(progression.mode, 'playing'); while (progression.wave === wave) progression.update(.25); }
 }
-assert.deepEqual(bossWaves, Array.from({ length: SURVIVAL_WAVES / 5 }, (_, i) => (i + 1) * 5)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
+assert.deepEqual(bossWaves.filter(wave => wave % 5 === 0), Array.from({ length: SURVIVAL_WAVES / 5 }, (_, i) => (i + 1) * 5)); assert(bossWaves.filter(wave => wave % 5).every(wave => wave > 50)); assert.equal(progression.mode, 'victory'); assert.equal(progression.enduranceBonus, 1);
 progression.start({ mode: 'run', arena: 'jungle', weapon: 'dart' }); assert.equal(progression.wave, 1); assert.equal(progression.totalWaves, 10); assert.equal(progression.player.weapon, 'slingshot'); assert.equal(progression.rank('damage'), 0);
 progression.level = 40; progression.xp = progression.xpNeeded; assert(progression.levelUp()); assert.equal(progression.level, 41);
 const png = fs.readFileSync(path.join(__dirname, '../assets/weapon-sheet.png')); const width = png.readUInt32BE(16), height = png.readUInt32BE(20);

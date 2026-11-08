@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { performance } = require('node:perf_hooks');
-const { Game, TYPES, POWERS, PERKS, SURVIVAL_WAVES } = require('../survival.js');
+const { Game, TYPES, POWERS, PERKS, SURVIVAL_WAVES, POWER_DROP_CHANCE } = require('../survival.js');
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
 function atWave(wave, mode = 'survival', arena = 'open') {
   const g = new Game(seeded(wave + 51)); g.start({ mode, arena });
@@ -13,10 +13,12 @@ let lastMobs = 0, lastTotal = 0, lastHP = 0, lastDamage = 0, lastInterval = Infi
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   const g = atWave(wave), mobs = g.queue.filter(type => !TYPES[type].boss).length;
   assert(mobs > lastMobs, 'Ordinary mob count stopped growing at wave ' + wave);
-  if (wave > 10) assert(g.queue.length > lastTotal, 'Total pressure stopped growing after a boss wave');
+  if (wave > 10 && wave <= 40) assert(g.queue.length > lastTotal, 'Total pressure stopped growing after a boss wave');
   assert(g.spawnInterval <= lastInterval && g.spawnInterval >= .1 / 1.25);
   assert(g.enemyLimit >= lastLimit && g.enemyLimit <= 96);
-  assert.equal(g.queue.filter(type => TYPES[type].boss).length, wave % 5 === 0 ? 1 : 0);
+  const bosses = g.queue.filter(type => TYPES[type].boss).length;
+  if (wave % 5 === 0) assert.equal(bosses, wave > 40 ? 2 : 1);
+  else assert(wave > 50 ? bosses <= 1 : bosses === 0);
   assert(g.spawn('crab')); const e = g.enemies[0];
   assert(e.hp > lastHP && e.damage > lastDamage, 'Enemy strength did not increase at wave ' + wave);
   if (wave <= 10) {
@@ -31,7 +33,7 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
 const hundred = atWave(100); assert.equal(hundred.spawnInterval, .1 / 1.25); assert.equal(hundred.enemyLimit, 96);
 assert.equal(SURVIVAL_WAVES, 200);
 const final = atWave(200); assert.equal(final.totalWaves, 200); assert.equal(final.enduranceBonus, 1); assert.equal(final.player.damage, 38);
-assert.equal(final.queue.length, 325); assert.equal(final.queue[0], 'duende');
+assert.equal(final.queue.length, 326); assert.equal(final.queue[0], 'duende');
 // The old endpoint and penultimate wave must advance; only clearing wave 200 wins.
 for (const wave of [140, 141, 199]) {
   const g = atWave(wave); g.queue = []; g.update(1 / 120);
@@ -104,7 +106,7 @@ for (let index = 0; index < 10; index++) {
   const g = atWave(80); g.level = 40; const samples = [.034999, (index + .5) / 10, .999]; g.random = () => samples.shift(); g.defeat(deadFoe()); randomPowers.push(g.drops[0].id);
 }
 assert.deepEqual(randomPowers, validPowers);
-const chance = atWave(80); chance.level = 40; chance.random = () => .035; chance.defeat(deadFoe()); assert.equal(chance.drops.filter(d => d.kind === 'power').length, 0, 'Nominal power-drop chance increased');
+const chance = atWave(80); chance.level = 40; chance.random = () => POWER_DROP_CHANCE; chance.defeat(deadFoe()); assert.equal(chance.drops.filter(d => d.kind === 'power').length, 0, 'Power-drop threshold is not exclusive');
 const guaranteed = [];
 for (let wave = 42; wave <= 60; wave += 2) { const g = atWave(wave); g.level = 40; g.queue = []; g.update(1 / 120); guaranteed.push(g.drops.find(d => d.kind === 'power').id); }
 assert.deepEqual(new Set(guaranteed), new Set(validPowers), 'Guaranteed power cycle lost usable XP powers');

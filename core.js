@@ -102,10 +102,15 @@
     reset() {
       this.mode = 'menu'; this.time = 0; this.wave = 0; this.kills = 0; this.level = 1; this.xp = 0; this.xpNeeded = 25;
       this.player = { x: 600, y: 430, r: 13, hp: 100, maxHp: 100, speed: 218, damage: 19, interval: .24, weapon: 'slingshot',
-        angle: -.45, invincible: 0, fireCooldown: 0, dashCooldown: 0, dashTime: 0, dashX: 0, dashY: 0, walking: false };
+        angle: -.45, invincible: 0, fireCooldown: 0, dashCooldown: 0, dashTime: 0, dashX: 0, dashY: 0, walking: false, walkDistance: 0 };
       this.enemies = []; this.bullets = []; this.gems = []; this.effects = []; this.events = [];
       this.queue = []; this.choices = []; this.upgrades = []; this.spawnTimer = 0; this.breakTime = 0;
       this.banner = ''; this.bannerTime = 0; this.finishedWave = false; this.nextId = 1; this.staffPickup = null;
+    }
+    recordMovement(x, y) {
+      const p = this.player, dx = p.x - x, dy = p.y - y, distance = Math.hypot(dx, dy);
+      p.walking = distance > 1e-6;
+      if (p.walking) { p.walkDistance = (p.walkDistance || 0) + distance; p.moveAngle = Math.atan2(dy, dx); }
     }
     start() { this.reset(); this.mode = 'playing'; this.beginWave(); }
     beginWave() {
@@ -200,10 +205,11 @@
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
       const p = this.player;
       p.invincible = Math.max(0, p.invincible - dt); p.fireCooldown -= dt; p.dashCooldown = Math.max(0, p.dashCooldown - dt);
-      const len = Math.hypot(input.dx || 0, input.dy || 0); p.walking = len > 0;
+      const len = Math.hypot(input.dx || 0, input.dy || 0), startX = p.x, startY = p.y;
       // Keep Joe's raised muzzle inside the north wall, including during a dash.
       if (p.dashTime > 0) { move(p, p.dashX * 940 * dt, p.dashY * 940 * dt, AIM_HEIGHT); p.dashTime -= dt; }
       else move(p, len ? (input.dx || 0) / len * p.speed * dt : 0, len ? (input.dy || 0) / len * p.speed * dt : 0, AIM_HEIGHT);
+      this.recordMovement(startX, startY);
       this.collectStaff();
       const muzzle = aimAt(p, input);
       if (input.shooting && p.fireCooldown <= 0) {

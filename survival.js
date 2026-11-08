@@ -54,6 +54,10 @@
     xtabaiBoss: [{ kind: 'area', count: 3, radius: 92, warning: 1.25, life: 2, color: '#80d5b0' }, { kind: 'fan', count: 7, spread: .22, speed: 190, warning: .9, color: '#9fddb3' }]
   };
   const MOB_WEAPON_CHANCE = .06;
+  const POWER_DROP_CHANCE = .035 * 1.15, RANDOM_BOSS_CHANCE = .2, HOSTILE_SPEED_FACTOR = .85;
+  for (const id of ALPHAS) if (!['rotTapir', 'jabiruReaper'].includes(id)) {
+    Object.assign(TYPES[id], { summonType: id, summonStart: 6, summonEvery: 10, summonLimit: 3 });
+  }
   const xpForLevel = level => Math.ceil(25 + 13 * (level - 1) + .5 * (level - 1) ** 2);
   const W = 2400, H = 2400, SURVIVAL_WAVES = 200, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -85,7 +89,7 @@
     { id: 'slingshot', name: "Joe’s Sling", damage: 19, rate: 3.5, speed: 735, range: 1050, r: 4, tags: ['projectile', 'physical'], color: '#d9c9a9', art: [12, 112, 90, 111] },
     { id: 'bow', name: 'Belize Hardwood Bow', damage: 55, rate: 1.8, speed: 1000, range: 1150, r: 4, tags: ['projectile', 'physical'], color: '#efd093', art: [571, 113, 94, 110] },
     { id: 'dart', name: 'Maya Dart Launcher', damage: 14, rate: 4, speed: 850, range: 850, r: 4, poison: 6, tags: ['projectile', 'poison'], color: '#adf579', art: [1127, 112, 94, 111] },
-    { id: 'spear', name: 'Fishing Spear Thrower', damage: 100, rate: 1, speed: 740, range: 1050, r: 7, pierce: 2, tags: ['projectile', 'physical'], color: '#b0eaff', art: [11, 344, 96, 123] },
+    { id: 'spear', name: 'Fishing Spear Thrower', damage: 115, rate: 1, speed: 740, range: 1050, r: 7, pierce: 2, tags: ['projectile', 'physical'], color: '#b0eaff', art: [11, 344, 96, 123] },
     { id: 'crystal', name: 'Crystal Staff', damage: 48, rate: 2.5, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#82ddff', art: [574, 345, 90, 124] },
     { id: 'cacao', name: 'Staff of Cacao Smoke', damage: 12, rate: 3, speed: 460, range: 420, r: 9, cloud: true, tags: ['projectile', 'cloud', 'spirit'], color: '#bf9a76', art: [1137, 347, 83, 121] },
     { id: 'drum', name: 'Drum of Calling', damage: 65, rate: 1.2, range: 140, pulse: true, tags: ['area', 'spirit'], color: '#ffd57c', art: [13, 587, 94, 108] },
@@ -93,7 +97,7 @@
     { id: 'feather', name: 'Kukulkan Feather Cast', damage: 28, rate: 4.5, speed: 620, range: 950, r: 5, homing: true, tags: ['projectile', 'spirit'], color: '#ffc765', art: [1126, 586, 93, 112] },
     { id: 'obsidian', name: 'Obsidian Spirit Shard', damage: 110, rate: 2, speed: 650, range: 1000, r: 8, pierce: 2, tags: ['projectile', 'spirit'], color: '#c996ff', art: [12, 820, 75, 103] },
     { id: 'cohune', name: 'Cohune Bomb Launcher', damage: 400, rate: .125, speed: 450, range: 530, r: 9, explosive: true, tags: ['projectile', 'explosive', 'area'], color: '#ffbc5c', art: [635, 816, 85, 108] },
-    { id: 'staff', name: 'Duende Staff', damage: 30.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
+    { id: 'staff', name: 'Duende Staff', damage: 45.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
   ];
   const WEAPON_RANKS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   const MAX_WEAPON_RANK = WEAPON_RANKS.length;
@@ -279,10 +283,16 @@
         // Alphas replace ordinary slots so the existing wave and active-enemy budgets stay bounded.
         this.queue.splice(0, this.alphaCount, ...Array.from({ length: this.alphaCount }, (_, i) => ALPHAS[(offset + i) % ALPHAS.length]));
       }
-      if (this.wave % 5 === 0) this.queue.unshift(BOSSES[(this.wave / 5 - 1) % BOSSES.length]);
+      const bosses = [];
+      if (this.wave % 5 === 0) {
+        const index = (this.wave / 5 - 1) % BOSSES.length;
+        bosses.push(BOSSES[index]);
+        if (this.wave > 40) bosses.push(BOSSES[(index + 1) % BOSSES.length]);
+      } else if (this.wave > 50 && this.random() < RANDOM_BOSS_CHANCE) bosses.push(BOSSES[Math.floor(this.random() * BOSSES.length)]);
+      this.queue.unshift(...bosses); this.bossCount = bosses.length;
       this.syncDifficulty();
-      this.spawnTimer = 1.3 / 1.25; this.banner = 'Wave ' + this.wave + ' · ' + (this.wave % 5 === 0 ? 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
-      if (this.alphaCount) this.banner = 'Wave ' + this.wave + ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
+      this.spawnTimer = 1.3 / 1.25; this.banner = 'Wave ' + this.wave + ' · ' + (bosses.length ? bosses.length === 2 ? 'Two guardians approach' : 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
+      if (this.alphaCount) this.banner += ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
       if (this.stormWave) this.banner += ' · Storm incoming';
       for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
       this.refreshStats();
@@ -403,7 +413,7 @@
       if (!e.alpha) for (const child of this.enemies) if (e.id != null && child.owner === e.id) child.dead = true;
       if (e.type === 'rotTapir' && !noSummons) for (let i = 0; i < 3; i++) this.pendingSummons.push({ origin: e, type: 'parasiteTapir' });
       if (e.attack || e.bossAI) {
-        this.corpses.push({ type: e.type, form: e.form, x: e.x, y: e.y, r: e.r, height: e.height, deathFrames: e.deathFrames, dead: true, life: .6 });
+        this.corpses.push({ type: e.type, sprite: e.sprite, form: e.form, x: e.x, y: e.y, r: e.r, height: e.height, deathFrames: e.deathFrames, dead: true, life: .6 });
         if (this.corpses.length > 16) this.corpses.shift();
       }
       this.events.push({ type: 'defeat', x: e.x, y: e.y, boss: e.boss });
@@ -419,7 +429,7 @@
         this.bossesDefeated++; this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y, 'weapon', true);
         if (this.rank('trophy')) { this.trophyBosses++; this.player.maxHp += 10; this.player.hp += 10; }
         if (this.rank('sacred')) { this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * .35); this.addDrop('evolution', e.x + 30, e.y, 'power', true); }
-      } else if (this.random() < .035) {
+      } else if (this.random() < POWER_DROP_CHANCE) {
         const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.random() * pool.length)], e.x, e.y, 'power');
       }
       if (!e.boss && this.random() < MOB_WEAPON_CHANCE) this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y - 20);
@@ -463,6 +473,7 @@
       const whole = Math.floor(this.xpFraction); this.xp += whole; this.xpFraction -= whole;
     }
     shot(x, y, angle, hostile, damage, speed = 735, extra = {}) {
+      if (hostile) speed *= HOSTILE_SPEED_FACTOR;
       const budget = hostile ? 150 : 200;
       if (this.bullets.filter(b => b.hostile === hostile).length >= budget) {
         const expendable = !hostile && !extra.secondary ? this.bullets.findIndex(b => !b.hostile && b.secondary) : -1;
@@ -521,10 +532,18 @@
       }
       if (e.type === 'voidEgg') {
         if (this.active('freeze')) return;
+        if (e.eggFlight) {
+          const f = e.eggFlight; f.time = Math.min(f.duration, f.time + dt); const progress = f.time / f.duration;
+          e.x = f.x + (f.targetX - f.x) * progress; e.y = f.y + (f.targetY - f.y) * progress;
+          e.launchHeight = (1 - progress) * 40 + Math.sin(progress * Math.PI) * 80;
+          if (progress >= 1) { e.eggFlight = null; e.launchHeight = 0; }
+          return;
+        }
         e.hatchTime = (e.hatchTime || 0) + dt;
         if (e.hatchTime >= 5) {
           const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp / 2 ** (e.difficultyTier || 0);
           Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, difficultyTier: 0, attackScale: 1, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
+          if (e.owner != null) Object.assign(e, { sprite: 'jabiruReaper', name: 'Mini Jabiru-Reaper', height: 52, r: 14, attackRow: 2, deathFrames: [23] });
           this.applyDifficulty(e);
         }
         return;
@@ -577,6 +596,17 @@
     summon(e) {
       if ((e.summonsMade || 0) >= e.summonLimit || !this.spawn(e.summonType, e)) return false;
       const child = this.enemies.at(-1); child.owner = e.id; child.summoned = true; child.summonXP = e.xp / 4;
+      if (child.type === 'voidEgg') {
+        const duration = Math.max(.25, dist(e, child) / (220 * HOSTILE_SPEED_FACTOR));
+        child.eggFlight = { x: e.x, y: e.y, targetX: child.x, targetY: child.y, time: 0, duration };
+        child.x = e.x; child.y = e.y; child.launchHeight = 40;
+      } else if (child.alpha) {
+        const hp = child.maxHp * .12;
+        Object.assign(child, { alpha: false, name: 'Mini ' + e.name, hp, maxHp: hp, damage: child.damage * .35,
+          speed: child.speed * 1.3, r: Math.max(10, child.r * .5), height: child.height * .5, warmup: .5,
+          reach: child.reach * .6, windup: Math.max(.25, child.windup * .65), attackScale: 1,
+          summonType: null, summonLimit: 0, hairs: false, acid: false, venom: false, attach: 0, sidestep: false });
+      }
       child.xp = child.type === 'voidEgg' ? 0 : child.summonXP; e.summonsMade = (e.summonsMade || 0) + 1; return true;
     }
     rosterTick(e, dt) {
@@ -726,9 +756,10 @@
       for (const id of Object.keys(this.powers)) { this.powers[id] -= dt; if (this.powers[id] <= 0) delete this.powers[id]; }
       this.regenClock += dt; if (this.regenClock >= 4) { p.hp = Math.min(p.maxHp, p.hp + this.rank('regen')); this.regenClock -= 4; }
       this.refreshStats();
-      const len = Math.hypot(input.dx || 0, input.dy || 0); p.walking = len > 0;
+      const len = Math.hypot(input.dx || 0, input.dy || 0), startX = p.x, startY = p.y;
       if (p.dashTime > 0) { move(this, p, p.dashX * 940 * dt, p.dashY * 940 * dt); p.dashTime -= dt; }
       else move(this, p, len ? (input.dx || 0) / len * p.speed * dt : 0, len ? (input.dy || 0) / len * p.speed * dt : 0);
+      this.recordMovement(startX, startY);
       Base.aimAt(p, input);
       if (input.shooting && p.fireCooldown <= 0) this.fire();
       if (this.breakTime > 0) { this.breakTime -= dt; if (this.breakTime <= 0) this.beginWave(); }
@@ -747,7 +778,7 @@
         this.tickAreas(enemyDt); if (this.mode !== 'playing') return;
         for (let i = 0; i < this.enemies.length; i++) for (let j = i + 1; j < this.enemies.length; j++) {
           const a = this.enemies[i], b = this.enemies[j], d = dist(a, b), min = a.r + b.r;
-          if (a.dead || b.dead || a.warmup > 0 || b.warmup > 0 || d >= min) continue;
+          if (a.dead || b.dead || a.eggFlight || b.eggFlight || a.warmup > 0 || b.warmup > 0 || d >= min) continue;
           const angle = d > .01 ? Math.atan2(b.y - a.y, b.x - a.x) : 0, push = Math.min((min - d) / 2, 60 * dt);
           move(this, a, -Math.cos(angle) * push, -Math.sin(angle) * push); move(this, b, Math.cos(angle) * push, Math.sin(angle) * push);
         }
@@ -849,6 +880,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

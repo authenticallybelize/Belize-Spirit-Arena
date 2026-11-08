@@ -5,9 +5,27 @@ const seed = n => () => ((n = (Math.imul(n, 1664525) + 1013904223) >>> 0) / 4294
 function game(wave = 1) { const g = new Game(seed(91)); g.start({ mode: 'survival' }); g.wave = wave - 1; g.beginWave(); g.queue = ['crab']; g.spawnTimer = 999; return g; }
 function boss(g, type) { assert(g.spawn(type)); const e = g.enemies.at(-1); Object.assign(e, { x: g.player.x - 110, y: g.player.y, warmup: 0, attackTimer: 0, shotTimer: 0, routeTimer: 0 }); return e; }
 assert.equal(BOSSES.length, 9); assert.equal(new Set(BOSSES).size, 9); assert.equal(BOSSES[3], 'duende');
+for (const [wave, roll, count] of [[40,0,1], [41,0,0], [45,.999,2], [50,.999,2], [51,.199999,1], [51,.2,0], [49,0,0], [200,0,2]]) {
+  const g = game(); g.random = () => roll; g.wave = wave - 1; g.beginWave();
+  const bosses = g.queue.filter(id => TYPES[id].boss); assert.equal(bosses.length, count); assert.equal(new Set(bosses).size, count);
+  if (count) assert(g.banner.includes('guardian'));
+}
+for (const [index, type] of BOSSES.entries()) {
+  const g = game(); const rolls = [0, (index + .5) / BOSSES.length]; g.random = () => rolls.shift(); g.wave = 51; g.beginWave();
+  assert.deepEqual(g.queue.filter(id => TYPES[id].boss), [type], 'Random boss pool lost a Guardian');
+}
+const finale = game(200); finale.queue = []; finale.enemies = []; finale.player.invincible = 99;
+for (const type of ['duende', 'jaguarBoss']) assert(finale.spawn(type));
+finale.defeat(finale.enemies[0]); finale.update(1 / 120); assert.equal(finale.mode, 'playing'); assert.equal(finale.bossesDefeated, 1);
+finale.defeat(finale.enemies[0]); finale.update(1 / 120); assert.equal(finale.mode, 'victory'); assert.equal(finale.bossesDefeated, 2);
+assert.equal(finale.drops.filter(d => d.boss && d.kind === 'weapon').length, 2);
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   const g = game(); g.wave = wave - 1; g.beginWave();
-  assert.deepEqual(g.queue.filter(id => TYPES[id].boss), wave % 5 ? [] : [BOSSES[(wave / 5 - 1) % 9]]);
+  const bosses = g.queue.filter(id => TYPES[id].boss);
+  if (wave % 5 === 0) {
+    const index = (wave / 5 - 1) % 9;
+    assert.deepEqual(bosses, wave > 40 ? [BOSSES[index], BOSSES[(index + 1) % 9]] : [BOSSES[index]]);
+  } else assert(wave > 50 ? bosses.length <= 1 : bosses.length === 0);
   if (wave < 20) assert(!g.queue.includes('duende'));
 }
 for (const mode of ['survival', 'run']) for (const w of WEAPONS) { const g = game(); g.start({ mode, weapon: w.id }); assert.equal(g.player.weapon, 'slingshot'); }

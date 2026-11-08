@@ -75,3 +75,22 @@ grace.hurt(20); assert.equal(grace.player.hp, 80);
 const breathing = playing(); breathing.mode = 'upgrade'; breathing.choices = [PERKS.find(p => p.id === 'breathing')];
 assert(breathing.choose(0)); assert.equal(breathing.player.invincible, 1.5);
 console.log('PASS: Nuke elite damage/rewards and crowd/shot/hazard clearance; upgrade protection expires and Breathing Room stays stronger.');
+
+// Buff the requested hits; firing cadence, ranks and Joe's projectiles retain their rules.
+const Run = require('../survival.js');
+near(Run.POWER_DROP_CHANCE, .04025);
+for (const [id, damage] of [['spear', 115], ['staff', 45.4]]) {
+  const g = playing(id); near(g.player.damage, damage); g.fire(); near(g.bullets[0].damage, damage);
+  g.weaponLevels[id] = 6; g.refreshStats(); near(g.player.damage, damage * 1.75);
+}
+for (const chance of [.035, .040249999, .04025, .999]) {
+  const g = playing(), rolls = [chance, .5, .999]; g.random = () => rolls.shift();
+  g.defeat({ type: 'crab', x: 100, y: 100, xp: 5 });
+  assert.equal(g.drops.some(d => d.kind === 'power'), chance < .04025);
+}
+for (const speed of [170, 190, 205, 235, 245, 265, 470]) {
+  const g = playing(); g.shot(600, 600, .7, true, 10, speed); g.shot(600, 600, .7, false, 10, speed);
+  near(Math.hypot(g.bullets[0].vx, g.bullets[0].vy), speed * .85);
+  near(Math.hypot(g.bullets[1].vx, g.bullets[1].vy), speed);
+}
+console.log('PASS: +15 spear/staff hit damage through VI, exact 15%-relative power-drop boundary and 15% slower hostile projectiles.');

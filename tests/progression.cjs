@@ -46,12 +46,12 @@ for (const type of ['corruptedHen', 'corruptedMonkey', 'grasshopper', 'corrupted
   g.enemyTick(e, 1 / 120); assert.equal(e.action, 'windup');
   g.enemyTick(e, e.windup / 2 - .001); assert.equal(e.action, 'windup');
   g.enemyTick(e, .002); assert.notEqual(e.action, 'windup');
-  if (e.attack === 'shot') { assert.equal(g.bullets.length, 1); near(Math.hypot(g.bullets[0].vx, g.bullets[0].vy), TYPES[type].shotSpeed * 2); }
+  if (e.attack === 'shot') { assert.equal(g.bullets.length, 1); near(Math.hypot(g.bullets[0].vx, g.bullets[0].vy), TYPES[type].shotSpeed * 2 * .85); }
 }
 const eggs = game(20); assert(eggs.spawn('voidEgg')); const egg = eggs.enemies[0]; egg.warmup = 0; egg.summonXP = 9;
 eggs.enemyTick(egg, 5); assert.equal(egg.type, 'nightHatchling'); near(egg.speed, TYPES.nightHatchling.speed * 1.44); near(egg.damage, TYPES.nightHatchling.damage * 4); assert.equal(egg.xp, 9); assert.equal(egg.attackScale, 2);
 // High XP levels retain bounded pressure without allocating exponential arrays.
-const large = game(200, 100); assert(large.queue.length < 250); assert.equal(large.queuedEnemies(), 1313); assert.equal(large.enemyLimit, 96);
+const large = game(200, 100); assert(large.queue.length < 250); assert.equal(large.queuedEnemies(), 1314); assert.equal(large.enemyLimit, 96);
 assert.equal(large.difficultyTier(), 4); assert.equal(large.waveMobMultiplier, 8);
 const capped = game(40, 100); near(large.spawnInterval, capped.spawnInterval);
 for (const type of ['jaguar', 'corruptedMonkey', 'nightHatchling', 'alphaCrab', 'duende']) {

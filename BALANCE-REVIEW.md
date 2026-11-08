@@ -1,4 +1,4 @@
-# Balance review — 0.14.2
+# Balance review — 0.15.0
 
 Reviewed with the Ponytail workflow: keep the existing engine and assets; change the rules that remove counterplay. No new dependency or parallel difficulty system.
 
@@ -23,8 +23,13 @@ Unbounded speed and warning compression remove the ability to dodge. Unbounded p
 | XP difficulty | HP/damage double at 10, 20, 30 and 40, then stop at ×16. Alphas/bosses still scale HP only. Existing per-wave growth continues through wave 200. |
 | Enemy movement | Ordinary movement grows 20% per XP decade through level 40. Actual movement, including alpha/boss charges, sidesteps and crowd separation, never exceeds Joe's current running speed. The cap follows his upgrades and slows; Joe's dash does not raise it. Weapon knockback retains its force. |
 | Ordinary attack clock | Maximum ×2, with at least 250 ms of warned windup. Alpha/boss attack timings retain their authored values. |
-| Wave population | Doubles at 10, 20 and 30, capped at ×8. Wave-100 queue remains 1,313 even at XP level 200. |
+| Wave population | Doubles at 10, 20 and 30, capped at ×8. Wave-100 initial queue is 1,314 at XP level 200, including the two scheduled guardians. |
 | Spawn cadence | Baseline spawns are 25% more frequent and the first arrival delay is reduced proportionally. Spawn rate then grows 50% per XP decade through level 40, capped at ×5.0625 on the faster baseline (×6.328125 overall). Existing active-enemy and simulation limits still apply. |
+| Power-up chance | 4.025% per ordinary/alpha defeat, a 15% relative increase from 3.5%; minis grant no pickups. |
+| Weapon damage | Spear 115 and Duende Staff 45.4 base damage per hit; original fire rates and VI multipliers remain. |
+| Hostile projectiles | Every hostile shot is 15% slower; player shot speed remains. |
+| Alpha broods | Three matching minis per parent lifetime; existing Tapir split and Jabiru egg schedule remain. Jabiru eggs launch, land, then hatch after five active seconds. |
+| Late bosses | Two distinct scheduled bosses after wave 40; 20% chance of one extra boss on ordinary waves after 50. Each gives its own health bar and reward. |
 | Nuke | Clears ordinary mobs/minis, hostile shots, hazards and pending broods; removes 50% maximum alpha HP or 20% maximum boss HP. Only a defeated elite awards its reward. Legend Hunter does not multiply this percentage. Arrival warnings do not protect against Nuke. |
 | Upgrade selection | 0.75 active seconds of protection after returning from cards; Breathing Room retains 1.5 seconds plus knockback. Chained cards do not consume this time while paused. |
 

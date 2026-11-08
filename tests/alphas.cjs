@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto'), vm = require('node:vm');
-const { Game, TYPES, ALPHAS, ARENAS, WEAPONS, MOB_WEAPON_CHANCE } = require('../survival.js');
+const { Game, TYPES, ALPHAS, ARENAS, WEAPONS, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE } = require('../survival.js');
 const Base = require('../core.js');
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
 function game() { const g = new Game(seeded(71)); g.start({ mode: 'survival' }); g.queue = ['crab']; g.spawnTimer = 999; return g; }
@@ -10,6 +10,28 @@ function foe(g, type, distance = 120) {
 }
 function advance(g, seconds, input) { for (let i = 0; i < Math.round(seconds * 120); i++) { while (g.mode === 'upgrade') g.choose(0); g.update(1 / 120, input); } }
 assert.equal(ALPHAS.length, 12); assert.equal(new Set(ALPHAS).size, 12);
+for (const type of ALPHAS.filter(id => !['rotTapir', 'jabiruReaper'].includes(id))) {
+  const g = game(), parent = foe(g, type, 300); g.player.invincible = 99; parent.speed = 0; parent.attackTimer = 999;
+  advance(g, parent.summonStart + parent.windup + .2);
+  const first = g.enemies.find(e => e.owner === parent.id); assert(first, type + ' never naturally summoned its mini');
+  while (parent.summonsMade < 3) assert(g.summon(parent)); assert(!g.summon(parent));
+  const children = g.enemies.filter(e => e.owner === parent.id); assert.equal(children.length, 3);
+  for (const child of children) {
+    assert.equal(child.type, type); assert(!child.alpha && child.summoned); assert(child.height < parent.height && child.r < parent.r);
+    assert.equal(child.xp, parent.xp / 4); assert(!child.summonType); assert(!g.summon(child));
+  }
+  g.defeat(parent); assert(children.every(e => !e.dead));
+  const drops = g.drops.length; g.random = () => 0;
+  children.forEach(e => g.defeat(e)); assert.equal(g.drops.length, drops, 'Mini farm produced weapon or power drops');
+}
+const launch = game(), stork = foe(launch, 'jabiruReaper', 300); assert(launch.summon(stork));
+const eggInFlight = launch.enemies.at(-1), flight = eggInFlight.eggFlight;
+assert(flight && eggInFlight.x === stork.x && eggInFlight.y === stork.y);
+launch.enemyTick(eggInFlight, flight.duration / 2); assert(eggInFlight.launchHeight > 70); assert.equal(eggInFlight.type, 'voidEgg');
+const eggX = eggInFlight.x; launch.collectPower('freeze'); launch.enemyTick(eggInFlight, 1); assert.equal(eggInFlight.x, eggX); delete launch.powers.freeze;
+launch.enemyTick(eggInFlight, flight.duration / 2); assert(!eggInFlight.eggFlight); assert.equal(eggInFlight.launchHeight, 0);
+launch.enemyTick(eggInFlight, 4.99); assert.equal(eggInFlight.type, 'voidEgg'); launch.enemyTick(eggInFlight, .02);
+assert.equal(eggInFlight.type, 'nightHatchling'); assert.equal(eggInFlight.sprite, 'jabiruReaper'); assert(eggInFlight.height < stork.height);
 for (let index = 0; index < ALPHAS.length; index++) {
   const g = game(); g.random = () => (index + .5) / ALPHAS.length; g.wave = 12; g.beginWave();
   assert.equal(g.queue[0], ALPHAS[index], 'Alpha is unreachable from the real random queue');
@@ -22,11 +44,11 @@ for (const type of ALPHAS) {
     assert.equal(g.drops.length, 1); assert.equal(g.drops[0].id, weapon.id); assert.equal(g.drops[0].kind, 'weapon');
     assert.equal(g.kills, 1); assert.equal(g.bossesDefeated, 0);
   }
-  const boundary = game(), parent = foe(boundary, type), rolls = [.035, MOB_WEAPON_CHANCE];
+  const boundary = game(), parent = foe(boundary, type), rolls = [POWER_DROP_CHANCE, MOB_WEAPON_CHANCE];
   boundary.random = () => rolls.shift(); boundary.defeat(parent); assert.equal(boundary.drops.length, 0, type + ' changed drop probability boundaries');
   const powers = game().powerPool();
   for (const [index, power] of powers.entries()) {
-    const g = game(), e = foe(g, type), rolls = [.035 - .000001, (index + .5) / powers.length, .99];
+    const g = game(), e = foe(g, type), rolls = [POWER_DROP_CHANCE - .000001, (index + .5) / powers.length, .99];
     g.random = () => rolls.shift(); g.defeat(e); assert.equal(g.drops.length, 1); assert.equal(g.drops[0].id, power); assert.equal(g.drops[0].kind, 'power');
   }
 }
@@ -71,7 +93,7 @@ for (const type of ['hiveGuardian', 'jabiruReaper']) {
   const clock = e.summonTimer; g.pause(); g.update(.25); assert.equal(e.summonTimer, clock); g.resume(); g.collectPower('freeze'); advance(g, 1); assert.equal(e.summonTimer, clock);
   delete g.powers.freeze;
   if (type === 'jabiruReaper') {
-    assert.equal(child.type, 'voidEgg'); assert.equal(child.warmup, 0, 'Egg is not immediately destructible'); const id = child.id; advance(g, 5); child = g.enemies.find(c => c.id === id); assert.equal(child.type, 'nightHatchling'); assert(child.flying && child.owner === e.id);
+    assert.equal(child.type, 'voidEgg'); assert.equal(child.warmup, 0, 'Egg is not immediately destructible'); const id = child.id; advance(g, 6.5); child = g.enemies.find(c => c.id === id); assert.equal(child.type, 'nightHatchling'); assert(child.flying && child.owner === e.id);
     // An egg cannot pay both its own reward and its hatchling's reward.
     assert(g.summon(e)); const egg = g.enemies.at(-1); egg.warmup = 0; const k = g.kills, d = g.drops.length;
     g.damageEnemy(egg, 1e6); assert.equal(g.kills, k); assert.equal(g.drops.length, d); assert.equal(g.gems.length, 0);
@@ -89,7 +111,7 @@ for (const type of ['hiveGuardian', 'jabiruReaper']) {
   const g = game(), parent = foe(g, type, 350), childXP = TYPES[type].xp / 4;
   for (let i = 0; i < 3; i++) {
     assert(g.summon(parent)); const child = g.enemies.at(-1); child.warmup = 0;
-    if (child.type === 'voidEgg') g.enemyTick(child, 5.01);
+    if (child.type === 'voidEgg') { g.enemyTick(child, child.eggFlight.duration); g.enemyTick(child, 5.01); }
     child.warmup = 0; assert.equal(child.xp, childXP);
     g.random = () => 0; g.damageEnemy(child, 1e6); g.damageEnemy(child, 1e6);
     assert.equal(g.gems.length, i + 1); assert.equal(g.gems.at(-1).value, childXP); assert.equal(g.drops.length, 0);
@@ -104,7 +126,7 @@ for (const gem of fraction.gems) fraction.gainXP(gem.value); assert.equal(fracti
 const boosted = game(); boosted.ranks.xp = 1; boosted.collectPower('doubleXP'); boosted.gainXP(7.5); assert.equal(boosted.xp, 18);
 const rhythm = game(), brood = foe(rhythm, 'hiveGuardian'); assert(rhythm.summon(brood)); const bee = rhythm.enemies.at(-1); bee.warmup = 0;
 rhythm.ranks.rhythm = 1; rhythm.kills = 24; rhythm.defeat(bee); assert.equal(rhythm.kills, 25); assert(rhythm.pendingRhythm);
-const purge = game(), bird = foe(purge, 'jabiruReaper'); assert(purge.summon(bird)); const egg = purge.enemies.at(-1); purge.enemyTick(egg, 5.01);
+const purge = game(), bird = foe(purge, 'jabiruReaper'); assert(purge.summon(bird)); const egg = purge.enemies.at(-1); purge.enemyTick(egg, egg.eggFlight.duration); purge.enemyTick(egg, 5.01);
 purge.collectPower('nuke'); assert.equal(purge.enemies.length, 1); assert.equal(purge.kills, 1);
 assert.equal(bird.hp, bird.maxHp * .5); assert.equal(purge.gems.length, 1); assert.equal(purge.gems[0].value, TYPES.jabiruReaper.xp / 4 * .45);
 const legacySummon = game(), storyAdd = foe(legacySummon, 'owlShade'); storyAdd.summoned = true; legacySummon.defeat(storyAdd);

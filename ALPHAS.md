@@ -1,4 +1,4 @@
-# Survival alphas — 0.9.1
+# Survival alphas — 0.15.0
 
 All twelve recorded alphas are now reachable in Survival. The nine added identities reuse approved source sheets. Existing three alphas, ten common enemies and nine bosses remain: **31 primary Survival identities**. The three helper forms below are part of parent encounters, not new primary bestiary entries. Chapter I and ten-wave Arena Run keep their own queues.
 
@@ -9,7 +9,7 @@ All twelve recorded alphas are now reachable in Survival. The nine added identit
 | Wee-Wee Soldier Ant | 248.4 | 16 | 26 | 0.65s bite warning; successful bite latches for at most 1.3s and slows Joe 40%; dash breaks the latch. |
 | Bullet Ant Champion | 248.4 | 24 | 30 | Slow approach, one-second heavy bite warning; successful hit slows Joe 40% for 1.5s. |
 | Giant Centipede | 276 | 19 | 30 | Warned venom dash; one body hit circle avoids multiplying splash/pierce damage across segments. |
-| Hive Guardian | 193.2 | 15 | 30 | Flying three-shot fan; summon warning first at six active seconds, then every ten; one Bee Swarm per successful cast, maximum three over the parent's lifetime. |
+| Hive Guardian | 193.2 | 15 | 30 | Flying three-shot fan; summon warning first at six active seconds, then every ten; one matching mini Hive Guardian per successful cast, maximum three over the parent's lifetime. |
 | Giant Tommy Goff | 358.8 | 25 | 35 | 1.1s coiling warning before a fast venom strike. |
 | Rot-Tapir | 414 | 20 | 36 | Three-shot bile cone and warned 78-radius, five-second acid patch; at zero HP the shell breaks into exactly three fast Parasite-Tapirs. |
 | Jabiru-Reaper | 310.5 | 22 | 36 | Flying warned dive; egg-cast warning first at ten active seconds, then every sixty; at most three eggs over the parent's lifetime; destructible egg hatches five active seconds after landing. |
@@ -20,13 +20,16 @@ Alphas replace ordinary wave slots on waves ending in 3, 6 and 9 after wave 10. 
 
 ## Summons and cleanup
 
-Parasite-Tapirs have 25.3 base HP/8 damage; Void Eggs 27.6 HP/no attack; Night Hatchlings 23 HP/8 damage. Wave scaling applies. Tapirs use the existing mini-tapir artwork, eggs and hatchlings use existing Jabiru sheet poses, and Hive swarms reuse the common bee artwork. Mini tapirs have one isolated pose; the hatchlings have two, with hit flash/fading defeat rather than newly generated full animation cycles.
+As of 0.15.0, every alpha produces matching minis. Non-Tapir/non-Jabiru alphas begin warned summons at six active seconds, repeat every ten, and create at most three minis per parent lifetime. These minis share the parent’s sprite at half height, 12% scaled HP, 35% damage and quarter-parent XP, with no recursive summons or weapon/power drops. Rot-Tapir retains its three Parasite-Tapir death split. Jabiru launches arcing eggs from its body; after landing safely they wait five active seconds and hatch into half-height Jabiru sprites. Freeze pauses flight and hatching. The cap, reward and wave-clear rules below apply to all broods.
 
-All children share the current active-enemy cap (32 rising to 96). Jabiru lays at most three eggs over its lifetime; Hive summons at most three swarms over its lifetime. Killing children does not replenish that allowance, preventing unlimited XP farming. A full cap skips a Hive/Jabiru summon until a later cast without spending its allowance. Tapir replacements instead wait in a bounded per-encounter queue and prevent premature wave completion until all three can enter safely.
+
+Parasite-Tapirs have 25.3 base HP/8 damage; Void Eggs 27.6 HP/no attack; Night Hatchlings 23 HP/8 damage. Wave scaling applies. Tapirs use the existing mini-tapir artwork, eggs and hatchlings use existing Jabiru sheet poses, and mini Hive Guardians reuse their parent artwork at half height. Mini tapirs have one isolated pose; the hatchlings have two, with hit flash/fading defeat rather than newly generated full animation cycles.
+
+All children share the current active-enemy cap (32 rising to 96). Jabiru lays at most three eggs over its lifetime; Hive summons at most three matching minis over its lifetime. Killing children does not replenish that allowance, preventing unlimited XP farming. A full cap skips a Hive/Jabiru summon until a later cast without spending its allowance. Tapir replacements instead wait in a bounded per-encounter queue and prevent premature wave completion until all three can enter safely.
 
 **Mini rewards in 0.9.1:** every defeated combat mini drops one XP gem worth **¼ of its parent alpha's base XP**. Parasite-Tapirs and Night Hatchlings give **9 XP** each; Hive swarms give **7.5 XP** each. Fractional XP is retained across pickups, and Memory Seeker/Double XP apply normally. Destructible unhatched eggs give no XP, preventing an egg-plus-hatchling double reward. Each combat mini counts once as a released spirit and toward Belizean Rhythm, but gives no weapon or power pickups. Story cave summons retain their previous reward rules.
 
-Parents give their usual full XP once, a 6% random weapon chance and a separate 3.5% random power chance. All twelve weapon identities and all power identities are eligible. Bosses retain guaranteed random weapons. Hive/Jabiru children now survive their parent's defeat, just like the mini tapirs, and must be cleared before the wave ends. Nuke clears current enemies and pending replacements without splitting a new Tapir; existing minis award their usual reduced Nuke XP once. Restart clears all summons, hazards and player impairments. Pause/Freeze stop summon, hatch and enemy warning timers; player venom follows active player time. Duende's wave-20 HP, attack power and boss behavior are unchanged.
+Parents give their usual full XP once, a 6% random weapon chance and a separate 4.025% random power chance. All twelve weapon identities and all power identities are eligible. Bosses retain guaranteed random weapons. Hive/Jabiru children now survive their parent's defeat, just like the mini tapirs, and must be cleared before the wave ends. Nuke clears current enemies and pending replacements without splitting a new Tapir; existing minis award their usual reduced Nuke XP once. Restart clears all summons, hazards and player impairments. Pause/Freeze stop summon, hatch and enemy warning timers; player venom follows active player time. Duende's wave-20 HP, attack power and boss behavior are unchanged.
 
 ## Artwork and validation
 

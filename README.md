@@ -2,6 +2,16 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Broods, late bosses and Joe’s walking animation — 0.15.0
+
+Power-up drop chance increases **15% relative**, from 3.5% to **4.025%**. Fishing Spear damage rises **100 → 115 per hit** and Duende Staff **30.4 → 45.4 per hit**; their firing rates and VI enhancement curve remain. All hostile projectiles travel **15% slower**, while Joe’s projectiles retain their speed.
+
+Every alpha can produce matching minis. Most begin warned summon casts after six active seconds, then every ten, with **three minis per parent lifetime**. Minis reuse the parent’s artwork at half height, have 12% of its scaled HP and 35% of its damage, cannot summon recursively, survive the parent, and award quarter-parent XP without weapon/power drops. Rot-Tapir retains its three-child death split. Jabiru launches eggs on its existing 10/60-second schedule; they visibly arc, land, then hatch after five active seconds into smaller Jabiru sprites. Eggs remain destructible and unrewarded before hatching. All broods share the 96-enemy limit.
+
+Boss thresholds use **wave numbers**: wave 40 retains one guardian; scheduled boss waves from **45 onward contain two distinct guardians**. Starting at wave **51**, other waves have a **20% chance** of one random guardian. Scheduled pairs keep their rotation, each boss has its own health bar and weapon reward, and the final wave requires defeating both. Story’s authored encounters retain their schedule.
+
+Joe’s original whole-body walking frames now animate **while moving and firing**. His stride follows actual distance travelled, scales naturally with speed, and stops while idle, paused or blocked by cover. Stationary firing retains the existing aim pose and all foot pivots remain fixed. This supersedes the static moving-fire limitation described in the older 0.5.2 notes below.
+
 ## Mob movement and faster spawns — 0.14.2
 
 Ordinary mob movement grows **20% every ten XP levels**, through level 40. **Actual enemy movement never exceeds Joe’s current running speed**, including charges, pounces, sidesteps and crowd separation. The limit follows Joe’s speed upgrades and slows; his dash does not let mobs accelerate. Weapon knockback retains its force.

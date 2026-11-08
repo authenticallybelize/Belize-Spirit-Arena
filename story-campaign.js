@@ -265,8 +265,9 @@
     tick(dt, input) {
       if (this.portal) {
         this.time += dt; this.player.dashCooldown = Math.max(0, this.player.dashCooldown - dt);
-        const length = Math.hypot(input.dx || 0, input.dy || 0); this.player.walking = length > 0;
+        const length = Math.hypot(input.dx || 0, input.dy || 0), startX = this.player.x, startY = this.player.y;
         if (length) Run.move(this, this.player, input.dx / length * this.player.speed * dt, input.dy / length * this.player.speed * dt);
+        this.recordMovement(startX, startY);
         Base.aimAt(this.player, input); if (distance(this.player, this.portal) < 45) this.mode = 'storyDoor'; return;
       }
       super.tick(dt, input);

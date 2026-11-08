@@ -107,8 +107,8 @@
     if (story && enemy.objective) { StoryUI.drawCrystal(enemy, ctx, images); return; }
     if (enemy.dead && !window.ARENA_ROSTER?.[type]) { drawSprite(type, 4, x, y + 13, enemy.height || 60, false, Math.min(1, enemy.life * 4)); return; }
     if (window.ARENA_ROSTER?.[type]) {
-      const sprite = type === 'sochBoss' && enemy.form === 'transform' ? 'sochTransform' : type === 'sochBoss' && enemy.form === 'harpy' ? 'sochHarpy' : type;
-      const height = enemy.height, bottom = y + 13 - (enemy.flying ? 12 : 0);
+      const sprite = enemy.sprite || (type === 'sochBoss' && enemy.form === 'transform' ? 'sochTransform' : type === 'sochBoss' && enemy.form === 'harpy' ? 'sochHarpy' : type);
+      const height = enemy.height, bottom = y + 13 - (enemy.flying ? 12 : 0) - (enemy.launchHeight || 0);
       if (enemy.dead) {
         const frames = enemy.deathFrames || [18, 19, 20, 21, 22, 23];
         drawSprite(sprite, frames[Math.min(frames.length - 1, Math.floor((.6 - enemy.life) * 10))], x, bottom, height, false, Math.min(1, enemy.life * 4)); return;
@@ -134,7 +134,7 @@
       const row = enemy.summoning ? 1 : enemy.bossAI ? ((enemy.skillIndex || 1) % 2 ? 1 : 2) : enemy.attackRow || (enemy.attack === 'shot' ? 2 : 1);
       const actionFrame = enemy.action === 'windup' ? Math.min(2, Math.floor(enemy.actionTime / (skill?.warning || enemy.windup) * 3))
         : enemy.action === 'active' ? 3 : Math.min(5, 3 + Math.floor(enemy.actionTime / .45 * 3));
-      const index = enemy.form === 'transform' ? Math.min(17, Math.floor(enemy.formTime / 1.2 * 18)) : enemy.warmup > 0 ? 0 : enemy.hit > 0 ? (type === 'rotTapir' ? 12 : type === 'jabiruReaper' ? 0 : 18) : enemy.action !== 'move' && enemy.action !== 'sidestep' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
+      const index = enemy.form === 'transform' ? Math.min(17, Math.floor(enemy.formTime / 1.2 * 18)) : enemy.warmup > 0 ? 0 : enemy.hit > 0 ? (sprite === 'rotTapir' ? 12 : sprite === 'jabiruReaper' ? 0 : 18) : enemy.action !== 'move' && enemy.action !== 'sidestep' ? row * 6 + actionFrame : Math.floor(t * (enemy.flying ? 10 : 7) + enemy.id) % 6;
       drawSprite(sprite, index, x, bottom, height, game.player.x < x, enemy.warmup > 0 ? .35 : 1, enemy.hit > 0);
       if (enemy.warmup <= 0 && !enemy.boss) {
         const width = enemy.r * 2 + 10;
@@ -172,9 +172,9 @@
     }
   }
   function drawJoe(t) {
-    const p = game.player, firing = input.shooting && game.mode === 'playing';
-    const direction = firing || !p.walking ? p.angle : Math.atan2(input.dy,input.dx);
-    const frame = ArenaArt.nativeJoeFrame(direction, p.walking, t), native = ARENA_SPRITES.joe;
+    const p = game.player, firing = input.shooting && game.mode === 'playing', walking = p.walking && p.dashTime <= 0;
+    const direction = firing || !walking ? p.angle : p.moveAngle ?? Math.atan2(input.dy,input.dx);
+    const frame = ArenaArt.nativeJoeFrame(direction, walking, (p.walkDistance || 0) / 216), native = ARENA_SPRITES.joe;
     const rect = native.frames[frame], scale = joeHeight / rect[3], anchor = (native.anchors[frame] - rect[0]) * scale;
     const row = Math.floor(frame / 5), alpha = p.invincible > .24 && Math.floor(t * 18) % 2 ? .5 : 1;
     const art = ARENA_READY.holding[p.weapon], held = ArenaArt.holdingPose(art, p.angle, joeHeight);
@@ -184,11 +184,11 @@
     function body() { ctx.drawImage(images[native.file], ...rect, -anchor, -joeHeight, rect[2] * scale, joeHeight); }
     function pose(x, y, opacity) {
       ctx.save(); ctx.globalAlpha = opacity; ctx.translate(x, y + 13);
-      if (!firing) {
+      if (!firing || walking) {
         body();
         const [hx,hy,rx,ry,rw,rh] = ArenaArt.carryHands[frame], weapon = ARENA_READY.weapons[p.weapon], grip = ArenaArt.carryGrips[p.weapon];
         const size = ['spear','staff','crystal'].includes(p.weapon) ? 68 : p.weapon === 'claw' ? 34 : 48;
-        const carryAngle = ['spear','staff','crystal','cacao','feather','obsidian'].includes(p.weapon) ? -Math.PI / 2 : row === 2 ? 2 : 1.14;
+        const carryAngle = firing ? p.angle : ['spear','staff','crystal','cacao','feather','obsidian'].includes(p.weapon) ? -Math.PI / 2 : row === 2 ? 2 : 1.14;
         ctx.save(); ctx.translate((hx-rect[0])*scale-anchor,(hy-rect[1])*scale-joeHeight); ctx.rotate(carryAngle-weapon.heldAngle);
         ctx.drawImage(images[weapon.held],-grip[0]*size/64,-grip[1]*size/64,size,size); ctx.restore();
         // The original moving fist occludes the handle at its measured grip keyframe.
@@ -310,8 +310,18 @@
     $('dashLabel').style.color = p.dashCooldown > 0 ? '#aeb7a4' : '#bcf3cf';
     $('weaponLabel').textContent = p.weapon === 'staff' ? 'DUENDE STAFF' : 'SLINGSHOT';
     if (story) StoryUI.hud(game); else if (extended) SurvivalUI.hud(game);
-    const boss = game.enemies.find(e => e.boss); $('bossHud').hidden = !boss;
+    const bosses = game.enemies.filter(e => e.boss && !e.dead), boss = bosses[0]; $('bossHud').hidden = !boss;
+    $('bossHud').classList.toggle('multiple-bosses', bosses.length > 1);
     if (boss) { $('bossFill').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`; $('bossName').textContent = boss.name.toUpperCase(); }
+    let secondBoss = $('secondBossHud');
+    if (bosses[1] && !secondBoss) {
+      secondBoss = document.createElement('div'); secondBoss.id = 'secondBossHud'; secondBoss.style.marginTop = '4px';
+      secondBoss.innerHTML = '<strong></strong><div class="track"><i></i></div>'; $('bossHud').append(secondBoss);
+    }
+    if (secondBoss) {
+      secondBoss.hidden = !bosses[1];
+      if (bosses[1]) { secondBoss.querySelector('strong').textContent = bosses[1].name.toUpperCase(); secondBoss.querySelector('i').style.width = `${Math.max(0, bosses[1].hp / bosses[1].maxHp * 100)}%`; }
+    }
     $('waveBanner').hidden = !!boss || game.bannerTime <= 0 || game.mode !== 'playing' || helpOpen;
     $('waveBanner').textContent = game.banner;
     $('pauseButton').disabled = !['playing', 'paused', 'cinematic'].includes(game.mode) || helpOpen;

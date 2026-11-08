@@ -19,14 +19,15 @@ function foe(g, type, x = g.player.x + 50, y = g.player.y) {
 assert.equal(COMMONS.length, 10); assert.equal(ALPHAS.length, 12);
 for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   for (const roll of [0, .999999]) {
+    const bossCount = wave % 5 === 0 ? wave > 40 ? 2 : 1 : wave > 50 && roll === 0 ? 1 : 0;
     const g = game(wave, roll), count = g.queue.filter(id => TYPES[id].alpha).length;
     const max = Math.min(4, Math.floor(wave / 10));
     const expected = wave > 10 && [3, 6, 9].includes(wave % 10) ? wave % 10 === 3 ? max : roll === 0 ? 1 : max : 0;
     assert.equal(count, expected, 'Alpha schedule at wave ' + wave);
     assert.equal(count, g.alphaCount);
-    assert.equal(g.queue.length, Math.ceil((6 + Math.floor(wave * 1.25) + Math.ceil(Math.max(0, wave - 10) / 5)) * 1.1) + (wave % 5 === 0 ? 1 : 0), 'Alphas added extra crowd slots');
+    assert.equal(g.queue.length, Math.ceil((6 + Math.floor(wave * 1.25) + Math.ceil(Math.max(0, wave - 10) / 5)) * 1.1) + bossCount, 'Alphas added extra crowd slots');
     assert(g.queue.every(id => TYPES[id]));
-    assert.equal(g.queue.filter(id => TYPES[id].boss).length, wave % 5 === 0 ? 1 : 0);
+    assert.equal(g.queue.filter(id => TYPES[id].boss).length, bossCount);
   }
 }
 assert.equal(game(23).alphaCount, 2); assert.equal(game(33).alphaCount, 3);
