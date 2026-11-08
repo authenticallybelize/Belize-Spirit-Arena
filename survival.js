@@ -54,6 +54,7 @@
     xtabaiBoss: [{ kind: 'area', count: 3, radius: 92, warning: 1.25, life: 2, color: '#80d5b0' }, { kind: 'fan', count: 7, spread: .22, speed: 190, warning: .9, color: '#9fddb3' }]
   };
   const MOB_WEAPON_CHANCE = .06;
+  const JADE_DROP_CHANCE = .001, JADE_ICON = 'ready/relics/jade-skull.png', JADE_TRANSFORM_SECONDS = 1.2, CORRUPTED_SECONDS = 30;
   const POWER_DROP_CHANCE = .035 * 1.15, RANDOM_BOSS_CHANCE = .2, HOSTILE_SPEED_FACTOR = .85;
   for (const id of ALPHAS) if (!['rotTapir', 'jabiruReaper'].includes(id)) {
     Object.assign(TYPES[id], { summonType: id, summonStart: 6, summonEvery: 10, summonLimit: 3 });
@@ -213,6 +214,7 @@
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.hazards = []; this.attackCount = 0;
       this.navigation = {}; this.pendingSummons = [];
       this.player.specialCooldown = 0; this.clawRush = null;
+      this.jadeCharges = 0; this.jadeDropWave = 0; this.transformRemaining = 0; this.corruptedRemaining = 0; this.nukeBossCapWave = 0;
       this.storm = 0; this.stormWave = false; this.weatherTime = 0;
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
@@ -229,6 +231,41 @@
     rank(id) { return this.ranks[id] || 0; }
     active(id) { return (this.powers[id] || 0) > 0; }
     powerPool() { return Object.keys(POWERS); }
+    rollPower(id) {
+      const pool = this.powerPool();
+      id ||= pool[Math.floor(this.random() * pool.length)];
+      // Replace one in ten Nuke selections, preserving the overall power-drop rate.
+      if (id === 'nuke' && this.random() < .1) {
+        const others = pool.filter(power => power !== 'nuke');
+        if (others.length) id = others[Math.floor(this.random() * others.length)];
+      }
+      return id;
+    }
+    collectJade() {
+      if (this.jadeCharges || this.transformRemaining > 0 || this.corruptedRemaining > 0) return false;
+      this.jadeCharges = 1; this.banner = 'Jade Skull · Press G or tap the idol to transform'; this.bannerTime = 4;
+      this.events.push({ type: 'weapon' }); return true;
+    }
+    activateJade() {
+      if (this.mode !== 'playing' || !this.jadeCharges || this.transformRemaining > 0 || this.corruptedRemaining > 0) return false;
+      this.jadeCharges = 0; this.transformRemaining = JADE_TRANSFORM_SECONDS;
+      this.player.slowTime = this.player.venomTime = this.player.dashTime = 0; this.player.walking = false; this.clawRush = null;
+      for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
+      this.banner = 'The Jade Skull awakens · CORRUPTED JOE'; this.bannerTime = 3;
+      this.events.push({ type: 'transform' }); return true;
+    }
+    meltContacts(dt) {
+      if (!(this.corruptedRemaining > 0)) return;
+      const p = this.player;
+      for (const e of [...this.enemies]) if (!e.dead && e.warmup <= 0 && !e.eggFlight && dist(e, p) < e.r + p.r) {
+        if (e.boss) this.damageEnemy(e, p.damage / p.interval * dt);
+        else {
+          e.hp = 0; this.defeat(e);
+          this.flashes.push({ kind: 'melt', x: e.x, y: e.y, r: e.r + 10, life: .8, color: '#65ffc0' });
+          this.effects.push({ x: e.x, y: e.y - 30, text: 'MELT', color: '#86ffbf', life: .6 });
+        }
+      }
+    }
     difficultyTier() { return Math.min(4, Math.floor(this.level / 10)); }
     applyDifficulty(e) {
       const tier = this.difficultyTier(), previousTier = e.difficultyTier || 0, ratio = 2 ** (tier - previousTier);
@@ -270,7 +307,7 @@
       const boss = this.enemies.some(e => e.boss && !e.dead), low = p.hp < p.maxHp * .35 && this.rank('second');
       p.damage = w.damage * enhancement * 1.25 ** this.rank('damage') * (1 + .05 * this.trophyBosses) * (1 + this.enduranceBonus) *
         (this.commitWeapon ? 1.4 : 1) * (boss && this.rank('courage') ? 1.1 : 1) * (low ? 1.1 : 1) *
-        (this.active('heavy') ? 2 : 1) * (this.active('evolution') ? 1.5 : 1) * (w.explosive ? 1 + .15 * this.rank('blast') : 1);
+        (this.corruptedRemaining > 0 ? 2 : 1) * (this.active('heavy') ? 2 : 1) * (this.active('evolution') ? 1.5 : 1) * (w.explosive ? 1 + .15 * this.rank('blast') : 1);
       p.interval = this.normalInterval();
       if (this.active('badman')) p.interval = Math.max(.03, p.interval / 2.25);
       p.speed = Math.min(400, (218 + 24 * this.rank('speed')) * (low ? 1.15 : 1) * (boss && this.rank('courage') ? 1.12 : 1));
@@ -338,7 +375,9 @@
         this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
           shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
           type, id: this.nextId++, warmup: origin && type === 'voidEgg' ? 0 : spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, movementLeft: null, action: 'move', actionTime: 0, attackTimer: 1, summonTimer: spec.summonStart });
-        this.applyDifficulty(this.enemies.at(-1));
+        const spawned = this.enemies.at(-1);
+        this.applyDifficulty(spawned);
+        if (spawned.boss && this.nukeBossCapWave === this.wave) spawned.hp = spawned.maxHp * .5;
         return true;
       }
       return false;
@@ -402,7 +441,7 @@
       return true;
     }
     hurt(amount) {
-      if (this.mode !== 'playing' || this.player.invincible > 0 || this.active('shield')) return;
+      if (this.mode !== 'playing' || this.transformRemaining > 0 || this.corruptedRemaining > 0 || this.player.invincible > 0 || this.active('shield')) return;
       if (this.rank('ward') && this.wardCooldown <= 0) { this.wardCooldown = 30 - 5 * this.rank('ward'); this.flashes.push({ x: this.player.x, y: this.player.y, r: 40, life: .25, color: '#a5f2ff' }); return; }
       if (this.random() < .06 * this.rank('dodge')) return;
       super.hurt(amount * (1 - .08 * this.rank('armor')));
@@ -444,9 +483,12 @@
         if (this.rank('trophy')) { this.trophyBosses++; this.player.maxHp += 10; this.player.hp += 10; }
         if (this.rank('sacred')) { this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * .35); this.addDrop('evolution', e.x + 30, e.y, 'power', true); }
       } else if (this.random() < POWER_DROP_CHANCE) {
-        const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.random() * pool.length)], e.x, e.y, 'power');
+        this.addDrop(this.rollPower(), e.x, e.y, 'power');
       }
       if (!e.boss && this.random() < MOB_WEAPON_CHANCE) this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y - 20);
+      if (!e.boss && !this.jadeCharges && this.transformRemaining <= 0 && this.corruptedRemaining <= 0 && this.jadeDropWave !== this.wave && this.random() < JADE_DROP_CHANCE) {
+        if (this.addDrop('jadeSkull', e.x, e.y + 20, 'relic')) this.jadeDropWave = this.wave;
+      }
     }
     pickup() {
       if (this.mode !== 'playing') return false;
@@ -471,11 +513,12 @@
       if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5), false);
       else if (id === 'nuke') {
         for (const e of [...this.enemies]) if (!e.dead) {
-          e.hp = e.boss || e.alpha ? Math.max(0, e.hp - e.maxHp * (e.boss ? .2 : .5)) : 0;
+          e.hp = e.boss ? Math.min(e.hp, e.maxHp * .5) : 0;
           e.hit = .12;
           if (e.hp <= 0) this.defeat(e, true, true);
         }
-        this.pendingSummons = [];
+        this.queue = this.queue.filter(type => TYPES[type].boss); this.copiesLeft = 0;
+        this.nukeBossCapWave = this.wave; this.pendingSummons = [];
         this.enemies = this.enemies.filter(e => !e.dead); this.hazards = []; this.bullets = this.bullets.filter(b => !b.hostile);
         this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
       } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
@@ -604,13 +647,13 @@
       if (e.attach) { e.action = 'attached'; e.actionTime = 0; }
     }
     dash(input) {
-      if (!super.dash(input)) return false;
+      if (this.transformRemaining > 0 || !super.dash(input)) return false;
       for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
       this.player.slowTime = 0; return true;
     }
     special(input = {}) {
       const p = this.player;
-      if (this.mode !== 'playing' || p.weapon !== 'claw' || p.specialCooldown > 0 || p.dashTime > 0) return false;
+      if (this.mode !== 'playing' || this.transformRemaining > 0 || p.weapon !== 'claw' || p.specialCooldown > 0 || p.dashTime > 0) return false;
       const absolute = Number.isFinite(input.aimX) && Number.isFinite(input.aimY);
       let dx = (input.relativeAim ? input.aimDX : absolute ? input.aimX - p.x : input.dx) || 0;
       let dy = (input.relativeAim ? input.aimDY : absolute ? input.aimY - p.y : input.dy) || 0;
@@ -770,6 +813,15 @@
       if (dist(e, p) < e.r + p.r) this.hurt(e.damage);
     }
     tick(dt, input) {
+      if (this.transformRemaining > 0) {
+        this.transformRemaining = Math.max(0, this.transformRemaining - dt);
+        if (this.transformRemaining <= 1e-8) { this.transformRemaining = 0; this.corruptedRemaining = CORRUPTED_SECONDS; this.refreshStats(); }
+        return;
+      }
+      // A partial final frame grants protection only for its remaining active duration.
+      if (this.corruptedRemaining > 0 && dt > this.corruptedRemaining + 1e-8) {
+        const remaining = this.corruptedRemaining; this.tick(remaining, input); this.tick(dt - remaining, input); return;
+      }
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
       const thunderCycle = Math.floor(this.weatherTime / 9); this.weatherTime += dt;
       const raining = this.stormWave && !this.finishedWave;
@@ -817,6 +869,7 @@
       try {
         for (const e of this.enemies) { if (!e.dead) this.enemyTick(e, enemyDt); if (this.mode !== 'playing') return; }
         this.tickAreas(enemyDt); if (this.mode !== 'playing') return;
+        this.meltContacts(dt);
         for (let i = 0; i < this.enemies.length; i++) for (let j = i + 1; j < this.enemies.length; j++) {
           const a = this.enemies[i], b = this.enemies[j], d = dist(a, b), min = a.r + b.r;
           if (a.dead || b.dead || a.eggFlight || b.eggFlight || a.warmup > 0 || b.warmup > 0 || d >= min) continue;
@@ -907,21 +960,26 @@
         if (dist(gem, p) < 22) { this.gainXP(gem.value); gem.collected = true; this.events.push({ type: 'gem' }); }
       }
       this.gems = this.gems.filter(g => !g.collected);
-      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (d.kind === 'power' && dist(d, p) < 26) { d.life = 0; this.collectPower(d.id); } }
+      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && this.collectJade()) d.life = 0; } }
       this.drops = this.drops.filter(d => d.life > 0);
       this.flashes = this.flashes.filter(f => { f.life -= dt; return f.life > 0; }).slice(-60);
       this.effects = this.effects.filter(e => { e.life -= dt; e.y -= dt * 22; return e.life > 0; }).slice(-45);
+      if (this.corruptedRemaining > 0) {
+        this.corruptedRemaining = Math.max(0, this.corruptedRemaining - dt);
+        if (this.corruptedRemaining < 1e-8) this.corruptedRemaining = 0;
+        this.refreshStats();
+      }
       if (this.levelUp()) return;
       if (!this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
         this.finishedWave = true; this.bullets = [];
         this.refreshStats();
         if (this.wave === this.totalWaves) { this.storm = 0; this.stormWave = false; this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
         p.hp = Math.min(p.maxHp, p.hp + 15 + 10 * this.rank('recovery'));
-        if (this.wave % 2 === 0) { const pool = this.powerPool(); this.addDrop(pool[Math.floor(this.wave / 2 - 1) % pool.length], p.x - 30, p.y, 'power'); }
+        if (this.wave % 2 === 0) { const pool = this.powerPool(); this.addDrop(this.rollPower(pool[Math.floor(this.wave / 2 - 1) % pool.length]), p.x - 30, p.y, 'power'); }
         this.breakTime = 4; this.banner = 'Wave cleared · +15 HP · Collect drops before moving on'; this.bannerTime = 4;
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

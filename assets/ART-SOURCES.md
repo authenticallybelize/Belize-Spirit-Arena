@@ -1,5 +1,9 @@
 # Spirit Arena artwork and references
 
+## Jade Skull relic — 2026-11-08
+
+`ready/relics/jade-skull.png` is an original transparent image generated with the built-in ImageGen tool for this release. It is used without image manipulation as the world pickup and inventory/touch icon. The visual reference is Altun Ha's carved Jade Head, identified as Kinich Ahau: large rimmed round eyes, broad nose, rectangular mouth, round ear ornaments and a low carved headdress. References: [NICH Institute of Archaeology](https://nichbelize.org/ia-sites/altun-ha/) and [Belize Tourism Board](https://www.travelbelize.org/blog/the-crown-jewel-of-belize-the-jade-head/). No source photographs were copied into the game. The fictional item is called “Jade Skull”; the historical artifact is a carved face/head. Corrupted Joe reuses existing complete Joe animation/weapon frames with Canvas color and spirit effects.
+
 ## Five wildlife commons — 2026-11-07
 
 `sources/wildlife-atlas.png` is an original transparent atlas created with the built-in ImageGen tool, using the existing Spiderling atlas as a style reference. It contains five rows (Grasshopper, Corrupted Hen, Corrupted Great-tailed Grackle, Corrupted Howler Monkey, Corrupted Toad) and six authored poses per row: idle, two movement poses, attack, hurt and defeat. No existing creature art was overwritten.

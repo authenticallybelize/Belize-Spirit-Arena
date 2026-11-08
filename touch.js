@@ -19,6 +19,15 @@
     const panel = document.createElement('div'); panel.className = 'touch-controls'; panel.setAttribute('aria-label', 'Touch controls');
     panel.innerHTML = '<div class="stick" id="moveStick" role="group" aria-label="Move joystick"><i></i><span>MOVE</span></div><div class="touch-actions"><button id="touchDash">DASH</button><button id="touchSpecial" hidden>CLAW RUSH</button><button id="touchPickup">PICK UP</button><button id="touchPause">PAUSE</button></div><div class="stick" id="aimStick" role="group" aria-label="Aim and shoot joystick"><i></i><span>AIM / FIRE</span></div>';
     frame.append(panel);
+    const jade = document.createElement('button'); jade.id = 'jadeButton'; jade.hidden = true;
+    jade.setAttribute('aria-label', 'Activate Jade Skull: Corrupted Joe (G)'); jade.title = 'Jade Skull · G / tap to transform';
+    if (game.activateJade) {
+      jade.innerHTML = '<img src="assets/' + root.SurvivalCore.JADE_ICON + '" alt=""><span>G · JADE</span>';
+      frame.append(jade);
+      const activate = event => { event.preventDefault(); if (!dialog.hidden) return; game.activateJade(); update(); };
+      jade.addEventListener('pointerdown', activate);
+      jade.addEventListener('click', event => { if (event.detail === 0) activate(event); });
+    }
     const rotate = document.createElement('div'); rotate.className = 'rotate-prompt'; rotate.setAttribute('role', 'status');
     rotate.innerHTML = '<strong>Turn your phone sideways</strong><p>Your run is paused and stays right here.<br>Landscape gives both thumbs room to play.</p>';
     frame.append(rotate);
@@ -96,6 +105,13 @@
     let shownWeapon = '';
     function update() {
       panel.hidden = !['playing', 'paused'].includes(game.mode);
+      if (game.activateJade) {
+        const transforming = game.transformRemaining > 0, active = game.corruptedRemaining > 0;
+        jade.hidden = !['playing', 'paused'].includes(game.mode) || !(game.jadeCharges || transforming || active);
+        jade.disabled = game.mode !== 'playing' || transforming || active;
+        jade.classList.toggle('active', active || transforming);
+        jade.querySelector('span').textContent = transforming ? 'AWAKEN' : active ? Math.ceil(game.corruptedRemaining) + 's' : mobile ? 'TAP · JADE' : 'G · JADE';
+      }
       if (shownWeapon !== game.player.weapon) { shownWeapon = game.player.weapon; weapon.src = 'assets/' + ARENA_READY.weapons[shownWeapon].pickup; weapon.alt = 'Equipped: ' + (root.SurvivalCore ? SurvivalCore.weapon(shownWeapon).name : shownWeapon === 'staff' ? 'Duende Staff' : 'Joe’s Sling'); }
       const dash = panel.querySelector('#touchDash'), cooldown = game.player.dashCooldown;
       dash.textContent = cooldown > 0 ? 'DASH ' + cooldown.toFixed(1) + 's' : 'DASH'; dash.disabled = cooldown > 0 || game.mode !== 'playing'; dash.style.setProperty('--dash-ready', (1 - Math.min(1, cooldown / 1.65)) * 100 + '%');

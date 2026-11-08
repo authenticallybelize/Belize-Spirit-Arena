@@ -68,6 +68,7 @@
       if (event.type === 'defeat') { burst(event.x, event.y, '#75e8be', event.boss ? 24 : 10); tone(200, .06, .02, 85); }
       if (event.type === 'level') tone(530, .3, .04, 1060);
       if (event.type === 'wave') tone(330, .3, .04, 440);
+      if (event.type === 'transform') { tone(110, 1.1, .05, 660, 'triangle'); burst(game.player.x, game.player.y - 45, '#69ffc0', 30); }
       if (event.type === 'weapon') { tone(430, .35, .05, 1200); burst(game.player.x, game.player.y, '#81ebac', 24); }
     }
   }
@@ -184,6 +185,10 @@
     function body() { ctx.drawImage(images[native.file], ...rect, -anchor, -joeHeight, rect[2] * scale, joeHeight); }
     function pose(x, y, opacity) {
       ctx.save(); ctx.globalAlpha = opacity; ctx.translate(x, y + 13);
+      if (game.corruptedRemaining > 0 || game.transformRemaining > 0) {
+        ctx.filter = 'sepia(1) hue-rotate(95deg) saturate(3) brightness(.78) contrast(1.35)';
+        ctx.shadowColor = '#39ffad'; ctx.shadowBlur = game.transformRemaining > 0 ? 24 : 12;
+      }
       if (!firing || walking) {
         body();
         const [hx,hy,rx,ry,rw,rh] = ArenaArt.carryHands[frame], weapon = ARENA_READY.weapons[p.weapon], grip = ArenaArt.carryGrips[p.weapon];
@@ -437,6 +442,7 @@
     if (game.mode !== 'playing') return;
     if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(key)) event.preventDefault();
     if (extended && key === 'e' && !event.repeat) { event.preventDefault(); game.pickup(); return; }
+    if (extended && key === 'g' && !event.repeat) { event.preventDefault(); game.activateJade(); return; }
     if (extended && key === 'q' && !event.repeat) { event.preventDefault(); game.special(input); return; }
     keys.add(key); movement(); if (key === ' ' && !event.repeat) game.dash(input);
   });
@@ -468,7 +474,7 @@
   function arenaFiles(arena) { return [...new Set([arena.image, ...arena.obstacles.map(o => o.image), ...(arena.decor || []).map(d => d.image)].filter(Boolean))]; }
   const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', ...(extended ? arenaFiles(game.arena) : ['jungle-arena.png']), 'limestone-ruins.png', ...weaponFiles,
     ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
-    ...(extended ? [...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
+    ...(extended ? [SurvivalCore.JADE_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
     if (!loads.has(file)) loads.set(file, new Promise((resolve, reject) => {

@@ -263,7 +263,9 @@
       }
     }
     tick(dt, input) {
+      if (this.transformRemaining > 0) { super.tick(dt, input); return; }
       if (this.portal) {
+        this.corruptedRemaining = Math.max(0, this.corruptedRemaining - dt); this.refreshStats();
         this.time += dt; this.player.dashCooldown = Math.max(0, this.player.dashCooldown - dt);
         const length = Math.hypot(input.dx || 0, input.dy || 0), startX = this.player.x, startY = this.player.y;
         if (length) Run.move(this, this.player, input.dx / length * this.player.speed * dt, input.dy / length * this.player.speed * dt);

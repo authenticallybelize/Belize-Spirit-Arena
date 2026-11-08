@@ -92,11 +92,11 @@ for (let i = 0; i < 360; i++) venom.update(1 / 120); assert(Math.abs(v.hp - 982)
 const bomb = playing('cohune'); bomb.ranks.damage = 5; bomb.ranks.blast = 4; bomb.collectPower('evolution'); bomb.explode({ x: 610, y: 575, damage: 100 }); assert.equal(bomb.flashes.at(-1).r, 160);
 const behind = enemy(bomb, 500, 480); bomb.explode({ x: 610, y: 480, damage: 100 }); assert.equal(behind.hp, 1000, 'Explosion crossed rock cover');
 const nuke = playing(); enemy(nuke, 710, 575, 10); nuke.collectPower('nuke'); assert.equal(nuke.kills, 1); assert.equal(nuke.gems[0].value, 2.25);
-const clearing = playing(); const queued = [...clearing.queue], waiting = enemy(clearing, 500, 480); waiting.warmup = 1;
+const clearing = playing(); const waiting = enemy(clearing, 500, 480); waiting.warmup = 1;
 const boss = enemy(clearing, 800, 900, 5000); Object.assign(boss, { boss: true, type: 'jaguarBoss', warmup: 1.7 });
 clearing.shot(610, 575, 0, true, 5); clearing.collectPower('nuke');
-assert.equal(clearing.enemies.length, 1); assert.equal(clearing.kills, 1); assert.equal(clearing.bossesDefeated, 0); assert.equal(boss.hp, 4000);
-assert.equal(clearing.bullets.length, 0); assert.deepEqual(clearing.queue, queued, 'Nuke consumed future enemies');
+assert.equal(clearing.enemies.length, 1); assert.equal(clearing.kills, 1); assert.equal(clearing.bossesDefeated, 0); assert.equal(boss.hp, 2500);
+assert.equal(clearing.bullets.length, 0); assert.deepEqual(clearing.queue, [], 'Nuke left queued non-boss mobs');
 assert(!clearing.drops.some(d => d.kind === 'weapon' && d.boss)); assert.equal(clearing.mode, 'playing', 'Nuke fabricated a wave victory');
 const shield = playing(); shield.collectPower('shield'); shield.hurt(20); assert.equal(shield.player.hp, 100); shield.powers = {}; shield.hurt(20); assert.equal(shield.player.hp, 80);
 const trophy = playing(); const firstBoss = enemy(trophy); firstBoss.boss = true; firstBoss.type = 'duende'; trophy.defeat(firstBoss);

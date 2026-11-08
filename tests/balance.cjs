@@ -54,18 +54,18 @@ for (const weapon of ['claw', 'cohune']) {
 }
 console.log('PASS: expanded stack caps/unique preservation, all HP multipliers, accelerating XP beyond level 200, XP powers/gems, queued upgrades, repeatable permanent vitality, bounded final-rank fire/ricochet bonuses.');
 
-// Nuke clears crowd pressure but cannot skip a full-health elite encounter or farm its reward.
+// Nuke clears all non-boss pressure, including queued slots, without healing/killing bosses.
 const blast = playing(); blast.wave = 199; blast.beginWave(); blast.level = 40; blast.ranks.bossDamage = 5;
 for (const type of ['crab', 'alphaCrab', 'duende']) assert(blast.spawn(type));
-const [mob, alpha, guardian] = blast.enemies, alphaHP = alpha.maxHp, guardianHP = guardian.maxHp, queue = [...blast.queue];
+const [mob, alpha, guardian] = blast.enemies, guardianHP = guardian.maxHp;
 blast.shot(blast.player.x, blast.player.y, 0, true, 20); blast.addArea(guardian, blast.player.x, blast.player.y, 100, 0, 5, '#ffffff');
 blast.collectPower('nuke');
-assert(mob.dead); near(alpha.hp, alphaHP * .5); near(guardian.hp, guardianHP * .8);
+assert(mob.dead); assert(alpha.dead); near(guardian.hp, guardianHP * .5);
 assert.equal(blast.bossesDefeated, 0); assert(!blast.drops.some(d => d.boss));
-assert.equal(blast.hazards.length, 0); assert(!blast.bullets.some(b => b.hostile)); assert.deepEqual(blast.queue, queue);
-blast.collectPower('nuke'); assert(alpha.dead); assert(!guardian.dead);
-for (let i = 0; i < 3; i++) blast.collectPower('nuke');
-assert(guardian.dead, 'Five Nukes should remove one full boss health bar'); assert.equal(blast.bossesDefeated, 1); assert.equal(blast.drops.filter(d => d.boss).length, 1);
+assert.equal(blast.hazards.length, 0); assert(!blast.bullets.some(b => b.hostile)); assert(blast.queue.every(type => TYPES[type].boss));
+for (let i = 0; i < 5; i++) blast.collectPower('nuke');
+near(guardian.hp, guardianHP * .5); assert(!guardian.dead); assert.equal(blast.bossesDefeated, 0);
+guardian.hp = guardianHP * .2; blast.collectPower('nuke'); near(guardian.hp, guardianHP * .2);
 
 // Selecting an upgrade gives time to return from the card UI; the protection expires.
 const grace = playing(); grace.mode = 'upgrade'; grace.choices = [PERKS.find(p => p.id === 'damage')];

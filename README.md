@@ -2,6 +2,16 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Jade Skull and wave-clearing Nuke — 0.17.0
+
+**Nuke** now clears all active and queued non-boss mobs for the current wave, including alphas, minis, eggs and pending broods, plus hostile shots and danger areas. Active and still-queued bosses survive at **at most 50% maximum HP**. It never heals an already wounded boss, repeated Nukes cannot kill a boss, and boss waves still require combat to finish. Only defeated enemies grant rewards; purged unspawned slots grant none. Nuke selections are replaced with another power 10% of the time, making it **10% less likely** (9% of random power drops instead of 10%) without reducing the overall 4.025% power-drop rate. Guaranteed-cycle Nuke selections use the same 10% replacement rule.
+
+**Jade Skull** is a separate rare relic: eligible ordinary/alpha defeats have an independent **0.1%** chance to drop it, capped at one per wave. Bosses and combat minis do not drop it. Walk over the idol to store one charge, then press **G** on PC or tap its illustrated **JADE** button on mobile. A 1.2-second awakening freezes combat, including mob movement, shots, hazards, spawns and egg hatching. Combat then resumes for **30 active seconds** as Corrupted Joe: invulnerable, **2× current weapon damage**, instant contact melting of ordinary mobs and alphas, and continuous contact damage to bosses equal to current weapon DPS. Pause and perk selection stop both timers. The form does not stack, produce further Jade drops while active, or increase Joe's movement speed. Restart clears the held relic and form.
+
+The new transparent idol artwork references the round eyes, carved face and ear ornaments of **Altun Ha's Jade Head**, a Maya carving identified as Kinich Ahau ([NICH](https://nichbelize.org/ia-sites/altun-ha/), [Belize Tourism Board](https://www.travelbelize.org/blog/the-crown-jewel-of-belize-the-jade-head/)). “Jade Skull” and corruption are fictional game mechanics. Corrupted Joe uses the complete existing walking/holding art with jade coloration, fractures, a spirit aura and a countdown; no body parts or weapon animations are replaced.
+
+Validation includes the full existing suite plus dedicated Nuke/Jade engine cases, desktop G activation and mobile icon activation, frozen awakening, contact damage, invulnerability, pause and expiry. Rarity and long-run player balance remain design choices to tune from play feedback.
+
 ## Jaguar Claws III waves and horde rush — 0.16.0
 
 Jaguar Spirit Claws **I–II retain the close-range swipe**. **III unlocks travelling projectiles** shaped as three broad claw crescents, matching the width of the old swipe. Each wave hits every mob across its path **once at full damage**, passes through further mobs, expires at range and respects solid cover. IV–VI retain their damage upgrades and increase the wave width/range. Base wave speed is 600 units/s, and III range is 520 units (VI 580).
