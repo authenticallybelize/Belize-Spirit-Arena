@@ -2,6 +2,10 @@
 
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
 
+## Main address and browser update fix — 0.18.1
+
+The bare domain now temporarily redirects to `/survival.html`, which contains the current 200-wave game, Drum VII and Spirit Drum evolution. The old root-to-Story rewrite could be bypassed by the existing Classic `index.html`, so opening the bare address showed the original ten-wave game. Story and Classic remain available through their explicit pages. The root redirect uses `Cache-Control: no-store`; all three entry pages now request JavaScript/CSS with the new release key so browsers with earlier Hostinger/Vercel files fetch the current code. Survival's opening copy now says 200 waves and shows its release and drum features before Start. Short touch viewports use the available width so the start menu is not squeezed into a narrow column.
+
 ## Awakened Drum and Drum VII — 0.18.0
 
 **Drum of Calling now reaches VII.** Its VII base pulse deals 123.5 damage with radius 170, at the original 1.2 beats/second before perks. Other weapons still cap at VI. A duplicate at the appropriate maximum heals 10% max HP. VII adds a separate small blue, damage-free pulse every two active seconds: nearby enemy movement is reduced by 75% within radius 110. It affects regulars, alphas, bosses and charges, respects Joe's movement-speed ceiling, and stops affecting a mob when it leaves the area or Joe switches weapons. It does not slow attack clocks or projectiles. Joe keeps his normal movement.
