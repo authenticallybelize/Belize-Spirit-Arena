@@ -33,7 +33,7 @@
       const perk = Run.PERKS.find(p => p.id === id);
       if (!perk || !Number.isInteger(rank) || rank < 0 || rank > perk.max) return false;
     }
-    if (Run.WEAPONS.some(w => !Number.isInteger(c.weaponLevels[w.id]) || c.weaponLevels[w.id] < 1 || c.weaponLevels[w.id] > Run.MAX_WEAPON_RANK)) return false;
+    if (Run.WEAPONS.some(w => !Number.isInteger(c.weaponLevels[w.id]) || c.weaponLevels[w.id] < 1 || c.weaponLevels[w.id] > Run.maxWeaponRank(w.id))) return false;
     const p = c.player, a = arenaFor(c.arena), b = a.bounds;
     return p && weaponIDs.includes(p.weapon) && ['hp', 'maxHp', 'speed', 'damage', 'interval', 'x', 'y', 'r'].every(k => Number.isFinite(p[k]) && p[k] > 0) &&
       p.hp <= p.maxHp && p.interval >= .03 && p.r === 13 && p.x >= b.x + p.r && p.x <= b.x + b.w - p.r &&
@@ -111,6 +111,7 @@
     }
   }
   class Game extends Run.Game {
+    drumRelicAllowed() { return false; }
     difficultyTier() { return 0; }
     syncDifficulty() {}
     constructor(random) { super(random); this.totalWaves = 20; this.selectArena('jungle'); }
@@ -136,7 +137,7 @@
       }
     }
     beginWave() {
-      this.wave++; this.finishedWave = false; this.breakTime = 0; this.guardianReleased = false;
+      this.endDrumEvolution(); this.wave++; this.finishedWave = false; this.breakTime = 0; this.guardianReleased = false;
       const index = Math.floor((this.wave - 1) / 5), local = (this.wave - 1) % 5, trial = TRIALS[index];
       const packs = [ ['spiderling', 'crab', 'worker', 'jaguar'], ['rootling', 'shadow', 'spiderling', 'tommy'],
         ['jaguar', 'owlShade', 'bees', 'tommy'], ['crab', 'miniLlorona', 'owlShade', 'rootling'] ];

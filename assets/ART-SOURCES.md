@@ -1,5 +1,9 @@
 # Spirit Arena artwork and references
 
+## Spirit Drum relic — 2026-11-25
+
+`ready/relics/ultimate-drum.png` is an original transparent ImageGen output based on the existing `ready/weapons/drum/pickup.png`. It keeps the drum's silhouette and view while using a black carved wood body, yellow/gold trim, white rope lacing, a light leather head and restrained golden glow. The unmodified generated output is used as the world pickup, inventory/evolution icon and carried evolved drum. `ready/relics/ultimate-drum.json` records dimensions and its SHA-256. No existing weapon or full-body Joe image was replaced; measured hand anchors place the evolved drum on the intact native Joe body. Dance motion, musical notes, charge guide, blue slowing rings and gold finale wave are Canvas effects.
+
 ## Jade Skull relic — 2026-11-08
 
 `ready/relics/jade-skull.png` is an original transparent image generated with the built-in ImageGen tool for this release. It is used without image manipulation as the world pickup and inventory/touch icon. The visual reference is Altun Ha's carved Jade Head, identified as Kinich Ahau: large rimmed round eyes, broad nose, rectangular mouth, round ear ornaments and a low carved headdress. References: [NICH Institute of Archaeology](https://nichbelize.org/ia-sites/altun-ha/) and [Belize Tourism Board](https://www.travelbelize.org/blog/the-crown-jewel-of-belize-the-jade-head/). No source photographs were copied into the game. The fictional item is called “Jade Skull”; the historical artifact is a carved face/head. Corrupted Joe reuses existing complete Joe animation/weapon frames with Canvas color and spirit effects.

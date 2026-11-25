@@ -54,6 +54,7 @@
     xtabaiBoss: [{ kind: 'area', count: 3, radius: 92, warning: 1.25, life: 2, color: '#80d5b0' }, { kind: 'fan', count: 7, spread: .22, speed: 190, warning: .9, color: '#9fddb3' }]
   };
   const MOB_WEAPON_CHANCE = .06;
+  const DRUM_DROP_CHANCE = .001, DRUM_ICON = 'ready/relics/ultimate-drum.png', DRUM_CHARGE_SECONDS = 8, DRUM_AURA_RADIUS = 110;
   const JADE_DROP_CHANCE = .001, JADE_ICON = 'ready/relics/jade-skull.png', JADE_TRANSFORM_SECONDS = 1.2, CORRUPTED_SECONDS = 30;
   const POWER_DROP_CHANCE = .035 * 1.15, RANDOM_BOSS_CHANCE = .2, HOSTILE_SPEED_FACTOR = .85;
   for (const id of ALPHAS) if (!['rotTapir', 'jabiruReaper'].includes(id)) {
@@ -100,8 +101,9 @@
     { id: 'cohune', name: 'Cohune Bomb Launcher', damage: 400, rate: .125, speed: 450, range: 530, r: 9, explosive: true, tags: ['projectile', 'explosive', 'area'], color: '#ffbc5c', art: [635, 816, 85, 108] },
     { id: 'staff', name: 'Duende Staff', damage: 45.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
   ];
-  const WEAPON_RANKS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
-  const MAX_WEAPON_RANK = WEAPON_RANKS.length;
+  const WEAPON_RANKS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+  const MAX_WEAPON_RANK = 6; // Drum alone has a seventh rank.
+  const maxWeaponRank = id => id === 'drum' ? 7 : MAX_WEAPON_RANK;
   const FEATHER_HOMING = [1.1, 1.75, 2.45, Math.PI, Math.PI, Math.PI];
   const weapon = id => WEAPONS.find(w => w.id === id) || WEAPONS[0];
   const PERKS = [
@@ -150,9 +152,11 @@
     reflex: { name: 'Reflex Boost', duration: 7, color: '#80e0e2' }
   };
   function move(g, e, dx, dy, dt) {
+    const movementScale = e !== g.player && g.enemyMoveScale ? g.enemyMoveScale(e) : 1;
+    dx *= movementScale; dy *= movementScale;
     // Cap enemy locomotion, charges and crowd separation at Joe's current run speed.
     if (e !== g.player && (dt !== undefined || e.movementLeft != null)) {
-      const distance = Math.hypot(dx, dy), limit = Math.min(dt === undefined ? Infinity : g.player.speed * dt, e.movementLeft ?? Infinity);
+      const distance = Math.hypot(dx, dy), limit = Math.min(dt === undefined ? Infinity : g.player.speed * dt * movementScale, e.movementLeft ?? Infinity);
       if (distance > limit) { dx *= limit / distance; dy *= limit / distance; }
     }
     const startX = e.x, startY = e.y;
@@ -215,6 +219,7 @@
       this.navigation = {}; this.pendingSummons = [];
       this.player.specialCooldown = 0; this.clawRush = null;
       this.jadeCharges = 0; this.jadeDropWave = 0; this.transformRemaining = 0; this.corruptedRemaining = 0; this.nukeBossCapWave = 0;
+      this.drumDropWave = 0; this.drumAuraClock = 0; this.endDrumEvolution();
       this.storm = 0; this.stormWave = false; this.weatherTime = 0;
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
       this.trophyBosses = 0;
@@ -247,7 +252,7 @@
       this.events.push({ type: 'weapon' }); return true;
     }
     activateJade() {
-      if (this.mode !== 'playing' || !this.jadeCharges || this.transformRemaining > 0 || this.corruptedRemaining > 0) return false;
+      if (this.mode !== 'playing' || this.drumFinale || !this.jadeCharges || this.transformRemaining > 0 || this.corruptedRemaining > 0) return false;
       this.jadeCharges = 0; this.transformRemaining = JADE_TRANSFORM_SECONDS;
       this.player.slowTime = this.player.venomTime = this.player.dashTime = 0; this.player.walking = false; this.clawRush = null;
       for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
@@ -265,6 +270,102 @@
           this.effects.push({ x: e.x, y: e.y - 30, text: 'MELT', color: '#86ffbf', life: .6 });
         }
       }
+    }
+    get drumEvolved() { return this.drumEvolutionWave === this.wave && this.wave > 0 && !this.finishedWave; }
+    drumRelicAllowed() { return true; }
+    collectDrumRelic() {
+      if (this.finishedWave || this.drumRelic || this.drumEvolved) return false;
+      this.drumRelic = 1; this.banner = 'Spirit Drum found · Equip Drum of Calling · R / tap to evolve this wave'; this.bannerTime = 4;
+      this.events.push({ type: 'weapon' }); return true;
+    }
+    evolveDrum() {
+      if (this.mode !== 'playing' || this.finishedWave || !this.drumRelic || this.player.weapon !== 'drum' || this.drumEvolved || this.transformRemaining > 0) return false;
+      this.drumRelic = 0; this.drumEvolutionWave = this.wave; this.drumUltimateUsed = false; this.cancelDrumCharge();
+      this.player.fireCooldown = 0; this.banner = 'AWAKENED DRUM · Hold attack to charge · Release at 8s for the final beat'; this.bannerTime = 4;
+      this.events.push({ type: 'drumBeat', ultimate: true }); return true;
+    }
+    cancelDrumCharge() { this.drumCharge = 0; this.drumHolding = false; this.drumCalmClock = 0; this.drumBeatClock = 0; }
+    endDrumEvolution() {
+      this.drumRelic = 0; this.drumEvolutionWave = 0; this.drumUltimateUsed = false; this.drumFinale = null; this.cancelDrumCharge();
+      this.drops = this.drops.filter(d => d.id !== 'ultimateDrum');
+    }
+    drumRadius(charge = 0) {
+      const base = (weapon('drum').range + (this.weaponLevels.drum - 1) * 5) * (this.drumEvolved ? 2 : 1), p = this.player, b = this.arena.bounds;
+      const farthest = Math.max(...[b.x, b.x + b.w].flatMap(x => [b.y, b.y + b.h].map(y => Math.hypot(x - p.x, y - p.y))));
+      // Accelerating reach: slightly larger early beats, roughly a quarter clearing at 4s, whole map at 8s.
+      return base + Math.max(0, farthest - base) * (clamp(charge, 0, DRUM_CHARGE_SECONDS) / DRUM_CHARGE_SECONDS) ** 2;
+    }
+    enemyMoveScale(e) {
+      if (!e.type || e.dead) return 1;
+      if (this.drumFinale) return .01;
+      if (this.player.weapon !== 'drum' || dist(e, this.player) > DRUM_AURA_RADIUS + e.r) return 1;
+      return (this.drumEvolved && this.drumCharge >= 6) || (this.weaponLevels.drum >= 7 && e.drumSlowTime > 0) ? .25 : 1;
+    }
+    tickDrum(dt, input) {
+      for (const e of this.enemies) e.drumSlowTime = Math.max(0, (e.drumSlowTime || 0) - dt);
+      if (this.drumFinale) {
+        const finale = this.drumFinale; finale.time += dt;
+        if (Math.floor(finale.time / .6) > finale.beat) {
+          finale.beat = Math.floor(finale.time / .6);
+          this.flashes.push({ kind: 'drumBeat', x: this.player.x, y: this.player.y, r: this.drumRadius(), duration: .65, life: .65, color: '#ffe6a0' });
+          this.events.push({ type: 'drumBeat', ultimate: true });
+        }
+        if (finale.time >= 2.4 - 1e-8) {
+          const radius = this.drumRadius(8); this.clearWaveMobs(); this.drumFinale = null;
+          this.flashes.push({ kind: 'drumFinal', x: this.player.x, y: this.player.y, r: radius, duration: 1.6, life: 1.6, color: '#fff0b2' });
+          this.banner = 'FINAL BEAT · The clearing answers'; this.bannerTime = 3;
+          this.events.push({ type: 'drumFinal' });
+        }
+        return;
+      }
+      if (this.player.weapon !== 'drum') { this.cancelDrumCharge(); this.drumAuraClock = 0; return; }
+      if (this.drumEvolved && !this.drumUltimateUsed) {
+        if (input.shooting) {
+          this.drumHolding = true; this.drumCharge = Math.min(DRUM_CHARGE_SECONDS, this.drumCharge + dt);
+          this.drumBeatClock -= dt;
+          if (this.drumBeatClock <= 1e-8) {
+            this.drumBeatClock += this.player.interval;
+            this.flashes.push({ kind: 'drumBeat', x: this.player.x, y: this.player.y, r: 65, duration: .5, life: .5, color: '#ffe5a1' });
+            this.events.push({ type: 'drumBeat', ultimate: true });
+          }
+          if (this.drumCharge >= 6 - 1e-8) {
+            this.drumCalmClock -= dt;
+            if (this.drumCalmClock <= 1e-8) {
+              this.drumCalmClock += .5;
+              this.flashes.push({ kind: 'drumCalm', x: this.player.x, y: this.player.y, r: DRUM_AURA_RADIUS, duration: .65, life: .65, color: '#b6e7ff' });
+            }
+          }
+        } else if (this.drumHolding) {
+          const charge = this.drumCharge; this.cancelDrumCharge();
+          if (charge >= DRUM_CHARGE_SECONDS - 1e-8) {
+            this.drumUltimateUsed = true; this.drumFinale = { time: 0, beat: -1 };
+            this.player.dashTime = 0; this.player.walking = false; this.bullets = this.bullets.filter(b => !b.hostile);
+            this.events.push({ type: 'drumBeat', ultimate: true });
+          } else if (charge > .08 && this.player.fireCooldown <= 0) {
+            const radius = this.drumRadius(charge); this.pulse(this.player, radius, this.attackDamage(), '#ffd67a', true);
+            this.attackCount++; this.player.fireCooldown = this.player.interval;
+            this.flashes.push({ kind: 'drumBeat', x: this.player.x, y: this.player.y, r: radius, duration: .65, life: .65, color: '#ffd67a' });
+            this.events.push({ type: 'drumBeat' });
+          }
+        }
+      }
+      if (this.weaponLevels.drum >= 7 && !this.finishedWave) {
+        this.drumAuraClock -= dt;
+        if (this.drumAuraClock <= 1e-8) {
+          this.drumAuraClock += 2;
+          for (const e of this.enemies) if (!e.dead && dist(e, this.player) <= DRUM_AURA_RADIUS + e.r) e.drumSlowTime = 2.1;
+          this.flashes.push({ kind: 'drumCalm', x: this.player.x, y: this.player.y, r: DRUM_AURA_RADIUS, duration: .8, life: .8, color: '#b6e7ff' });
+        }
+      }
+    }
+    clearWaveMobs() {
+      for (const e of [...this.enemies]) if (!e.dead) {
+        e.hp = e.boss ? Math.min(e.hp, e.maxHp * .5) : 0; e.hit = .12;
+        if (e.hp <= 0) this.defeat(e, true, true);
+      }
+      this.queue = this.queue.filter(type => TYPES[type]?.boss); this.copiesLeft = 0;
+      this.nukeBossCapWave = this.wave; this.pendingSummons = [];
+      this.enemies = this.enemies.filter(e => !e.dead); this.hazards = []; this.bullets = this.bullets.filter(b => !b.hostile);
     }
     difficultyTier() { return Math.min(4, Math.floor(this.level / 10)); }
     applyDifficulty(e) {
@@ -314,7 +415,7 @@
       if (p.slowTime > 0 || this.enemies.some(e => !e.dead && e.action === 'attached')) p.speed *= .6;
     }
     beginWave() {
-      this.wave++; this.finishedWave = false; this.breakTime = 0;
+      this.endDrumEvolution(); this.wave++; this.finishedWave = false; this.breakTime = 0;
       this.stormWave = this.wave % 10 === 0; this.weatherTime = 0;
       const late = this.totalWaves > 10 ? Math.max(0, this.wave - 10) : 0;
       const count = Math.ceil((6 + Math.floor(this.wave * 1.25) + Math.ceil(late / 5)) * 1.1);
@@ -441,7 +542,7 @@
       return true;
     }
     hurt(amount) {
-      if (this.mode !== 'playing' || this.transformRemaining > 0 || this.corruptedRemaining > 0 || this.player.invincible > 0 || this.active('shield')) return;
+      if (this.mode !== 'playing' || this.drumFinale || this.transformRemaining > 0 || this.corruptedRemaining > 0 || this.player.invincible > 0 || this.active('shield')) return;
       if (this.rank('ward') && this.wardCooldown <= 0) { this.wardCooldown = 30 - 5 * this.rank('ward'); this.flashes.push({ x: this.player.x, y: this.player.y, r: 40, life: .25, color: '#a5f2ff' }); return; }
       if (this.random() < .06 * this.rank('dodge')) return;
       super.hurt(amount * (1 - .08 * this.rank('armor')));
@@ -489,14 +590,17 @@
       if (!e.boss && !this.jadeCharges && this.transformRemaining <= 0 && this.corruptedRemaining <= 0 && this.jadeDropWave !== this.wave && this.random() < JADE_DROP_CHANCE) {
         if (this.addDrop('jadeSkull', e.x, e.y + 20, 'relic')) this.jadeDropWave = this.wave;
       }
+      if (!e.boss && this.drumRelicAllowed() && !this.finishedWave && !this.drumRelic && !this.drumEvolved && this.drumDropWave !== this.wave && this.random() < DRUM_DROP_CHANCE) {
+        if (this.addDrop('ultimateDrum', e.x + 25, e.y + 20, 'relic')) this.drumDropWave = this.wave;
+      }
     }
     pickup() {
-      if (this.mode !== 'playing') return false;
+      if (this.mode !== 'playing' || this.drumFinale) return false;
       const drop = this.drops.filter(d => d.kind === 'weapon' && dist(d, this.player) <= 36).sort((a, b) => dist(a, this.player) - dist(b, this.player))[0];
       if (!drop || this.commitWeapon && drop.id !== this.commitWeapon) return false;
       this.drops.splice(this.drops.indexOf(drop), 1);
       if (drop.id === this.player.weapon) {
-        if (this.weaponLevels[drop.id] < MAX_WEAPON_RANK) this.weaponLevels[drop.id]++;
+        if (this.weaponLevels[drop.id] < maxWeaponRank(drop.id)) this.weaponLevels[drop.id]++;
         else this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * .1);
       } else {
         const old = { ...this.player, r: 8 };
@@ -504,7 +608,7 @@
         this.addDrop(this.player.weapon, old.x, old.y);
         this.player.weapon = drop.id;
       }
-      this.player.fireCooldown = 0; this.refreshStats(); this.banner = weapon(drop.id).name + ' · Rank ' + WEAPON_RANKS[this.weaponLevels[drop.id] - 1]; this.bannerTime = 2;
+      this.cancelDrumCharge(); this.player.fireCooldown = 0; this.refreshStats(); this.banner = weapon(drop.id).name + ' · Rank ' + WEAPON_RANKS[this.weaponLevels[drop.id] - 1]; this.bannerTime = 2;
       this.events.push({ type: 'weapon' }); return true;
     }
     collectStaff() { return false; }
@@ -512,14 +616,7 @@
       if (!POWERS[id]) return;
       if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5), false);
       else if (id === 'nuke') {
-        for (const e of [...this.enemies]) if (!e.dead) {
-          e.hp = e.boss ? Math.min(e.hp, e.maxHp * .5) : 0;
-          e.hit = .12;
-          if (e.hp <= 0) this.defeat(e, true, true);
-        }
-        this.queue = this.queue.filter(type => TYPES[type].boss); this.copiesLeft = 0;
-        this.nukeBossCapWave = this.wave; this.pendingSummons = [];
-        this.enemies = this.enemies.filter(e => !e.dead); this.hazards = []; this.bullets = this.bullets.filter(b => !b.hostile);
+        this.clearWaveMobs();
         this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
       } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
       if (id === 'shock') this.shockClock = 0;
@@ -549,13 +646,20 @@
         if (knockback && !e.dead) { const angle = Math.atan2(e.y - center.y, e.x - center.x); move(this, e, Math.cos(angle) * 45, Math.sin(angle) * 45); }
       }
     }
+    attackDamage() {
+      const w = weapon(this.player.weapon); let damage = this.player.damage;
+      if (!w.cloud) for (let i = 1; i <= this.rank('rate'); i++) if (this.normalInterval(i) >= this.normalInterval(i - 1) - .000001) damage *= 1.05;
+      if (this.random() < Math.min(.5, .08 * this.rank('crit'))) damage *= 2;
+      return damage;
+    }
     fire() {
       const p = this.player, w = weapon(p.weapon); this.attackCount++;
       const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id], wave = w.wave && rank >= 3;
-      let damage = p.damage;
-      if (!w.cloud) for (let i = 1; i <= this.rank('rate'); i++) if (this.normalInterval(i) >= this.normalInterval(i - 1) - .000001) damage *= 1.05;
-      if (this.random() < Math.min(.5, .08 * this.rank('crit'))) damage *= 2;
-      if (w.melee && !wave || w.pulse) this.pulse(w.melee ? origin : p, (w.wave ? w.waveRadius : w.range) + (rank - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
+      const damage = this.attackDamage();
+      if (w.melee && !wave || w.pulse) {
+        this.pulse(w.melee ? origin : p, w.pulse ? this.drumRadius() : (w.wave ? w.waveRadius : w.range) + (rank - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
+        if (w.pulse) this.events.push({ type: 'drumBeat', ultimate: this.drumEvolved });
+      }
       else {
         const launch = (angle, multiplier = 1, secondary = false) => this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
           w.speed * (1 + .2 * this.rank('harpy')), { kind: w.wave ? 'clawWave' : w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: (w.range + (w.wave ? (rank - 1) * 20 : 0)) * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
@@ -591,7 +695,7 @@
       if (e.type === 'voidEgg') {
         if (this.active('freeze')) return;
         if (e.eggFlight) {
-          const f = e.eggFlight; f.time = Math.min(f.duration, f.time + dt); const progress = f.time / f.duration;
+          const f = e.eggFlight; f.time = Math.min(f.duration, f.time + dt * this.enemyMoveScale(e)); const progress = f.time / f.duration;
           e.x = f.x + (f.targetX - f.x) * progress; e.y = f.y + (f.targetY - f.y) * progress;
           e.launchHeight = (1 - progress) * 40 + Math.sin(progress * Math.PI) * 80;
           if (progress >= 1) { e.eggFlight = null; e.launchHeight = 0; }
@@ -647,7 +751,7 @@
       if (e.attach) { e.action = 'attached'; e.actionTime = 0; }
     }
     dash(input) {
-      if (this.transformRemaining > 0 || !super.dash(input)) return false;
+      if (this.drumFinale || this.transformRemaining > 0 || !super.dash(input)) return false;
       for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
       this.player.slowTime = 0; return true;
     }
@@ -841,7 +945,9 @@
       this.regenClock += dt; if (this.regenClock >= 4) { p.hp = Math.min(p.maxHp, p.hp + this.rank('regen')); this.regenClock -= 4; }
       this.refreshStats();
       const len = Math.hypot(input.dx || 0, input.dy || 0), startX = p.x, startY = p.y;
-      if (p.dashTime > 0) { move(this, p, p.dashX * 940 * dt, p.dashY * 940 * dt); p.dashTime -= dt; }
+      const performing = !!this.drumFinale;
+      if (performing) p.dashTime = 0;
+      else if (p.dashTime > 0) { move(this, p, p.dashX * 940 * dt, p.dashY * 940 * dt); p.dashTime -= dt; }
       else move(this, p, len ? (input.dx || 0) / len * p.speed * dt : 0, len ? (input.dy || 0) / len * p.speed * dt : 0);
       this.recordMovement(startX, startY);
       if (this.clawRush) {
@@ -854,7 +960,9 @@
         if (p.dashTime <= 0 || Math.hypot(p.x - startX, p.y - startY) < .0001) { this.clawRush = null; p.dashTime = 0; }
       }
       Base.aimAt(p, input);
-      if (input.shooting && p.fireCooldown <= 0 && !this.clawRush) this.fire();
+      this.tickDrum(dt, input);
+      const chargingDrum = p.weapon === 'drum' && this.drumEvolved && !this.drumUltimateUsed;
+      if (input.shooting && p.fireCooldown <= 0 && !this.clawRush && !this.drumFinale && !performing && !chargingDrum) this.fire();
       if (this.breakTime > 0) { this.breakTime -= dt; if (this.breakTime <= 0) this.beginWave(); }
       else if (this.queue.length && this.enemies.length < this.enemyLimit) {
         this.spawnTimer -= dt;
@@ -865,7 +973,7 @@
         }
       }
       const enemyDt = dt * (this.active('reflex') ? .5 : 1);
-      for (const e of this.enemies) e.movementLeft = p.speed * dt;
+      for (const e of this.enemies) e.movementLeft = p.speed * dt * this.enemyMoveScale(e);
       try {
         for (const e of this.enemies) { if (!e.dead) this.enemyTick(e, enemyDt); if (this.mode !== 'playing') return; }
         this.tickAreas(enemyDt); if (this.mode !== 'playing') return;
@@ -960,7 +1068,7 @@
         if (dist(gem, p) < 22) { this.gainXP(gem.value); gem.collected = true; this.events.push({ type: 'gem' }); }
       }
       this.gems = this.gems.filter(g => !g.collected);
-      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && this.collectJade()) d.life = 0; } }
+      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && (d.id === 'ultimateDrum' ? this.collectDrumRelic() : this.collectJade())) d.life = 0; } }
       this.drops = this.drops.filter(d => d.life > 0);
       this.flashes = this.flashes.filter(f => { f.life -= dt; return f.life > 0; }).slice(-60);
       this.effects = this.effects.filter(e => { e.life -= dt; e.y -= dt * 22; return e.life > 0; }).slice(-45);
@@ -970,8 +1078,8 @@
         this.refreshStats();
       }
       if (this.levelUp()) return;
-      if (!this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
-        this.finishedWave = true; this.bullets = [];
+      if (!this.drumFinale && !this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
+        this.endDrumEvolution(); this.finishedWave = true; this.bullets = [];
         this.refreshStats();
         if (this.wave === this.totalWaves) { this.storm = 0; this.stormWave = false; this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
         p.hp = Math.min(p.maxHp, p.hp + 15 + 10 * this.rank('recovery'));
@@ -980,6 +1088,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

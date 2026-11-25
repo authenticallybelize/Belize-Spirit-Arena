@@ -28,6 +28,15 @@
       jade.addEventListener('pointerdown', activate);
       jade.addEventListener('click', event => { if (event.detail === 0) activate(event); });
     }
+    const drum = document.createElement('button'); drum.id = 'drumButton'; drum.hidden = true;
+    if (game.evolveDrum) {
+      drum.setAttribute('aria-label', 'Evolve Drum of Calling this wave (R)'); drum.title = 'R / tap to evolve · Hold attack to charge, then release';
+      drum.innerHTML = '<img src="assets/' + root.SurvivalCore.DRUM_ICON + '" alt=""><span>R · EVOLVE</span>'; frame.append(drum);
+      const evolve = event => { event.preventDefault(); if (!dialog.hidden) return; game.evolveDrum(); update(); };
+      drum.addEventListener('pointerdown', evolve); drum.addEventListener('click', event => { if (event.detail === 0) evolve(event); });
+    }
+    const drumHud = document.createElement('div'); drumHud.id = 'drumChargeHud'; drumHud.hidden = true; drumHud.setAttribute('aria-label', 'Awakened Drum charge');
+    drumHud.innerHTML = '<strong>AWAKENED DRUM</strong><b>0 / 8s</b><div class="drum-charge-track" role="progressbar" aria-label="Ultimate drum charge" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0"><i></i></div><small>Hold fire to charge</small>'; frame.append(drumHud);
     const rotate = document.createElement('div'); rotate.className = 'rotate-prompt'; rotate.setAttribute('role', 'status');
     rotate.innerHTML = '<strong>Turn your phone sideways</strong><p>Your run is paused and stays right here.<br>Landscape gives both thumbs room to play.</p>';
     frame.append(rotate);
@@ -46,7 +55,7 @@
       const pointer = stick.pointer; stick.pointer = null; stick.x = stick.y = 0; stick.element.querySelector('i').style.transform = '';
       if (pointer !== null && stick.element.hasPointerCapture(pointer)) stick.element.releasePointerCapture(pointer);
     }
-    function reset() { sticks.forEach(resetStick); wasMoving = wasAiming = false; input.dx = input.dy = 0; input.shooting = false; input.relativeAim = false; input.aiming = false; }
+    function reset() { game.cancelDrumCharge?.(); sticks.forEach(resetStick); wasMoving = wasAiming = false; input.dx = input.dy = 0; input.shooting = false; input.relativeAim = false; input.aiming = false; }
     function apply() {
       document.body.style.setProperty('--stick-size', prefs.size + 'px'); document.body.style.setProperty('--stick-opacity', prefs.opacity);
       panel.classList.toggle('left-handed', prefs.leftHanded); panel.classList.toggle('dash-near', prefs.dashPosition === 'near');
@@ -100,7 +109,7 @@
         stick.pointer = event.pointerId; stick.element.setPointerCapture(event.pointerId); position(stick, event);
       });
       stick.element.addEventListener('pointermove', event => { if (event.pointerId === stick.pointer) { event.preventDefault(); position(stick, event); } });
-      for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) stick.element.addEventListener(type, event => { if (event.pointerId === stick.pointer) { resetStick(stick); update(); } });
+      for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) stick.element.addEventListener(type, event => { if (event.pointerId === stick.pointer) { if (event.type !== 'pointerup') game.cancelDrumCharge?.(); resetStick(stick); update(); } });
     }
     let shownWeapon = '';
     function update() {
@@ -111,6 +120,20 @@
         jade.disabled = game.mode !== 'playing' || transforming || active;
         jade.classList.toggle('active', active || transforming);
         jade.querySelector('span').textContent = transforming ? 'AWAKEN' : active ? Math.ceil(game.corruptedRemaining) + 's' : mobile ? 'TAP · JADE' : 'G · JADE';
+      }
+      if (game.evolveDrum) {
+        const showDrum = game.drumEvolved && game.player.weapon === 'drum';
+        frame.classList.toggle('drum-evolved', showDrum);
+        drumHud.hidden = !showDrum || !['playing', 'paused'].includes(game.mode);
+        drumHud.classList.toggle('ready', game.drumCharge >= 8 - .000001);
+        drumHud.querySelector('b').textContent = game.drumFinale ? 'FINALE' : game.drumUltimateUsed ? 'THIS WAVE' : game.drumCharge.toFixed(1) + ' / 8s';
+        drumHud.querySelector('i').style.width = Math.min(100, game.drumCharge / 8 * 100) + '%';
+        drumHud.querySelector('[role="progressbar"]').setAttribute('aria-valuenow', game.drumCharge.toFixed(1));
+        drumHud.querySelector('small').textContent = game.drumFinale ? 'Last beats · Mobs move at 1% speed' : game.drumUltimateUsed ? 'Ultimate spent · Double pulse radius remains' : game.drumCharge >= 8 - .000001 ? 'RELEASE FIRE · Unleash the final beat' : game.drumCharge >= 6 ? 'Nearby movement slowed 75% · Keep holding' : mobile ? 'Hold AIM / FIRE · Release at 8s for ultimate' : 'Hold left-click · Release at 8s for ultimate';
+        drum.hidden = !['playing', 'paused'].includes(game.mode) || !(game.drumRelic || game.drumEvolved);
+        drum.disabled = game.mode !== 'playing' || game.player.weapon !== 'drum' || game.drumEvolved || game.transformRemaining > 0;
+        drum.classList.toggle('active', game.drumEvolved);
+        drum.querySelector('span').textContent = game.drumFinale ? 'FINAL BEAT' : game.drumEvolved ? game.drumUltimateUsed ? 'THIS WAVE' : game.drumCharge >= 8 - .000001 ? 'RELEASE!' : game.drumCharge > 0 ? game.drumCharge.toFixed(1) + ' / 8s' : 'HOLD FIRE' : game.player.weapon !== 'drum' ? 'EQUIP DRUM' : mobile ? 'TAP · EVOLVE' : 'R · EVOLVE';
       }
       if (shownWeapon !== game.player.weapon) { shownWeapon = game.player.weapon; weapon.src = 'assets/' + ARENA_READY.weapons[shownWeapon].pickup; weapon.alt = 'Equipped: ' + (root.SurvivalCore ? SurvivalCore.weapon(shownWeapon).name : shownWeapon === 'staff' ? 'Duende Staff' : 'Joe’s Sling'); }
       const dash = panel.querySelector('#touchDash'), cooldown = game.player.dashCooldown;

@@ -27,7 +27,7 @@
   let ready = false, previousMode = '', last = 0, lastHud = 0, shake = 0, helpOpen = false, helpMode = 'menu';
   let soundOn = false, audio = null;
   let touch = null;
-  function clearInput() { keys.clear(); input.dx = input.dy = 0; input.shooting = false; input.aiming = false; mousePointer = null; touch?.reset(); }
+  function clearInput() { keys.clear(); input.dx = input.dy = 0; input.shooting = false; input.aiming = false; mousePointer = null; game.cancelDrumCharge?.(); touch?.reset(); }
   function movement() {
     input.dx = Number(keys.has('d') || keys.has('ArrowRight')) - Number(keys.has('a') || keys.has('ArrowLeft'));
     input.dy = Number(keys.has('s') || keys.has('ArrowDown')) - Number(keys.has('w') || keys.has('ArrowUp'));
@@ -63,6 +63,8 @@
       if (event.type === 'gem') tone(830, .08, .025, 1250);
       if (event.type === 'dash') { tone(240, .13, .04, 90, 'triangle'); burst(game.player.x, game.player.y, '#84eacc', 12); }
       if (event.type === 'hurt') { shake = .18; tone(120, .14, .06, 50, 'triangle'); }
+      if (event.type === 'drumBeat') { tone(event.ultimate ? 90 : 135, .22, .055, 45, 'sine'); burst(game.player.x, game.player.y - 35, '#ffdf89', 5); }
+      if (event.type === 'drumFinal') { tone(65, .9, .07, 30, 'sine'); burst(game.player.x, game.player.y, '#fff0be', 28); }
       if (event.type === 'thunder') tone(65, .8, .045, 32, 'sine');
       if (event.type === 'impact') burst(event.x, event.y, event.hostile ? '#c898f0' : '#f4d593', 4);
       if (event.type === 'defeat') { burst(event.x, event.y, '#75e8be', event.boss ? 24 : 10); tone(200, .06, .02, 85); }
@@ -104,6 +106,16 @@
     });
   }
   function drawEnemy(enemy, t) {
+    const dancing = game.drumFinale && !enemy.boss && !enemy.dead && enemy.warmup <= 0 && Math.hypot(enemy.x - game.player.x, enemy.y - game.player.y) < game.drumRadius();
+    if (!dancing) { drawEnemyArt(enemy, t); return; }
+    ctx.save();
+    if (!reducedMotion) { ctx.translate(enemy.x, enemy.y - Math.abs(Math.sin(t * 12 + enemy.id)) * 7); ctx.rotate(Math.sin(t * 12 + enemy.id) * .12); ctx.translate(-enemy.x, -enemy.y); }
+    drawEnemyArt(enemy, t);
+    ctx.fillStyle = '#ffeba4'; ctx.strokeStyle = '#ffeba4'; ctx.lineWidth = 2;
+    const x = enemy.x + enemy.r + 8, y = enemy.y - (enemy.height || 55) - 12;
+    ctx.beginPath(); ctx.ellipse(x, y, 4, 3, -.3, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.moveTo(x + 3, y); ctx.lineTo(x + 3, y - 15); ctx.lineTo(x + 10, y - 11); ctx.stroke(); ctx.restore();
+  }
+  function drawEnemyArt(enemy, t) {
     const { x, y, type } = enemy;
     if (story && enemy.objective) { StoryUI.drawCrystal(enemy, ctx, images); return; }
     if (enemy.dead && !window.ARENA_ROSTER?.[type]) { drawSprite(type, 4, x, y + 13, enemy.height || 60, false, Math.min(1, enemy.life * 4)); return; }
@@ -174,6 +186,7 @@
   }
   function drawJoe(t) {
     const p = game.player, firing = input.shooting && game.mode === 'playing', walking = p.walking && p.dashTime <= 0;
+    const evolvedDrum = p.weapon === 'drum' && game.drumEvolved;
     const direction = firing || !walking ? p.angle : p.moveAngle ?? Math.atan2(input.dy,input.dx);
     const frame = ArenaArt.nativeJoeFrame(direction, walking, (p.walkDistance || 0) / 216), native = ARENA_SPRITES.joe;
     const rect = native.frames[frame], scale = joeHeight / rect[3], anchor = (native.anchors[frame] - rect[0]) * scale;
@@ -189,13 +202,13 @@
         ctx.filter = 'sepia(1) hue-rotate(95deg) saturate(3) brightness(.78) contrast(1.35)';
         ctx.shadowColor = '#39ffad'; ctx.shadowBlur = game.transformRemaining > 0 ? 24 : 12;
       }
-      if (!firing || walking) {
+      if (!firing || walking || evolvedDrum) {
         body();
         const [hx,hy,rx,ry,rw,rh] = ArenaArt.carryHands[frame], weapon = ARENA_READY.weapons[p.weapon], grip = ArenaArt.carryGrips[p.weapon];
-        const size = ['spear','staff','crystal'].includes(p.weapon) ? 68 : p.weapon === 'claw' ? 34 : 48;
-        const carryAngle = firing ? p.angle : ['spear','staff','crystal','cacao','feather','obsidian'].includes(p.weapon) ? -Math.PI / 2 : row === 2 ? 2 : 1.14;
+        const size = evolvedDrum ? 60 : ['spear','staff','crystal'].includes(p.weapon) ? 68 : p.weapon === 'claw' ? 34 : 48;
+        const carryAngle = evolvedDrum ? game.drumFinale && !reducedMotion ? Math.sin(t * 20) * .07 : 0 : firing ? p.angle : ['spear','staff','crystal','cacao','feather','obsidian'].includes(p.weapon) ? -Math.PI / 2 : row === 2 ? 2 : 1.14;
         ctx.save(); ctx.translate((hx-rect[0])*scale-anchor,(hy-rect[1])*scale-joeHeight); ctx.rotate(carryAngle-weapon.heldAngle);
-        ctx.drawImage(images[weapon.held],-grip[0]*size/64,-grip[1]*size/64,size,size); ctx.restore();
+        ctx.drawImage(images[evolvedDrum ? SurvivalCore.DRUM_ICON : weapon.held],-grip[0]*size/64,-grip[1]*size/64,size,size); ctx.restore();
         // The original moving fist occludes the handle at its measured grip keyframe.
         ctx.drawImage(images[native.file],rx,ry,rw,rh,(rx-rect[0])*scale-anchor,(ry-rect[1])*scale-joeHeight,rw*scale,rh*scale);
       } else {
@@ -424,7 +437,7 @@
   });
   canvas.addEventListener('mousedown', event => { if (event.button === 2 && game.mode === 'playing' && game.special) { event.preventDefault(); mouseAim(event); game.special(input); } });
   canvas.addEventListener('dblclick', event => { if (event.button === 0 && game.mode === 'playing' && game.special) { event.preventDefault(); mouseAim(event); game.special(input); } });
-  function mouseRelease(event) { if (event.type === 'pointerup' && event.button !== 0) return; if (event.pointerId === mousePointer) { input.shooting = false; mousePointer = null; } }
+  function mouseRelease(event) { if (event.type === 'pointerup' && event.button !== 0) return; if (event.pointerId === mousePointer) { if (event.type !== 'pointerup') game.cancelDrumCharge?.(); input.shooting = false; mousePointer = null; } }
   window.addEventListener('pointerup', mouseRelease);
   canvas.addEventListener('pointercancel', mouseRelease);
   canvas.addEventListener('lostpointercapture', mouseRelease);
@@ -442,6 +455,7 @@
     if (game.mode !== 'playing') return;
     if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(key)) event.preventDefault();
     if (extended && key === 'e' && !event.repeat) { event.preventDefault(); game.pickup(); return; }
+    if (extended && key === 'r' && !event.repeat) { event.preventDefault(); game.evolveDrum(); return; }
     if (extended && key === 'g' && !event.repeat) { event.preventDefault(); game.activateJade(); return; }
     if (extended && key === 'q' && !event.repeat) { event.preventDefault(); game.special(input); return; }
     keys.add(key); movement(); if (key === ' ' && !event.repeat) game.dash(input);
@@ -474,7 +488,7 @@
   function arenaFiles(arena) { return [...new Set([arena.image, ...arena.obstacles.map(o => o.image), ...(arena.decor || []).map(d => d.image)].filter(Boolean))]; }
   const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', ...(extended ? arenaFiles(game.arena) : ['jungle-arena.png']), 'limestone-ruins.png', ...weaponFiles,
     ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
-    ...(extended ? [SurvivalCore.JADE_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
+    ...(extended ? [SurvivalCore.JADE_ICON, SurvivalCore.DRUM_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
     if (!loads.has(file)) loads.set(file, new Promise((resolve, reject) => {

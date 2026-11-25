@@ -33,9 +33,9 @@ const story = new Story.Game(seeded(19)); story.startStory(null); assert(!story.
 near(JADE_DROP_CHANCE,.001);
 const rare=game(), thresholdFoe=foe(rare); let rolls=[.99,.99,JADE_DROP_CHANCE]; rare.random=()=>rolls.shift() ?? .99; rare.defeat(thresholdFoe); assert.equal(rare.drops.length,0);
 const makeRare = (g,e) => {const rolls=[.99,.99,JADE_DROP_CHANCE-.000001];g.random=()=>rolls.shift() ?? .99;g.defeat(e);};
-makeRare(rare,foe(rare)); assert.equal(rare.drops.filter(d=>d.kind==='relic').length,1);
-makeRare(rare,foe(rare)); assert.equal(rare.drops.filter(d=>d.kind==='relic').length,1);
-rare.wave++; makeRare(rare,foe(rare,'alphaCrab')); assert.equal(rare.drops.filter(d=>d.kind==='relic').length,2);
+makeRare(rare,foe(rare)); assert.equal(rare.drops.filter(d=>d.id==='jadeSkull').length,1);
+makeRare(rare,foe(rare)); assert.equal(rare.drops.filter(d=>d.id==='jadeSkull').length,1);
+rare.wave++; makeRare(rare,foe(rare,'alphaCrab')); assert.equal(rare.drops.filter(d=>d.id==='jadeSkull').length,2);
 const mini=game(), child=foe(mini); child.summoned=true; child.summonXP=1; mini.random=()=>0; mini.defeat(child); assert.equal(mini.drops.length,0);
 const bossDrop=game(); bossDrop.random=()=>0; bossDrop.defeat(foe(bossDrop,'duende')); assert(!bossDrop.drops.some(d=>d.kind==='relic'));
 // Floor pickup stores one charge; touching it does not automatically transform.

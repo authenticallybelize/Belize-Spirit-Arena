@@ -73,3 +73,18 @@
 .touch-enabled.in-game #jadeButton{top:70px;left:max(12px,env(safe-area-inset-left));width:56px;min-height:65px}
 .touch-enabled.in-game #jadeButton img{width:44px;height:44px}
 .cinematic-open #jadeButton{display:none}
+
+#drumButton{position:absolute;z-index:6;top:182px;left:18px;width:74px;min-height:80px;padding:4px;border:1px solid #ffd878;border-radius:8px;background:#211b0be8;box-shadow:0 0 18px #ffca4d44;color:#fff0bb;touch-action:none;cursor:pointer}
+#drumButton img{display:block;width:54px;height:54px;object-fit:contain;margin:auto;pointer-events:none}
+#drumButton span{display:block;font:bold 9px Arial;letter-spacing:.2px;pointer-events:none}
+#drumButton.active{opacity:1;border-color:#ffe9a1;box-shadow:0 0 22px #ffce5b77;cursor:default}
+.touch-enabled.in-game #drumButton{top:148px;left:max(12px,env(safe-area-inset-left));width:66px;min-height:65px}
+.touch-enabled.in-game #drumButton img{width:44px;height:44px}
+.cinematic-open #drumButton{display:none}
+
+#drumChargeHud{position:absolute;z-index:5;bottom:28px;left:50%;transform:translateX(-50%);width:min(340px,65vw);padding:10px 12px;border:1px solid #c3a24e;border-radius:8px;background:#1e1a0eef;color:#fff0c3;pointer-events:none;box-shadow:0 5px 18px #0005;font:11px Arial}
+#drumChargeHud strong{font-size:11px;letter-spacing:1px}#drumChargeHud b{float:right;color:#ffe08c}#drumChargeHud small{display:block;margin-top:6px;font-size:10px;line-height:1.3;color:#e1d9bb}
+.drum-charge-track{height:7px;margin-top:7px;background:#080d09;border:1px solid #756d40;border-radius:4px;overflow:hidden}.drum-charge-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,#b7982b,#ffe897)}
+#drumChargeHud.ready{border-color:#fff1af;box-shadow:0 0 24px #ffdc6977}.drum-evolved .arena-status{display:none}
+.touch-enabled.in-game #drumChargeHud{bottom:96px;width:260px;max-width:46vw;padding:8px 10px}
+.cinematic-open #drumChargeHud{display:none}

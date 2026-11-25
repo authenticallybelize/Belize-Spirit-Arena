@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { Game, TYPES, ALPHAS, BOSSES, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, PERKS, xpForLevel } = require('../survival.js');
+const { Game, TYPES, ALPHAS, BOSSES, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, PERKS, xpForLevel } = require('../survival.js');
 const Story = require('../story-campaign.js');
 const seeded = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
 const near = (a, b, message) => assert(Math.abs(a - b) < Math.max(1e-7, Math.abs(b) * 1e-10), message || `${a} != ${b}`);
@@ -101,15 +101,15 @@ const arrivals = game(1, 1); arrivals.queue = ['crab', 'crab', 'crab']; arrivals
 for (let i = 0; i < 180; i++) arrivals.update(1 / 120);
 assert.equal(arrivals.enemies.length, 3); assert.equal(arrivals.queue.length, 0);
 console.log('PASS: every enemy movement/charge path stays at or below Joe, including crowd pushes, slow expiry, upgrades and dash; faster baseline spawns actually arrive.');
-assert.equal(MAX_WEAPON_RANK, 6); assert.equal(WEAPON_RANKS.at(-1), 'VI');
+assert.equal(MAX_WEAPON_RANK, 6); assert.equal(WEAPON_RANKS.at(-1), 'VII');
 for (const w of WEAPONS) {
   const g = game(); g.player.weapon = w.id; g.refreshStats(); const base = g.player.damage;
-  for (let rank = 2; rank <= 6; rank++) {
+  for (let rank = 2; rank <= maxWeaponRank(w.id); rank++) {
     g.addDrop(w.id, g.player.x, g.player.y); assert(g.pickup()); assert.equal(g.weaponLevels[w.id], rank);
     near(g.player.damage, base * (1 + .15 * (rank - 1)));
     g.bullets = []; g.fire(); assert(g.bullets.every(b => Number.isFinite(b.homing + b.damage)));
   }
-  g.player.hp = 50; g.addDrop(w.id, g.player.x, g.player.y); assert(g.pickup()); assert.equal(g.weaponLevels[w.id], 6); assert.equal(g.player.hp, 60);
+  g.player.hp = 50; g.addDrop(w.id, g.player.x, g.player.y); assert(g.pickup()); assert.equal(g.weaponLevels[w.id], maxWeaponRank(w.id)); assert.equal(g.player.hp, 60);
 }
 const ricochet = game(); ricochet.ranks.ricochet = 4; ricochet.fire(); near(ricochet.bullets[0].ricochetBoost, 1.3); assert.equal(ricochet.bullets[0].bounces, 2);
 const ward = game(); ward.ranks.ward = PERKS.find(p => p.id === 'ward').max; ward.hurt(10); assert.equal(ward.wardCooldown, 5);
