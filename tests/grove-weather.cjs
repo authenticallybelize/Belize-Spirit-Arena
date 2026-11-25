@@ -51,7 +51,7 @@ const clock = storm.weatherTime; storm.pause(); storm.update(.25); assert.equal(
 storm.resume(); storm.mode = 'upgrade'; storm.update(.25); assert.equal(storm.weatherTime, clock); storm.mode = 'playing';
 storm.collectPower('freeze'); advance(storm, .25); assert(storm.weatherTime > clock, 'Freeze unexpectedly stopped ambient weather');
 storm.finishedWave = true; storm.breakTime = 4; advance(storm, 2.1); assert.equal(storm.storm, 0);
-storm.start({ arena: 'grove', mode: 'survival' }); assert.equal(storm.storm, 0); assert.equal(storm.weatherTime, 0); assert(!storm.stormWave);
+storm.random = () => .5; storm.start({ arena: 'grove', mode: 'survival' }); assert.equal(storm.storm, 0); assert.equal(storm.weatherTime, 0); assert(!storm.stormWave);
 for (const [wave, mode] of [[10, 'run'], [Run.SURVIVAL_WAVES, 'survival']]) {
   const g = game(wave, mode); g.queue = []; g.storm = 1; g.update(.01); assert.equal(g.mode, 'victory'); assert.equal(g.storm, 0); assert(!g.stormWave);
 }

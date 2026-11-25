@@ -1,5 +1,9 @@
 # Spirit Arena artwork and references
 
+## Duende boots — 2026-11-25
+
+`ready/relics/duende-boot.png` is an original transparent ImageGen output, using the existing Duende art as a style reference. The worn brown leather boot has green leaf wraps, gold eyelets and jade stitching. The generated PNG is used unmodified as the world pickup; its manifest records dimensions and SHA-256. The wildcard belt reuses the existing Jade Skull and Golden Drum icons. Healing pellets, sharpness outlines, attachment countdown and explosion fragments are Canvas effects.
+
 ## Spirit Drum relic — 2026-11-25
 
 `ready/relics/ultimate-drum.png` is an original transparent ImageGen output based on the existing `ready/weapons/drum/pickup.png`. It keeps the drum's silhouette and view while using a black carved wood body, yellow/gold trim, white rope lacing, a light leather head and restrained golden glow. The unmodified generated output is used as the world pickup, inventory/evolution icon and carried evolved drum. `ready/relics/ultimate-drum.json` records dimensions and its SHA-256. No existing weapon or full-body Joe image was replaced; measured hand anchors place the evolved drum on the intact native Joe body. Dance motion, musical notes, charge guide, blue slowing rings and gold finale wave are Canvas effects.

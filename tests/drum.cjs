@@ -14,8 +14,8 @@ function foe(g,type='corruptedHen',dx=200,dy=0,hp=1e6) {
 }
 function advance(g,seconds,input={}) {for(let t=0;t<seconds-1e-8;t+=1/120)g.update(Math.min(1/120,seconds-t),input);}
 function evolve(g) {assert(g.collectDrumRelic());assert(!g.drumEvolved);assert(g.evolveDrum());assert(g.drumEvolved);assert(!g.evolveDrum());}
-// Only Drum gains VII; duplicate at its true maximum heals, never upgrades to VIII.
-for(const w of WEAPONS)assert.equal(maxWeaponRank(w.id),w.id==='drum'?7:6);
+// Drum and Obsidian gain VII; duplicate at its true maximum heals, never upgrades to VIII.
+for(const w of WEAPONS)assert.equal(maxWeaponRank(w.id),['drum','obsidian'].includes(w.id)?7:6);
 const ranks=game();for(let rank=2;rank<=7;rank++){ranks.addDrop('drum',ranks.player.x,ranks.player.y);assert(ranks.pickup());assert.equal(ranks.weaponLevels.drum,rank);near(ranks.player.damage,65*(1+.15*(rank-1)));}
 ranks.player.hp=50;ranks.addDrop('drum',ranks.player.x,ranks.player.y);ranks.pickup();assert.equal(ranks.weaponLevels.drum,7);near(ranks.player.hp,60);near(ranks.drumRadius(),170);
 // The blue VII pulse is passive, movement-only, local and emitted every two active seconds.
@@ -63,15 +63,15 @@ const playerX=full.player.x;advance(full,.5,{dx:1});near(full.player.x,playerX);
 full.pause();const beat=full.drumFinale.time;advance(full,1);near(full.drumFinale.time,beat);full.resume();advance(full,2);
 assert(mob.dead&&alpha.dead);assert.equal(full.pendingSummons.length,0);assert.deepEqual(full.queue,['lloronaBoss']);assert.equal(full.copiesLeft,0);near(guardian.hp,guardian.maxHp*.2);assert(!guardian.dead);assert(!full.finishedWave);assert(full.flashes.some(f=>f.kind==='drumFinal'));
 assert(full.spawn('lloronaBoss'));near(full.enemies.at(-1).hp,full.enemies.at(-1).maxHp*.5);
-advance(full,9,{shooting:true});assert(!full.drumFinale);assert(full.drumUltimateUsed);assert(full.drumEvolved);near(full.drumCharge,0);assert(!full.collectDrumRelic());
+advance(full,9,{shooting:true});assert(!full.drumFinale);assert(full.drumUltimateUsed);assert(full.drumEvolved);near(full.drumCharge,0);assert(full.collectDrumRelic());assert(!full.evolveDrum());
 // The form expires on clear, regardless of time. VII stays; the next wave can drop another relic.
 const expire=game(7);evolve(expire);advance(expire,45);assert(expire.drumEvolved);expire.queue=[];advance(expire,.01);assert(expire.finishedWave);assert(!expire.drumEvolved);near(expire.drumRelic,0);near(expire.weaponLevels.drum,7);near(expire.drumRadius(),170);
 expire.beginWave();assert(expire.collectDrumRelic());assert(expire.evolveDrum());expire.start({mode:'survival'});assert(!expire.drumEvolved);near(expire.drumRelic,0);assert(!expire.drumFinale);
-const skipped=game();skipped.collectDrumRelic();skipped.beginWave();assert.equal(skipped.drumRelic,0);
+const skipped=game();skipped.collectDrumRelic();skipped.beginWave();assert.equal(skipped.drumRelic,1);
 const story=new Story.Game(seeded(7));story.startStory(null);assert(!story.drumRelicAllowed());
 const storage={value:null,getItem(){return this.value;},setItem(_,v){this.value=v;}},store=new Story.Store(storage);story.startStory(store);story.weaponLevels.drum=7;assert(store.checkpoint(story));assert(!new Story.Store(storage).readOnly);story.weaponLevels.staff=7;assert(!store.checkpoint(story));
 const bytes=fs.readFileSync(path.join(__dirname,'../assets',DRUM_ICON));assert.equal(bytes[25],6);
 const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/ready/relics/ultimate-drum.json')));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),manifest.sha256);
 const stress=game(7);stress.enemyLimit=96;for(let i=0;i<96;i++)foe(stress,i%2?'corruptedHen':'corruptedToad',150+i%12*28,-180+Math.floor(i/12)*40,1e8);evolve(stress);
 const start=performance.now();advance(stress,8,{shooting:true});assert(stress.enemies.length<=96);assert(stress.flashes.length<=60);console.log(`Drum logic stress: ${((performance.now()-start)/960).toFixed(2)} ms per 120 Hz step with 96 mobs.`);
-console.log('PASS: Drum-only VII cap/healing/save compatibility; 2s local damage-free slowing aura; exact rare drop; opt-in evolution; doubled radius; charge/partial release/cooldown; all-map reach; 6s 75% slow; held readiness; release-only protected 1% finale; one use; full wave/brood clear; boss half-HP/no healing; wave expiry/reset; transparent art/hash.');
+console.log('PASS: Drum/Obsidian VII caps/healing/save compatibility; 2s local damage-free slowing aura; exact rare drop; opt-in evolution; doubled radius; charge/partial release/cooldown; all-map reach; 6s 75% slow; held readiness; release-only protected 1% finale; one use; full wave/brood clear; boss half-HP/no healing; wave expiry/reset; transparent art/hash.');

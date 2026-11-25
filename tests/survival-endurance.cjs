@@ -17,7 +17,7 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   assert(g.spawnInterval <= lastInterval && g.spawnInterval >= .1 / 1.25);
   assert(g.enemyLimit >= lastLimit && g.enemyLimit <= 96);
   const bosses = g.queue.filter(type => TYPES[type].boss).length;
-  if (wave % 5 === 0) assert.equal(bosses, wave > 40 ? 2 : 1);
+  if (wave % 5 === 0) assert.equal(bosses, wave >= 40 ? 2 : 1);
   else assert(wave > 50 ? bosses <= 1 : bosses === 0);
   assert(g.spawn('crab')); const e = g.enemies[0];
   assert(e.hp > lastHP && e.damage > lastDamage, 'Enemy strength did not increase at wave ' + wave);

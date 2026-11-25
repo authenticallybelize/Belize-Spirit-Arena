@@ -1,6 +1,22 @@
 # Belize: Spirit Arena
 
+## Wildcard belt, Duende boots and Obsidian VII — 0.19.0
+
+Jade Skull and Golden Drum are held wildcards in a **four-slot belt**, one of each type. A duplicate may drop while its card is stored or its effect is active, but stays on the board until that stored card is used. Stored cards survive waves. G / tap activates Jade; R / tap activates Golden Drum while equipped. An active effect cannot stack; a spare can be held for later. Golden evolution still ends with its wave. Only these two wildcard types exist currently.
+
+**Guardian Resonance now caps at VII**, two ranks beyond its former V. Ranks I–V retain +20% duration per rank; VI gives 2.5× and VII gives 3×. Timed powers and Corrupted Joe benefit (Jade reaches 90 active seconds). Wave-bound Golden Drum stays wave-bound.
+
+A defeated Duende drops boots for **Dash II: 2× distance**. Wave **40 has two Duendes**; defeating both in that encounter unlocks the boot for **Dash III: 3× distance and 1.1s recharge**. I/II retain 1.65s recharge. Dashes phase through mobs with protection for their full length; solid cover and arena boundaries still stop Joe. Boots last for the run.
+
+**Obsidian III** adds a visible sharpness outline and wider hit radius (22 vs 8). **VII is its new maximum. Every tenth successfully launched primary VII shard** instantly defeats its first target, attaches to the nearest visible mob within 360 units, then bursts after one active second: the attached mob dies and others within 90 units plus their hit radius take 25% maximum HP damage. Bosses can die to the two direct execution hits. Story shields/phases retain their rules. Extra Duplicate/Overflow shards do not advance or trigger the tenth-shard effect; without a second target it bursts at the first target’s location.
+
+Small **red pellets restore 5 HP**. Each wave draws a weighted quota of 1–10 drops: 45% one, 30% two, 10% three, then progressively rarer totals up to ten (0.5%). Sequential sampling spreads the quota across scheduled non-mini defeats without large arrays. At least one pellet is available even after a map-clearing power; no more than ten spawn and no more than 50 pellet HP can be restored in a wave. Full-health Joe leaves pellets on the floor. Uncollected pellets expire at the next wave. Existing regeneration and wave-clear healing are separate.
+
+The root address opens the current versioned Survival URL, HTML uses no-store, and entry-page JS/CSS carry the release version. This avoids reusing the old saved 140-wave page when opening the main address.
+
 A separate, local Canvas arena shooter prototype starring teenage Joe Grind. No accounts, downloads, package installation, or external services are needed to play. The original Legends of Belize files and save data are untouched.
+
+Validation: all 18 automated suites pass, including prior combat/save/asset checks and the new wildcard, boot, shard and pellet cases. Desktop (1440×1000) and touch (844×390) browser fixtures exercise actual pickup/activation/dash controls, duplicate preservation, the attached shard and 25% splash, healing and pause, with no application or asset errors. Classic and Story still load. Controlled fixtures verify mechanics; full-run difficulty still depends on player feedback.
 
 ## Main address and browser update fix — 0.18.1
 

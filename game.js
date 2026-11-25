@@ -287,6 +287,15 @@
     if (extended) SurvivalUI.draw(game, ctx, images);
     if (story) StoryUI.draw(game, ctx);
     for (const b of game.bullets) {
+      if (b.obsidianArmed) {
+        ctx.save(); ctx.translate(b.x,b.y-32); ctx.rotate(game.time*3); ctx.strokeStyle = '#ffdf9a'; ctx.shadowColor = '#d0a1ff'; ctx.shadowBlur = 15; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0,0,20,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.max(0,b.armRemaining)); ctx.stroke();
+        ctx.drawImage(images[ARENA_READY.weapons.obsidian.projectile],-18,-13,36,26); ctx.restore(); continue;
+      }
+      if (b.sharpness) {
+        ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(Math.atan2(b.vy,b.vx)); ctx.strokeStyle = b.obsidianExecution ? '#ffe6a7' : '#e6c9ff'; ctx.shadowColor = '#b96dff'; ctx.shadowBlur = 10; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(32,0); ctx.lineTo(-16,-21); ctx.lineTo(-8,0); ctx.lineTo(-16,21); ctx.closePath(); ctx.stroke(); ctx.restore();
+      }
       if (b.kind === 'clawWave') {
         ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(Math.atan2(b.vy, b.vx));
         ctx.globalAlpha = Math.min(1, b.life * 8); ctx.strokeStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = 10; ctx.lineWidth = 3;
@@ -296,7 +305,7 @@
       const len = Math.hypot(b.vx, b.vy), color = b.color || (b.hostile ? '#d99cfa' : b.kind === 'magic' ? '#9fffd0' : '#c5b39a');
       ctx.lineWidth = b.hostile ? 3 : 3.5; ctx.strokeStyle = b.hostile ? '#8948b5aa' : b.kind === 'magic' ? '#58dca88c' : '#77664e66';
       ctx.beginPath(); ctx.moveTo(b.x - b.vx / len * (b.kind === 'stone' ? 7 : 18), b.y - b.vy / len * (b.kind === 'stone' ? 7 : 18)); ctx.lineTo(b.x, b.y); ctx.stroke();
-      ctx.fillStyle = color; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = color; ctx.beginPath(); ctx.arc(b.x, b.y, b.sharpness ? 8 : b.r, 0, Math.PI * 2); ctx.fill();
       const readyArt = ARENA_READY.weapons[b.weapon || (b.kind === 'stone' ? 'slingshot' : 'staff')];
       if (!b.hostile && readyArt && images[readyArt.projectile]) {
         const width = b.explosive ? 38 : 32, height = width * .75;
@@ -331,6 +340,7 @@
     [...$('waveDots').children].forEach((dot, index) => { const current = extended ? Math.ceil(Math.max(1, game.wave) / 5) : Math.max(1, game.wave); dot.className = index + 1 < current ? 'done' : index + 1 === current ? 'active' : ''; });
     $('killsLabel').textContent = `${game.kills} spirit${game.kills === 1 ? '' : 's'} released`;
     $('dashLabel').textContent = p.dashCooldown > 0 ? `SPACE · DASH ${p.dashCooldown.toFixed(1)}s` : 'SPACE · DASH READY';
+    if (extended && p.dashRank > 1) $('dashLabel').textContent += ' · BOOTS ' + SurvivalCore.WEAPON_RANKS[p.dashRank - 1];
     $('dashLabel').style.color = p.dashCooldown > 0 ? '#aeb7a4' : '#bcf3cf';
     if (extended && p.weapon === 'claw' && !document.body.classList.contains('touch-enabled')) $('dashLabel').textContent += p.specialCooldown > 0 ? ` · Q / RMB · RUSH ${p.specialCooldown.toFixed(1)}s` : ' · Q / RMB · CLAW RUSH READY';
     $('weaponLabel').textContent = p.weapon === 'staff' ? 'DUENDE STAFF' : 'SLINGSHOT';
@@ -488,7 +498,7 @@
   function arenaFiles(arena) { return [...new Set([arena.image, ...arena.obstacles.map(o => o.image), ...(arena.decor || []).map(d => d.image)].filter(Boolean))]; }
   const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', ...(extended ? arenaFiles(game.arena) : ['jungle-arena.png']), 'limestone-ruins.png', ...weaponFiles,
     ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
-    ...(extended ? [SurvivalCore.JADE_ICON, SurvivalCore.DRUM_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
+    ...(extended ? [SurvivalCore.BOOT_ICON, SurvivalCore.JADE_ICON, SurvivalCore.DRUM_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
     if (!loads.has(file)) loads.set(file, new Promise((resolve, reject) => {

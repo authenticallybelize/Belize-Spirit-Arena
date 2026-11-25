@@ -35,6 +35,7 @@
     }
     if (Run.WEAPONS.some(w => !Number.isInteger(c.weaponLevels[w.id]) || c.weaponLevels[w.id] < 1 || c.weaponLevels[w.id] > Run.maxWeaponRank(w.id))) return false;
     const p = c.player, a = arenaFor(c.arena), b = a.bounds;
+    if (p?.dashRank !== undefined && (!Number.isInteger(p.dashRank) || p.dashRank < 1 || p.dashRank > 3)) return false;
     return p && weaponIDs.includes(p.weapon) && ['hp', 'maxHp', 'speed', 'damage', 'interval', 'x', 'y', 'r'].every(k => Number.isFinite(p[k]) && p[k] > 0) &&
       p.hp <= p.maxHp && p.interval >= .03 && p.r === 13 && p.x >= b.x + p.r && p.x <= b.x + b.w - p.r &&
       p.y >= b.y + p.r && p.y <= b.y + b.h - p.r && !a.obstacles.some(o => Base.circleRect(p.x, p.y, p.r, o)) &&
@@ -136,6 +137,7 @@
         this.mode = 'storyGuardian'; this.store?.checkpoint(this, c.stage); if (c.stage === 'door') this.openDoor();
       }
     }
+    queuedEnemies() { return this.queue.length; }
     beginWave() {
       this.endDrumEvolution(); this.wave++; this.finishedWave = false; this.breakTime = 0; this.guardianReleased = false;
       const index = Math.floor((this.wave - 1) / 5), local = (this.wave - 1) % 5, trial = TRIALS[index];
@@ -144,7 +146,7 @@
       const count = local === 4 ? 3 + index : 6 + local * 3 + index * 2;
       this.queue = Array.from({ length: count }, (_, i) => packs[index][(i + this.wave) % 4]);
       if (local === 4) this.queue.unshift(trial.boss);
-      this.spawnInterval = Math.max(.4, .85 - .018 * this.wave); this.enemyLimit = 18; this.spawnTimer = 1.3;
+      this.spawnInterval = Math.max(.4, .85 - .018 * this.wave); this.enemyLimit = 18; this.spawnTimer = 1.3; this.planWaveLoot();
       this.banner = trial.name + ' · Wave ' + this.wave + ' / 20'; this.bannerTime = 3;
       this.refreshStats(); this.store?.checkpoint(this); this.events.push({ type: 'wave' });
       if ([6, 9, 11, 14, 16, 19].includes(this.wave)) { this.pendingBeat = this.wave; this.mode = 'storyBeat'; }

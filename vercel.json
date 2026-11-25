@@ -14,11 +14,20 @@
       ]
     },
     {
-      "source": "/(.*)\\.(html|js|css)",
+      "source": "/(.*)\\.(js|css)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
         }
       ]
     }
@@ -26,7 +35,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/survival.html",
+      "destination": "/survival.html?build=0.19.0",
       "permanent": false
     }
   ]

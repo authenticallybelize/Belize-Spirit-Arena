@@ -54,6 +54,8 @@
     xtabaiBoss: [{ kind: 'area', count: 3, radius: 92, warning: 1.25, life: 2, color: '#80d5b0' }, { kind: 'fan', count: 7, spread: .22, speed: 190, warning: .9, color: '#9fddb3' }]
   };
   const MOB_WEAPON_CHANCE = .06;
+  const WILDCARD_CAPACITY = 4, BOOT_ICON = 'ready/relics/duende-boot.png';
+  const HEALTH_BUDGETS = [[1,.45],[2,.75],[3,.85],[4,.90],[5,.94],[6,.96],[7,.975],[8,.985],[9,.995],[10,1]];
   const DRUM_DROP_CHANCE = .001, DRUM_ICON = 'ready/relics/ultimate-drum.png', DRUM_CHARGE_SECONDS = 8, DRUM_AURA_RADIUS = 110;
   const JADE_DROP_CHANCE = .001, JADE_ICON = 'ready/relics/jade-skull.png', JADE_TRANSFORM_SECONDS = 1.2, CORRUPTED_SECONDS = 30;
   const POWER_DROP_CHANCE = .035 * 1.15, RANDOM_BOSS_CHANCE = .2, HOSTILE_SPEED_FACTOR = .85;
@@ -102,8 +104,8 @@
     { id: 'staff', name: 'Duende Staff', damage: 45.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
   ];
   const WEAPON_RANKS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-  const MAX_WEAPON_RANK = 6; // Drum alone has a seventh rank.
-  const maxWeaponRank = id => id === 'drum' ? 7 : MAX_WEAPON_RANK;
+  const MAX_WEAPON_RANK = 6; // Drum and Obsidian alone reach VII.
+  const maxWeaponRank = id => ['drum', 'obsidian'].includes(id) ? 7 : MAX_WEAPON_RANK;
   const FEATHER_HOMING = [1.1, 1.75, 2.45, Math.PI, Math.PI, Math.PI];
   const weapon = id => WEAPONS.find(w => w.id === id) || WEAPONS[0];
   const PERKS = [
@@ -121,7 +123,7 @@
     ['recovery', 'River Recovery', '+10 wave-clear healing', 3, 'Uncommon'],
     ['second', 'Second Wind', 'Below 35% HP: speed, fire and damage', 1, 'Uncommon'],
     ['duplicate', 'Duende Trick', '+8% phantom-shot chance · 60% damage', 3, 'Uncommon', 'projectile'],
-    ['resonance', 'Guardian Resonance', '+20% temporary power duration', 3, 'Uncommon'],
+    ['resonance', 'Guardian Resonance', 'Longer powers: +20% through V · 2.5× at VI · 3× at VII', 5, 'Uncommon'],
     ['rhythm', 'Belizean Rhythm', 'Kill-triggered spirit pulse: 25 → 20 → 15 → 10 → 5', 3, 'Uncommon'],
     ['breathing', 'Breathing Room', 'Knock back foes · 1.5s protection on resume', 1, 'Uncommon'],
     ['pierce', 'Obsidian Edge', 'Pierce one more target · 15% falloff', 3, 'Rare', 'projectile'],
@@ -217,8 +219,10 @@
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.hazards = []; this.attackCount = 0;
       this.navigation = {}; this.pendingSummons = [];
+      this.wildcards = []; this.player.dashRank = 1; this.duendeTrialComplete = false; this.duendesKilledThisWave = 0; this.obsidianThrows = 0;
+      this.healthTarget = 0; this.healthDrops = 0; this.healthSlotsLeft = 0; this.healthHealed = 0;
       this.player.specialCooldown = 0; this.clawRush = null;
-      this.jadeCharges = 0; this.jadeDropWave = 0; this.transformRemaining = 0; this.corruptedRemaining = 0; this.nukeBossCapWave = 0;
+      this.jadeCharges = 0; this.jadeDropWave = 0; this.transformRemaining = 0; this.corruptedRemaining = 0; this.corruptedDuration = CORRUPTED_SECONDS; this.nukeBossCapWave = 0;
       this.drumDropWave = 0; this.drumAuraClock = 0; this.endDrumEvolution();
       this.storm = 0; this.stormWave = false; this.weatherTime = 0;
       this.wardCooldown = 0; this.regenClock = 0; this.shockClock = 0; this.bossesDefeated = 0; this.commitWeapon = null; this.xpFraction = 0;
@@ -246,14 +250,26 @@
       }
       return id;
     }
+    get jadeCharges() { return this.wildcards.includes('jadeSkull') ? 1 : 0; }
+    set jadeCharges(value) { this.setWildcard('jadeSkull', !!value); }
+    get drumRelic() { return this.wildcards.includes('ultimateDrum') ? 1 : 0; }
+    set drumRelic(value) { this.setWildcard('ultimateDrum', !!value); }
+    setWildcard(id, held) {
+      if (!held) { this.wildcards = this.wildcards.filter(card => card !== id); return true; }
+      if (this.wildcards.includes(id) || this.wildcards.length >= WILDCARD_CAPACITY) return false;
+      this.wildcards.push(id); return true;
+    }
+    powerDuration(seconds) {
+      const rank = Math.min(7, this.rank('resonance'));
+      return seconds * (1 + .2 * Math.min(5, rank) + .5 * Math.max(0, rank - 5));
+    }
     collectJade() {
-      if (this.jadeCharges || this.transformRemaining > 0 || this.corruptedRemaining > 0) return false;
-      this.jadeCharges = 1; this.banner = 'Jade Skull · Press G or tap the idol to transform'; this.bannerTime = 4;
+      if (!this.setWildcard('jadeSkull', true)) return false; this.banner = 'Jade Skull · Press G or tap the idol to transform'; this.bannerTime = 4;
       this.events.push({ type: 'weapon' }); return true;
     }
     activateJade() {
       if (this.mode !== 'playing' || this.drumFinale || !this.jadeCharges || this.transformRemaining > 0 || this.corruptedRemaining > 0) return false;
-      this.jadeCharges = 0; this.transformRemaining = JADE_TRANSFORM_SECONDS;
+      this.jadeCharges = 0; this.corruptedDuration = this.powerDuration(CORRUPTED_SECONDS); this.transformRemaining = JADE_TRANSFORM_SECONDS;
       this.player.slowTime = this.player.venomTime = this.player.dashTime = 0; this.player.walking = false; this.clawRush = null;
       for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
       this.banner = 'The Jade Skull awakens · CORRUPTED JOE'; this.bannerTime = 3;
@@ -274,8 +290,8 @@
     get drumEvolved() { return this.drumEvolutionWave === this.wave && this.wave > 0 && !this.finishedWave; }
     drumRelicAllowed() { return true; }
     collectDrumRelic() {
-      if (this.finishedWave || this.drumRelic || this.drumEvolved) return false;
-      this.drumRelic = 1; this.banner = 'Spirit Drum found · Equip Drum of Calling · R / tap to evolve this wave'; this.bannerTime = 4;
+      if (!this.setWildcard('ultimateDrum', true)) return false;
+      this.banner = 'Golden Drum saved in the wildcard belt · Equip the drum · R / tap to evolve'; this.bannerTime = 4;
       this.events.push({ type: 'weapon' }); return true;
     }
     evolveDrum() {
@@ -286,8 +302,7 @@
     }
     cancelDrumCharge() { this.drumCharge = 0; this.drumHolding = false; this.drumCalmClock = 0; this.drumBeatClock = 0; }
     endDrumEvolution() {
-      this.drumRelic = 0; this.drumEvolutionWave = 0; this.drumUltimateUsed = false; this.drumFinale = null; this.cancelDrumCharge();
-      this.drops = this.drops.filter(d => d.id !== 'ultimateDrum');
+      this.drumEvolutionWave = 0; this.drumUltimateUsed = false; this.drumFinale = null; this.cancelDrumCharge();
     }
     drumRadius(charge = 0) {
       const base = (weapon('drum').range + (this.weaponLevels.drum - 1) * 5) * (this.drumEvolved ? 2 : 1), p = this.player, b = this.arena.bounds;
@@ -358,7 +373,43 @@
         }
       }
     }
+    planWaveLoot() {
+      const roll = this.random();
+      this.healthSlotsLeft = Math.max(1, this.queuedEnemies());
+      this.healthTarget = Math.min(this.healthSlotsLeft, (HEALTH_BUDGETS.find(([, chance]) => roll < chance) || HEALTH_BUDGETS.at(-1))[0]);
+      this.healthDrops = 0; this.healthHealed = 0; this.duendesKilledThisWave = 0;
+      this.drops = this.drops.filter(d => d.kind !== 'health');
+    }
+    dropHealth(x, y) {
+      if (this.healthDrops >= 10) return false;
+      const drop = this.addDrop('healthPellet', x, y, 'health');
+      if (!drop) return false;
+      drop.life = Infinity; this.healthDrops++; return true;
+    }
+    rollHealthDrop(e) {
+      const slots = Math.max(1, this.healthSlotsLeft--), remaining = this.healthTarget - this.healthDrops;
+      // Sequential sampling: exactly the weighted quota across ordinary scheduled defeats, O(1) memory.
+      if (remaining > 0 && this.random() < remaining / slots) this.dropHealth(e.x - 20, e.y + 15);
+    }
+    collectHealth() {
+      const p = this.player;
+      if (p.hp >= p.maxHp || this.healthHealed >= 50) return false;
+      const amount = Math.min(5, p.maxHp - p.hp, 50 - this.healthHealed);
+      p.hp += amount; this.healthHealed += amount;
+      this.effects.push({ x: p.x, y: p.y - 45, text: '+' + amount + ' HP', color: '#ffb5b7', life: .65 }); return true;
+    }
+    collectBoot(rank) {
+      const p = this.player;
+      if (rank <= p.dashRank) return true;
+      if (rank === 3 && !this.duendeTrialComplete) return false;
+      p.dashRank = Math.min(3, rank); p.dashCooldown = Math.min(p.dashCooldown, this.dashCooldownMax());
+      this.banner = 'DUENDE BOOTS ' + WEAPON_RANKS[p.dashRank - 1] + ' · ' + p.dashRank + '× dash distance' + (p.dashRank === 3 ? ' · Faster recharge' : ''); this.bannerTime = 4;
+      this.events.push({ type: 'weapon' }); return true;
+    }
+    dashCooldownMax() { return this.player.dashRank >= 3 ? 1.1 : 1.65; }
     clearWaveMobs() {
+      this.healthSlotsLeft = Math.max(1, this.enemies.filter(e => !e.dead && !e.summoned && !e.summonedForm).length + this.queue.filter(type => TYPES[type]?.boss).length);
+      this.healthTarget = Math.min(this.healthTarget, this.healthDrops + this.healthSlotsLeft);
       for (const e of [...this.enemies]) if (!e.dead) {
         e.hp = e.boss ? Math.min(e.hp, e.maxHp * .5) : 0; e.hit = .12;
         if (e.hp <= 0) this.defeat(e, true, true);
@@ -434,14 +485,16 @@
         this.queue.splice(0, this.alphaCount, ...Array.from({ length: this.alphaCount }, (_, i) => ALPHAS[(offset + i) % ALPHAS.length]));
       }
       const bosses = [];
-      if (this.wave % 5 === 0) {
+      if (this.wave === 40) bosses.push('duende', 'duende');
+      else if (this.wave % 5 === 0) {
         const index = (this.wave / 5 - 1) % BOSSES.length;
         bosses.push(BOSSES[index]);
         if (this.wave > 40) bosses.push(BOSSES[(index + 1) % BOSSES.length]);
       } else if (this.wave > 50 && this.random() < RANDOM_BOSS_CHANCE) bosses.push(BOSSES[Math.floor(this.random() * BOSSES.length)]);
       this.queue.unshift(...bosses); this.bossCount = bosses.length;
-      this.syncDifficulty();
+      this.syncDifficulty(); this.planWaveLoot();
       this.spawnTimer = 1.3 / 1.25; this.banner = 'Wave ' + this.wave + ' · ' + (bosses.length ? bosses.length === 2 ? 'Two guardians approach' : 'A guardian approaches' : this.arena.name); this.bannerTime = 3;
+      if (this.wave === 40) this.banner = 'Wave 40 · Twin Duende Trial · Defeat both for Dash III';
       if (this.alphaCount) this.banner += ' · ' + this.alphaCount + (this.alphaCount === 1 ? ' ALPHA approaches' : ' ALPHAS approach');
       if (this.stormWave) this.banner += ' · Storm incoming';
       for (const drop of this.drops) if (drop.kind === 'weapon') drop.life = 5;
@@ -555,7 +608,7 @@
       if (e.hp <= 0) this.defeat(e, reducedXP);
     }
     addDrop(id, x, y, kind = 'weapon', boss = false) {
-      if (this.drops.length >= 24) { const old = this.drops.findIndex(d => !d.boss); if (old < 0 && !boss) return; this.drops.splice(Math.max(0, old), 1); }
+      if (this.drops.length >= 24) { let old = this.drops.findIndex(d => !d.boss && !['health', 'relic'].includes(d.kind)); if (old < 0) old = this.drops.findIndex(d => !d.boss); if (old < 0 && !boss && kind !== 'health') return; this.drops.splice(Math.max(0, old), 1); }
       const bounds = this.arena.bounds;
       x = clamp(x, bounds.x + 12, bounds.x + bounds.w - 12); y = clamp(y, bounds.y + 12, bounds.y + bounds.h - 12);
       const drop = { id, x, y, kind, boss, life: kind === 'weapon' ? 5 : boss ? Infinity : 45 };
@@ -580,6 +633,11 @@
       if (rhythm && this.kills % (30 - 5 * rhythm) === 0) this.pendingRhythm = true;
       if (mini) return;
       if (e.boss) {
+        if (e.type === 'duende') {
+          if (this.wave === 40) { this.duendesKilledThisWave++; if (this.duendesKilledThisWave >= 2) this.duendeTrialComplete = true; }
+          const bootRank = this.duendeTrialComplete ? 3 : 2;
+          if (this.player.dashRank < bootRank) { const boot = this.addDrop('duendeBoot', e.x + 38, e.y + 12, 'boot', true); if (boot) boot.rank = bootRank; }
+        }
         this.bossesDefeated++; this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y, 'weapon', true);
         if (this.rank('trophy')) { this.trophyBosses++; this.player.maxHp += 10; this.player.hp += 10; }
         if (this.rank('sacred')) { this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * .35); this.addDrop('evolution', e.x + 30, e.y, 'power', true); }
@@ -587,12 +645,13 @@
         this.addDrop(this.rollPower(), e.x, e.y, 'power');
       }
       if (!e.boss && this.random() < MOB_WEAPON_CHANCE) this.addDrop(WEAPONS[Math.floor(this.random() * WEAPONS.length)].id, e.x, e.y - 20);
-      if (!e.boss && !this.jadeCharges && this.transformRemaining <= 0 && this.corruptedRemaining <= 0 && this.jadeDropWave !== this.wave && this.random() < JADE_DROP_CHANCE) {
+      if (!e.boss && this.jadeDropWave !== this.wave && this.random() < JADE_DROP_CHANCE) {
         if (this.addDrop('jadeSkull', e.x, e.y + 20, 'relic')) this.jadeDropWave = this.wave;
       }
-      if (!e.boss && this.drumRelicAllowed() && !this.finishedWave && !this.drumRelic && !this.drumEvolved && this.drumDropWave !== this.wave && this.random() < DRUM_DROP_CHANCE) {
+      if (!e.boss && this.drumRelicAllowed() && this.drumDropWave !== this.wave && this.random() < DRUM_DROP_CHANCE) {
         if (this.addDrop('ultimateDrum', e.x + 25, e.y + 20, 'relic')) this.drumDropWave = this.wave;
       }
+      this.rollHealthDrop(e);
     }
     pickup() {
       if (this.mode !== 'playing' || this.drumFinale) return false;
@@ -618,7 +677,7 @@
       else if (id === 'nuke') {
         this.clearWaveMobs();
         this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
-      } else this.powers[id] = POWERS[id].duration * (1 + .2 * this.rank('resonance'));
+      } else this.powers[id] = this.powerDuration(POWERS[id].duration);
       if (id === 'shock') this.shockClock = 0;
       this.banner = POWERS[id].name + ' collected'; this.bannerTime = 2; this.refreshStats();
     }
@@ -652,6 +711,20 @@
       if (this.random() < Math.min(.5, .08 * this.rank('crit'))) damage *= 2;
       return damage;
     }
+    primeObsidian(b, first) {
+      const host = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !e.objective && e.id !== first.id && dist(e, first) <= 360 && visible(this, first, e)).sort((a, c) => dist(a, first) - dist(c, first))[0];
+      Object.assign(b, { obsidianArmed: true, hostId: host?.id ?? null, x: host?.x ?? first.x, y: host?.y ?? first.y, vx: 0, vy: 0, armRemaining: 1, life: 1.1 });
+      this.flashes.push({ kind: 'shock', points: [{ x: first.x, y: first.y }, { x: b.x, y: b.y }], life: .25, color: '#d6b2ff' });
+    }
+    detonateObsidian(b) {
+      const host = this.enemies.find(e => e.id === b.hostId && !e.dead), center = { x: b.x, y: b.y }, radius = 90;
+      if (host) this.damageEnemy(host, (host.hp + 1) / (host.boss ? 1 + .2 * this.rank('bossDamage') : 1));
+      for (const e of [...this.enemies]) if (e !== host && !e.dead && e.warmup <= 0 && dist(e, center) <= radius + e.r && visible(this, center, e)) {
+        this.damageEnemy(e, e.maxHp * .25 / (e.boss ? 1 + .2 * this.rank('bossDamage') : 1));
+      }
+      b.life = 0; this.flashes.push({ kind: 'obsidianBurst', ...center, r: radius, life: .6, color: '#d8b0ff' });
+      this.events.push({ type: 'impact', ...center });
+    }
     fire() {
       const p = this.player, w = weapon(p.weapon); this.attackCount++;
       const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id], wave = w.wave && rank >= 3;
@@ -661,13 +734,18 @@
         if (w.pulse) this.events.push({ type: 'drumBeat', ultimate: this.drumEvolved });
       }
       else {
-        const launch = (angle, multiplier = 1, secondary = false) => this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
-          w.speed * (1 + .2 * this.rank('harpy')), { kind: w.wave ? 'clawWave' : w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.r, life: (w.range + (w.wave ? (rank - 1) * 20 : 0)) * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
+        const launch = (angle, multiplier = 1, secondary = false) => {
+          const execution = w.id === 'obsidian' && rank >= 7 && !secondary && (this.obsidianThrows + 1) % 10 === 0;
+          const launched = this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
+          w.speed * (1 + .2 * this.rank('harpy')), { kind: w.wave ? 'clawWave' : w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.id === 'obsidian' && rank >= 3 ? 22 : w.r, sharpness: w.id === 'obsidian' && rank >= 3, obsidianExecution: execution, life: (w.range + (w.wave ? (rank - 1) * 20 : 0)) * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
             waveRadius: w.wave ? w.waveRadius + (rank - 1) * 5 : undefined, waveOrigin: w.wave ? origin : undefined,
             pierce: w.wave ? Infinity : (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: w.wave ? 0 : Math.min(2, this.rank('ricochet')), ricochetBoost: 1 + .15 * Math.max(0, this.rank('ricochet') - 2), homing: w.wave ? 0 : Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
             targetId: w.homing ? this.homingTarget(origin, angle)?.id : undefined, seekingRank: w.homing ? rank : 0,
             poison: (w.poison || 0) + 6 * this.rank('poison'), burn: this.random() < .15 * this.rank('fire') ? 10 * this.rank('fire') : 0,
             explosive: w.explosive, cloud: w.cloud, secondary });
+          if (launched && w.id === 'obsidian' && rank >= 7 && !secondary) this.obsidianThrows++;
+          return launched;
+        };
         launch(p.angle);
         if (this.rank('overflow') && this.attackCount % (7 - this.rank('overflow')) === 0) launch(p.angle + .1, 1, true);
         if (this.random() < .08 * this.rank('duplicate')) launch(p.angle - .12, .6, true);
@@ -752,6 +830,7 @@
     }
     dash(input) {
       if (this.drumFinale || this.transformRemaining > 0 || !super.dash(input)) return false;
+      const p = this.player; p.dashTime *= p.dashRank; p.dashCooldown = this.dashCooldownMax(); p.invincible = Math.max(p.invincible, p.dashTime + .06);
       for (const e of this.enemies) if (e.action === 'attached') { e.action = 'recover'; e.actionTime = 0; }
       this.player.slowTime = 0; return true;
     }
@@ -919,7 +998,7 @@
     tick(dt, input) {
       if (this.transformRemaining > 0) {
         this.transformRemaining = Math.max(0, this.transformRemaining - dt);
-        if (this.transformRemaining <= 1e-8) { this.transformRemaining = 0; this.corruptedRemaining = CORRUPTED_SECONDS; this.refreshStats(); }
+        if (this.transformRemaining <= 1e-8) { this.transformRemaining = 0; this.corruptedRemaining = this.corruptedDuration; this.refreshStats(); }
         return;
       }
       // A partial final frame grants protection only for its remaining active duration.
@@ -988,6 +1067,13 @@
         for (const e of this.enemies) e.movementLeft = null;
       }
       for (const b of this.bullets) {
+        if (b.obsidianArmed) {
+          const host = this.enemies.find(e => e.id === b.hostId && !e.dead);
+          if (host) { b.x = host.x; b.y = host.y; }
+          b.armRemaining -= dt; b.life -= dt;
+          if (b.armRemaining <= 1e-8) this.detonateObsidian(b);
+          continue;
+        }
         const step = Math.min(b.life, b.hostile ? enemyDt : dt);
         if (b.homing && !b.hostile) {
           const target = this.enemies.find(e => e.id === b.targetId && !e.dead && e.warmup <= 0 && !b.hitIds.has(e.id) && visible(this, b, e)) || this.homingTarget(b, Math.atan2(b.vy, b.vx), b.hitIds);
@@ -1014,6 +1100,11 @@
         for (const hit of hits) {
           if (b.hostile) { this.hurt(b.damage); b.life = 0; stoppedAtHit = true; break; }
           b.hitIds.add(hit.e.id);
+          if (b.obsidianExecution) {
+            this.damageEnemy(hit.e, (hit.e.hp + 1) / (hit.e.boss ? 1 + .2 * this.rank('bossDamage') : 1));
+            if (hit.e.dead) this.primeObsidian(b, hit.e); else b.life = 0;
+            stoppedAtHit = true; break;
+          }
           if (b.explosive || b.cloud) { b.x = start.x + (end.x - start.x) * hit.t; b.y = start.y + (end.y - start.y) * hit.t; b.life = 0; stoppedAtHit = true; break; }
           this.damageEnemy(hit.e, b.damage, { poison: b.poison || 0, burn: b.burn || 0 });
           if (b.kind === 'clawWave') continue;
@@ -1068,7 +1159,7 @@
         if (dist(gem, p) < 22) { this.gainXP(gem.value); gem.collected = true; this.events.push({ type: 'gem' }); }
       }
       this.gems = this.gems.filter(g => !g.collected);
-      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && (d.id === 'ultimateDrum' ? this.collectDrumRelic() : this.collectJade())) d.life = 0; } }
+      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && (d.id === 'ultimateDrum' ? this.collectDrumRelic() : this.collectJade())) d.life = 0; else if (d.kind === 'health' && this.collectHealth()) d.life = 0; else if (d.kind === 'boot' && this.collectBoot(d.rank || 2)) d.life = 0; } }
       this.drops = this.drops.filter(d => d.life > 0);
       this.flashes = this.flashes.filter(f => { f.life -= dt; return f.life > 0; }).slice(-60);
       this.effects = this.effects.filter(e => { e.life -= dt; e.y -= dt * 22; return e.life > 0; }).slice(-45);
@@ -1078,7 +1169,8 @@
         this.refreshStats();
       }
       if (this.levelUp()) return;
-      if (!this.drumFinale && !this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
+      if (!this.drumFinale && !this.bullets.some(b => b.obsidianArmed && b.life > 0) && !this.queue.length && !this.enemies.length && !this.pendingSummons.length && !this.finishedWave && this.breakTime <= 0) {
+        if (this.healthDrops === 0) this.dropHealth(p.x + 35, p.y);
         this.endDrumEvolution(); this.finishedWave = true; this.bullets = [];
         this.refreshStats();
         if (this.wave === this.totalWaves) { this.storm = 0; this.stormWave = false; this.mode = 'victory'; this.events.push({ type: 'end' }); return; }
@@ -1088,6 +1180,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, WILDCARD_CAPACITY, BOOT_ICON, HEALTH_BUDGETS, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

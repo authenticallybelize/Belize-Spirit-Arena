@@ -57,12 +57,12 @@ g.mode='upgrade'; advance(g,1); near(g.corruptedRemaining,remaining); g.mode='pl
 for(const id of ['slingshot','spear','staff','claw']) {g.player.weapon=id;g.refreshStats();near(g.player.damage,weapon(id).damage*2);}
 // Ordinary/alpha mobs instantly melt; bosses receive frame-rate independent continuous DPS.
 for(const fps of [60,120]) {
- const m=game(); m.corruptedRemaining=30; m.refreshStats();
+ const m=game(); m.random=()=>0; m.corruptedRemaining=30; m.refreshStats();
  const normal=foe(m,'crab',m.player.x), alpha=foe(m,'alphaCrab',m.player.x), boss=foe(m,'duende',m.player.x); const before=boss.hp;
  const expected=m.player.damage/m.player.interval;
  for(let i=0;i<fps;i++)m.meltContacts(1/fps);
  assert(normal.dead && alpha.dead); assert(!boss.dead); near(before-boss.hp,expected); assert(m.flashes.some(f=>f.kind==='melt'));
- const drops=m.drops.filter(d=>d.kind==='relic'); assert.equal(drops.length,0);
+ const drops=m.drops.filter(d=>d.id==='jadeSkull'); assert.equal(drops.length,1); // A spare card may drop while the form is active.
 }
 const expire=game(); expire.collectJade(); expire.activateJade(); advance(expire,JADE_TRANSFORM_SECONDS+30);
 assert.equal(expire.corruptedRemaining,0); near(expire.player.damage,weapon('slingshot').damage); expire.player.invincible=0; expire.hurt(10); near(expire.player.hp,90);
