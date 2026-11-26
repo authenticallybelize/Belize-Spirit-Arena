@@ -113,6 +113,7 @@
   }
   class Game extends Run.Game {
     drumRelicAllowed() { return false; }
+    spearCardsAllowed() { return false; }
     regularDamageScale() { return null; }
     projectileDamage(e) { return e.damage; }
     jaguarShotDamage(e) { return 14 * (e.shotScale || 1); }

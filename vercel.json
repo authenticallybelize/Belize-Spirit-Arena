@@ -35,7 +35,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/survival.html?build=0.20.0",
+      "destination": "/survival.html?build=0.21.0",
       "permanent": false
     }
   ]

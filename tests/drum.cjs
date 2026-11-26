@@ -15,7 +15,7 @@ function foe(g,type='corruptedHen',dx=200,dy=0,hp=1e6) {
 function advance(g,seconds,input={}) {for(let t=0;t<seconds-1e-8;t+=1/120)g.update(Math.min(1/120,seconds-t),input);}
 function evolve(g) {assert(g.collectDrumRelic());assert(!g.drumEvolved);assert(g.evolveDrum());assert(g.drumEvolved);assert(!g.evolveDrum());}
 // Drum and Obsidian gain VII; duplicate at its true maximum heals, never upgrades to VIII.
-for(const w of WEAPONS)assert.equal(maxWeaponRank(w.id),['drum','obsidian'].includes(w.id)?7:6);
+for(const w of WEAPONS)assert.equal(maxWeaponRank(w.id),['drum','obsidian','spear'].includes(w.id)?7:6);
 const ranks=game();for(let rank=2;rank<=7;rank++){ranks.addDrop('drum',ranks.player.x,ranks.player.y);assert(ranks.pickup());assert.equal(ranks.weaponLevels.drum,rank);near(ranks.player.damage,65*(1+.15*(rank-1)));}
 ranks.player.hp=50;ranks.addDrop('drum',ranks.player.x,ranks.player.y);ranks.pickup();assert.equal(ranks.weaponLevels.drum,7);near(ranks.player.hp,60);near(ranks.drumRadius(),170);
 // The blue VII pulse is passive, movement-only, local and emitted every two active seconds.
@@ -74,4 +74,4 @@ const bytes=fs.readFileSync(path.join(__dirname,'../assets',DRUM_ICON));assert.e
 const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/ready/relics/ultimate-drum.json')));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),manifest.sha256);
 const stress=game(7);stress.enemyLimit=96;for(let i=0;i<96;i++)foe(stress,i%2?'corruptedHen':'corruptedToad',150+i%12*28,-180+Math.floor(i/12)*40,1e8);evolve(stress);
 const start=performance.now();advance(stress,8,{shooting:true});assert(stress.enemies.length<=96);assert(stress.flashes.length<=60);console.log(`Drum logic stress: ${((performance.now()-start)/960).toFixed(2)} ms per 120 Hz step with 96 mobs.`);
-console.log('PASS: Drum/Obsidian VII caps/healing/save compatibility; 2s local damage-free slowing aura; exact rare drop; opt-in evolution; doubled radius; charge/partial release/cooldown; all-map reach; 6s 75% slow; held readiness; release-only protected 1% finale; one use; full wave/brood clear; boss half-HP/no healing; wave expiry/reset; transparent art/hash.');
+console.log('PASS: Drum/Obsidian/Spear VII caps/healing/save compatibility; 2s local damage-free slowing aura; exact rare drop; opt-in evolution; doubled radius; charge/partial release/cooldown; all-map reach; 6s 75% slow; held readiness; release-only protected 1% finale; one use; full wave/brood clear; boss half-HP/no healing; wave expiry/reset; transparent art/hash.');

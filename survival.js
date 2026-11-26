@@ -55,6 +55,14 @@
   };
   const MOB_WEAPON_CHANCE = .06, RARE_XP_CHANCE = .02, FLOOR_POWER_SECONDS = 90, TRIPLE_XP_ICON = 'ready/powers/tripleXP/pickup.png';
   const XP_FAMILIES = { alphaCrab: 'crab', alphaJaguar: 'jaguar', shadowBrute: 'shadow', chiwoj: 'spiderling', tigerSpider: 'spiderling', soldierAnt: 'worker', bulletAnt: 'worker', hiveGuardian: 'bees', giantTommy: 'tommy', jabiruReaper: 'corruptedGrackle', jaguarBoss: 'jaguar', lloronaBoss: 'miniLlorona', anansiBoss: 'spiderling', sochBoss: 'owlShade' };
+  const SPEAR_CARD_SECONDS = 60, SPEAR_CARD_DROP_CHANCE = .004;
+  const SPEAR_GOLD = { color: '#f4cc63', filter: 'sepia(1) saturate(3) hue-rotate(4deg) brightness(1.15)' };
+  const SPEAR_CARDS = {
+    spearBurn: { name: 'Burn Spear', label: 'BURN', key: 'z', color: '#ff794a', filter: 'sepia(1) saturate(6) hue-rotate(325deg)', dps: 20, duration: 10 },
+    spearWind: { name: 'Wind Spear', label: 'WIND', key: 'x', color: '#d0fff4', filter: 'sepia(1) saturate(1.5) hue-rotate(125deg) brightness(1.3)' },
+    spearElectric: { name: 'Electric Spear', label: 'ELECTRIC', key: 'c', color: '#7fcfff', filter: 'sepia(1) saturate(5) hue-rotate(165deg) brightness(1.15)' },
+    spearPoison: { name: 'Poison Spear', label: 'POISON', key: 'v', color: '#a8e865', filter: 'sepia(1) saturate(4) hue-rotate(60deg)', dps: 12, duration: 15 }
+  };
   const WILDCARD_CAPACITY = 4, BOOT_ICON = 'ready/relics/duende-boot.png';
   const HEALTH_BUDGETS = [[1,.45],[2,.75],[3,.85],[4,.90],[5,.94],[6,.96],[7,.975],[8,.985],[9,.995],[10,1]];
   const DRUM_DROP_CHANCE = .001, DRUM_ICON = 'ready/relics/ultimate-drum.png', DRUM_CHARGE_SECONDS = 8, DRUM_AURA_RADIUS = 110;
@@ -105,8 +113,8 @@
     { id: 'staff', name: 'Duende Staff', damage: 45.4, rate: 4.7916667, speed: 800, range: 1000, r: 6, tags: ['projectile', 'spirit'], color: '#9fffd0', art: null }
   ];
   const WEAPON_RANKS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-  const MAX_WEAPON_RANK = 6; // Drum and Obsidian alone reach VII.
-  const maxWeaponRank = id => ['drum', 'obsidian'].includes(id) ? 7 : MAX_WEAPON_RANK;
+  const MAX_WEAPON_RANK = 6; // Drum, Obsidian and Spear reach VII.
+  const maxWeaponRank = id => ['drum', 'obsidian', 'spear'].includes(id) ? 7 : MAX_WEAPON_RANK;
   const FEATHER_HOMING = [1.1, 1.75, 2.45, Math.PI, Math.PI, Math.PI];
   const weapon = id => WEAPONS.find(w => w.id === id) || WEAPONS[0];
   const PERKS = [
@@ -220,6 +228,7 @@
       this.ranks = {}; this.weaponLevels = Object.fromEntries(WEAPONS.map(w => [w.id, 1]));
       this.powers = {}; this.drops = []; this.clouds = []; this.flashes = []; this.corpses = []; this.hazards = []; this.attackCount = 0;
       this.navigation = {}; this.pendingSummons = [];
+      this.spearElement = null; this.spearElementRemaining = 0; this.spearShockClock = 0; this.spearCardDropWave = 0;
       this.wildcards = []; this.player.dashRank = 1; this.duendeTrialComplete = false; this.duendesKilledThisWave = 0; this.obsidianThrows = 0;
       this.healthTarget = 0; this.healthDrops = 0; this.healthSlotsLeft = 0; this.healthHealed = 0;
       this.player.specialCooldown = 0; this.clawRush = null;
@@ -259,6 +268,53 @@
       if (!held) { this.wildcards = this.wildcards.filter(card => card !== id); return true; }
       if (this.wildcards.includes(id) || this.wildcards.length >= WILDCARD_CAPACITY) return false;
       this.wildcards.push(id); return true;
+    }
+    spearCardsAllowed() { return true; }
+    spearStyle(element = this.spearElement, rank = this.weaponLevels.spear) {
+      return SPEAR_CARDS[element] || (rank >= 7 ? SPEAR_GOLD : null);
+    }
+    collectWildcard(id) {
+      if (id === 'jadeSkull') return this.collectJade();
+      if (id === 'ultimateDrum') return this.collectDrumRelic();
+      if (!SPEAR_CARDS[id] || !this.setWildcard(id, true)) return false;
+      this.banner = SPEAR_CARDS[id].name + ' saved · Equip the spear · ' + SPEAR_CARDS[id].key.toUpperCase() + ' / tap for 60s'; this.bannerTime = 4;
+      this.events.push({ type: 'weapon' }); return true;
+    }
+    activateSpearCard(id) {
+      if (!SPEAR_CARDS[id] || this.mode !== 'playing' || this.transformRemaining > 0 || this.drumFinale || this.player.weapon !== 'spear' || !this.wildcards.includes(id)) return false;
+      this.setWildcard(id, false); this.spearElement = id; this.spearElementRemaining = SPEAR_CARD_SECONDS; this.spearShockClock = 0;
+      this.banner = SPEAR_CARDS[id].name + ' · 60s · Carries across waves'; this.bannerTime = 3;
+      this.events.push({ type: 'weapon' }); return true;
+    }
+    spearImpact(b, e, hpBefore) {
+      if (!(e.hp < hpBefore)) return; // Shields and invulnerable targets cannot yield healing or enchantments.
+      if (b.spearVII && !e.objective) {
+        const hp = this.player.hp; this.player.hp = Math.min(this.player.maxHp, hp + 1);
+        if (this.player.hp > hp) this.effects.push({ x: this.player.x, y: this.player.y - 48, text: '+1 HP', color: '#adf5b0', life: .6 });
+      }
+      const card = SPEAR_CARDS[b.spearElement];
+      if (!card) return;
+      if (card.dps && !e.dead) {
+        e.statuses ||= {}; e.statuses[b.spearElement] = { dps: card.dps, remaining: card.duration };
+      }
+      if (b.spearElement === 'spearWind' && !e.dead && !e.objective) {
+        const angle = Math.atan2(b.vy, b.vx), push = e.boss ? 20 : e.alpha ? 40 : 80;
+        move(this, e, Math.cos(angle) * push, Math.sin(angle) * push);
+        this.flashes.push({ kind: 'spearWind', x: e.x, y: e.y, angle, r: 35, life: .35, color: card.color });
+      }
+      if (b.spearElement === 'spearElectric' && this.spearShockClock <= 0) {
+        this.spearShockClock = .5; this.shockChain({ x: e.x, y: e.y }, e.dead ? null : e);
+      }
+    }
+    shockChain(origin, first = null) {
+      first ||= this.enemies.filter(e => !e.dead && e.warmup <= 0 && dist(e, origin) < 250 && visible(this, origin, e)).sort((a, b) => dist(a, origin) - dist(b, origin))[0];
+      const linked = first ? [first] : [];
+      while (linked.length && linked.length < 16) {
+        const last = linked.at(-1), next = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !linked.includes(e) && dist(e, last) <= 130 && visible(this, last, e)).sort((a, b) => dist(a, last) - dist(b, last))[0];
+        if (!next) break; linked.push(next);
+      }
+      if (linked.length) this.flashes.push({ ...origin, r: 0, kind: 'shock', points: [origin, ...linked.map(e => ({ x: e.x, y: e.y }))], life: .25, color: '#a4bdff' });
+      for (const e of linked) { this.flashes.push({ x: e.x, y: e.y, r: 22, life: .2, color: '#a4bdff' }); this.damageEnemy(e, 30); }
     }
     powerDuration(seconds) {
       const rank = Math.min(7, this.rank('resonance'));
@@ -467,7 +523,8 @@
       const p = this.player, w = weapon(p.weapon), enhancement = 1 + .15 * (this.weaponLevels[w.id] - 1);
       this.enduranceBonus = this.totalWaves > 10 ? clamp(this.wave - 40 + (this.finishedWave ? 1 : 0), 0, 100) * .01 : 0;
       const boss = this.enemies.some(e => e.boss && !e.dead), low = p.hp < p.maxHp * .35 && this.rank('second');
-      p.damage = w.damage * enhancement * 1.25 ** this.rank('damage') * (1 + .05 * this.trophyBosses) * (1 + this.enduranceBonus) *
+      const baseDamage = w.id === 'spear' && this.weaponLevels.spear >= 7 ? 250 : w.damage * enhancement;
+      p.damage = baseDamage * 1.25 ** this.rank('damage') * (1 + .05 * this.trophyBosses) * (1 + this.enduranceBonus) *
         (this.commitWeapon ? 1.4 : 1) * (boss && this.rank('courage') ? 1.1 : 1) * (low ? 1.1 : 1) *
         (this.corruptedRemaining > 0 ? 2 : 1) * (this.active('heavy') ? 2 : 1) * (this.active('evolution') ? 1.5 : 1) * (w.explosive ? 1 + .15 * this.rank('blast') : 1);
       p.interval = this.normalInterval();
@@ -548,6 +605,7 @@
     }
     compatible(perk) {
       const w = weapon(this.player.weapon);
+      if (w.id === 'spear' && this.weaponLevels.spear >= 7 && ['pierce', 'ricochet'].includes(perk.id)) return false;
       if (w.wave && this.weaponLevels.claw < 3 && perk.tag === 'projectile') return false;
       if (w.wave && ['pierce', 'ricochet', 'homing'].includes(perk.id)) return false;
       if ((w.explosive || w.cloud) && ['pierce', 'ricochet', 'poison', 'fire'].includes(perk.id)) return false;
@@ -666,6 +724,10 @@
       }
       this.rollHealthDrop(e);
       if ((e.alpha || e.boss) && this.random() < RARE_XP_CHANCE) this.gems.push({ x: e.x + 18, y: e.y - 12, value: reward / xpTier * 5 * (reducedXP ? .45 : 1), tier: 5, age: 0 });
+      if (this.spearCardsAllowed() && this.spearCardDropWave !== this.wave && this.random() < SPEAR_CARD_DROP_CHANCE) {
+        const ids = Object.keys(SPEAR_CARDS), id = ids[Math.floor(this.random() * ids.length)];
+        if (this.addDrop(id, e.x - 30, e.y + 20, 'relic')) this.spearCardDropWave = this.wave;
+      }
     }
     pickup() {
       if (this.mode !== 'playing' || this.drumFinale) return false;
@@ -752,7 +814,7 @@
     fire() {
       const p = this.player, w = weapon(p.weapon); this.attackCount++;
       const origin = Base.aimAt(p, {}), rank = this.weaponLevels[w.id], wave = w.wave && rank >= 3;
-      const damage = this.attackDamage();
+      const damage = this.attackDamage(), spearVII = w.id === 'spear' && rank >= 7, spearStyle = w.id === 'spear' ? this.spearStyle() : null;
       if (w.melee && !wave || w.pulse) {
         this.pulse(w.melee ? origin : p, w.pulse ? this.drumRadius() : (w.wave ? w.waveRadius : w.range) + (rank - 1) * 5, damage, w.color, w.pulse, w.melee ? p.angle : null);
         if (w.pulse) this.events.push({ type: 'drumBeat', ultimate: this.drumEvolved });
@@ -761,9 +823,9 @@
         const launch = (angle, multiplier = 1, secondary = false) => {
           const execution = w.id === 'obsidian' && rank >= 7 && !secondary && (this.obsidianThrows + 1) % 10 === 0;
           const launched = this.shot(origin.x + Math.cos(angle) * 24, origin.y + Math.sin(angle) * 24, angle, false, damage * multiplier,
-          w.speed * (1 + .2 * this.rank('harpy')), { kind: w.wave ? 'clawWave' : w.id === 'slingshot' ? 'stone' : 'magic', color: w.color, r: w.id === 'obsidian' && rank >= 3 ? 22 : w.r, sharpness: w.id === 'obsidian' && rank >= 3, obsidianExecution: execution, life: (w.range + (w.wave ? (rank - 1) * 20 : 0)) * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
+          w.speed * (1 + .2 * this.rank('harpy')), { kind: w.wave ? 'clawWave' : w.id === 'slingshot' ? 'stone' : 'magic', color: spearStyle?.color || w.color, spearVII, spearElement: w.id === 'spear' ? this.spearElement : null, spearFilter: spearStyle?.filter, r: w.id === 'obsidian' && rank >= 3 ? 22 : w.r, sharpness: w.id === 'obsidian' && rank >= 3, obsidianExecution: execution, life: (w.range + (w.wave ? (rank - 1) * 20 : 0)) * (1 + .1 * this.rank('harpy')) / (w.speed * (1 + .2 * this.rank('harpy'))),
             waveRadius: w.wave ? w.waveRadius + (rank - 1) * 5 : undefined, waveOrigin: w.wave ? origin : undefined,
-            pierce: w.wave ? Infinity : (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: w.wave ? 0 : Math.min(2, this.rank('ricochet')), ricochetBoost: 1 + .15 * Math.max(0, this.rank('ricochet') - 2), homing: w.wave ? 0 : Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
+            pierce: w.wave ? Infinity : spearVII ? 4 : (w.pierce || 0) + this.rank('pierce') + (this.active('heavy') ? 2 : 0), bounces: w.wave || spearVII ? 0 : Math.min(2, this.rank('ricochet')), ricochetBoost: 1 + .15 * Math.max(0, this.rank('ricochet') - 2), homing: w.wave ? 0 : Math.min(Math.PI, (w.homing ? FEATHER_HOMING[rank - 1] : 0) + .55 * this.rank('homing')), weapon: w.id,
             targetId: w.homing ? this.homingTarget(origin, angle)?.id : undefined, seekingRank: w.homing ? rank : 0,
             poison: (w.poison || 0) + 6 * this.rank('poison'), burn: this.random() < .15 * this.rank('fire') ? 10 * this.rank('fire') : 0,
             explosive: w.explosive, cloud: w.cloud, secondary });
@@ -1029,6 +1091,9 @@
       if (this.corruptedRemaining > 0 && dt > this.corruptedRemaining + 1e-8) {
         const remaining = this.corruptedRemaining; this.tick(remaining, input); this.tick(dt - remaining, input); return;
       }
+      this.spearShockClock = Math.max(0, this.spearShockClock - dt);
+      this.spearElementRemaining = Math.max(0, this.spearElementRemaining - dt);
+      if (this.spearElementRemaining <= 1e-8) { this.spearElementRemaining = 0; this.spearElement = null; }
       this.time += dt; this.bannerTime = Math.max(0, this.bannerTime - dt);
       const thunderCycle = Math.floor(this.weatherTime / 9); this.weatherTime += dt;
       const raining = this.stormWave && !this.finishedWave;
@@ -1122,6 +1187,7 @@
         b.x = end.x; b.y = end.y; b.life -= step;
         let stoppedAtHit = false;
         for (const hit of hits) {
+          if (hit.e.dead) continue;
           if (b.hostile) { this.hurt(b.damage); b.life = 0; stoppedAtHit = true; break; }
           b.hitIds.add(hit.e.id);
           if (b.obsidianExecution) {
@@ -1130,7 +1196,9 @@
             stoppedAtHit = true; break;
           }
           if (b.explosive || b.cloud) { b.x = start.x + (end.x - start.x) * hit.t; b.y = start.y + (end.y - start.y) * hit.t; b.life = 0; stoppedAtHit = true; break; }
+          const hpBefore = hit.e.hp;
           this.damageEnemy(hit.e, b.damage, { poison: b.poison || 0, burn: b.burn || 0 });
+          if (b.weapon === 'spear') this.spearImpact(b, hit.e, hpBefore);
           if (b.kind === 'clawWave') continue;
           if (b.pierce > 0) { b.pierce--; b.damage *= .85; continue; }
           if (b.bounces > 0) {
@@ -1159,15 +1227,7 @@
       this.shockClock -= dt;
       if (this.active('shock') && this.shockClock <= 0) {
         this.shockClock = .5;
-        const origin = Base.aimAt(p, {});
-        const linked = [], first = this.enemies.filter(e => !e.dead && e.warmup <= 0 && dist(e, origin) < 250 && visible(this, origin, e)).sort((a, b) => dist(a, origin) - dist(b, origin))[0];
-        if (first) linked.push(first);
-        while (linked.length && linked.length < 16) {
-          const last = linked.at(-1), next = this.enemies.filter(e => !e.dead && e.warmup <= 0 && !linked.includes(e) && dist(e, last) <= 130 && visible(this, last, e)).sort((a, b) => dist(a, last) - dist(b, last))[0];
-          if (!next) break; linked.push(next);
-        }
-        if (linked.length) this.flashes.push({ ...origin, r: 0, kind: 'shock', points: [origin, ...linked.map(e => ({ x: e.x, y: e.y }))], life: .25, color: '#a4bdff' });
-        for (const e of linked) { this.flashes.push({ x: e.x, y: e.y, r: 22, life: .2, color: '#a4bdff' }); this.damageEnemy(e, 30); }
+        this.shockChain(Base.aimAt(p, {}));
       }
       if (this.pendingRhythm) { this.pendingRhythm = false; this.pulse(p, 190, p.damage * .6, '#ffe2a1', true); }
       this.enemies = this.enemies.filter(e => !e.dead);
@@ -1183,7 +1243,7 @@
         if (dist(gem, p) < 22) { this.gainXP(gem.value); gem.collected = true; this.events.push({ type: 'gem' }); }
       }
       this.gems = this.gems.filter(g => !g.collected);
-      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && (d.id === 'ultimateDrum' ? this.collectDrumRelic() : this.collectJade())) d.life = 0; else if (d.kind === 'health' && this.collectHealth()) d.life = 0; else if (d.kind === 'boot' && this.collectBoot(d.rank || 2)) d.life = 0; } }
+      for (const d of this.drops) { if (d.kind !== 'weapon' || !this.finishedWave) d.life -= dt; if (dist(d, p) < 26) { if (d.kind === 'power') { d.life = 0; this.collectPower(d.id); } else if (d.kind === 'relic' && this.collectWildcard(d.id)) d.life = 0; else if (d.kind === 'health' && this.collectHealth()) d.life = 0; else if (d.kind === 'boot' && this.collectBoot(d.rank || 2)) d.life = 0; } }
       this.drops = this.drops.filter(d => d.life > 0);
       this.flashes = this.flashes.filter(f => { f.life -= dt; return f.life > 0; }).slice(-60);
       this.effects = this.effects.filter(e => { e.life -= dt; e.y -= dt * 22; return e.life > 0; }).slice(-45);
@@ -1204,6 +1264,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, RARE_XP_CHANCE, FLOOR_POWER_SECONDS, TRIPLE_XP_ICON, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, WILDCARD_CAPACITY, BOOT_ICON, HEALTH_BUDGETS, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, RARE_XP_CHANCE, FLOOR_POWER_SECONDS, TRIPLE_XP_ICON, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, WILDCARD_CAPACITY, SPEAR_CARDS, SPEAR_GOLD, SPEAR_CARD_SECONDS, SPEAR_CARD_DROP_CHANCE, BOOT_ICON, HEALTH_BUDGETS, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

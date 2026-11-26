@@ -1,4 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const Spear=require('../survival.js');
 const root=path.resolve(__dirname,'..'),sandbox={window:{}};
 for(const file of ['sprites.js','ready-assets.js'])vm.runInNewContext(fs.readFileSync(path.join(root,'assets',file),'utf8'),sandbox);
 Object.assign(sandbox,sandbox.window);
@@ -6,20 +7,22 @@ const source=fs.readFileSync(path.join(root,'game.js'),'utf8');
 const start=source.indexOf('  function drawJoe(t)'),end=source.indexOf('  let groundPattern',start);
 assert(start>=0&&end>start);
 let translation=[0,0],stack=[],draws=[];
-const ctx={save(){stack.push([...translation]);},restore(){assert(stack.length);translation=stack.pop();},translate(x,y){translation[0]+=x;translation[1]+=y;},rotate(){},beginPath(){},ellipse(){},stroke(){},drawImage(image,...args){draws.push({image,args,translation:[...translation]});},clip(){throw Error('Joe must not be assembled with clipped body layers');}};
+const ctx={save(){stack.push({translation:[...translation],filter:this.filter});},restore(){assert(stack.length);const saved=stack.pop();translation=saved.translation;this.filter=saved.filter;},translate(x,y){translation[0]+=x;translation[1]+=y;},rotate(){},beginPath(){},ellipse(){},stroke(){},drawImage(image,...args){draws.push({image,args,translation:[...translation],filter:this.filter});},clip(){throw Error('Joe must not be assembled with clipped body layers');}};
 const native=sandbox.ARENA_SPRITES.joe,ready=sandbox.ARENA_READY;
 const images=Object.fromEntries([native.file,...Object.values(ready.holding).flatMap(a=>a.frames),...Object.values(ready.weapons).map(a=>a.held)].map(file=>[file,{file}]));
 const player={x:1200,y:1200,r:18,dashTime:0,invincible:0},input={dx:0,dy:0,shooting:false};
 images['ready/relics/ultimate-drum.png']={file:'ready/relics/ultimate-drum.png'};
 Object.assign(sandbox,{SurvivalCore:{DRUM_ICON:'ready/relics/ultimate-drum.png'},reducedMotion:false,ctx,images,game:{player,mode:'playing'},input,joeHeight:112.5,shadow(){}});
 vm.runInNewContext(source.slice(start,end)+'\nthis.renderJoe=drawJoe;',sandbox);
-for(const corruption of ['normal','awakening','active','drum'])for(const weapon of Object.keys(ready.holding))for(let i=0;i<32;i++)for(const firing of [false,true])for(const walking of [false,true])for(const time of [0,.125]) {
+for(const corruption of ['normal','awakening','active','drum','goldSpear','spearBurn','spearWind','spearElectric','spearPoison'])for(const weapon of Object.keys(ready.holding))for(let i=0;i<32;i++)for(const firing of [false,true])for(const walking of [false,true])for(const time of [0,.125]) {
+ const spearStyle=corruption==='goldSpear'?Spear.SPEAR_GOLD:Spear.SPEAR_CARDS[corruption];sandbox.game.spearStyle=spearStyle?()=>spearStyle:undefined;ctx.filter='none';
  sandbox.game.drumEvolved=corruption==='drum'&&weapon==='drum';
  sandbox.game.transformRemaining=corruption==='awakening'?.6:0;sandbox.game.corruptedRemaining=corruption==='active'?30:0;
  const angle=Math.atan2(Math.sin(i*Math.PI/16-.01),Math.cos(i*Math.PI/16-.01));Object.assign(player,{weapon,angle,walking,walkDistance:time*216});Object.assign(input,{shooting:firing,dx:Math.cos(angle),dy:Math.sin(angle)});draws=[];translation=[0,0];stack=[];
  sandbox.renderJoe(time);assert.equal(stack.length,0,'Canvas transform leaked after Joe');assert.deepEqual(translation,[0,0]);
- const held=firing&&!walking&&!sandbox.game.drumEvolved,bodies=draws.filter(d=>held?d.image.file.includes('/holding/'):d.image.file===native.file&&d.args[3]>200);
+ const held=firing&&!walking&&!sandbox.game.drumEvolved&&!(weapon==='spear'&&spearStyle),bodies=draws.filter(d=>held?d.image.file.includes('/holding/'):d.image.file===native.file&&d.args[3]>200);
  assert.equal(bodies.length,1,'Each Joe pose must contain one complete character');
+ if(weapon==='spear'&&spearStyle){assert.equal(bodies[0].filter,'none','Spear tint changed Joe');assert(draws.some(d=>d.image.file===ready.weapons.spear.held&&d.filter===spearStyle.filter));}
  const d=bodies[0];let foot;
  if(held) {
   assert.equal(d.args.length,4,'Firing must draw the whole existing PNG');

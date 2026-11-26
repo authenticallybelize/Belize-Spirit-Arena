@@ -75,10 +75,12 @@
 
 #wildcardBelt{position:absolute;z-index:6;top:94px;left:18px;padding:7px;background:#071e17e8;border:1px solid #789a6b;border-radius:8px;max-width:calc(100% - 36px);color:#e3efd3}
 #wildcardBelt header{display:flex;justify-content:space-between;font:bold 10px Arial;letter-spacing:1px;margin-bottom:6px}#wildcardBelt header span{color:#a9c5b0;font-weight:normal}
-.wildcard-slots{display:flex;gap:6px}#wildcardBelt #jadeButton,#wildcardBelt #drumButton,.wildcard-empty{position:static;width:58px;min-height:70px;padding:4px;border:1px solid #b7bb7d;border-radius:6px;background:#102d21;color:#eff3cd;touch-action:none}
+.wildcard-slots{display:flex;gap:6px}#wildcardBelt #jadeButton,#wildcardBelt #drumButton,#wildcardBelt .spear-wildcard,.wildcard-empty{position:static;width:58px;min-height:70px;padding:4px;border:1px solid #b7bb7d;border-radius:6px;background:#102d21;color:#eff3cd;touch-action:none}
 #wildcardBelt #jadeButton{border-color:#71e7b4}#wildcardBelt #drumButton{border-color:#ffd878;background:#302713}#wildcardBelt img{display:block;width:46px;height:46px;object-fit:contain;margin:auto;pointer-events:none}#wildcardBelt button span{display:block;font:bold 8px Arial;pointer-events:none}
 .wildcard-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;border-style:dashed;border-color:#597765;color:#789782;background:#0b2119}.wildcard-empty b{font:24px Georgia}.wildcard-empty span{font:8px Arial;letter-spacing:1px}.wildcard-active{display:block;max-width:260px;font:10px/1.4 Arial;color:#b7f1ce}.wildcard-active:not(:empty){margin-top:6px}
 .touch-enabled.in-game #wildcardBelt{top:70px;left:max(12px,env(safe-area-inset-left));padding:5px}.touch-enabled.in-game #wildcardBelt button,.touch-enabled.in-game .wildcard-empty{width:44px;min-height:54px;padding:3px}.touch-enabled.in-game #wildcardBelt img{width:34px;height:34px}.touch-enabled.in-game #wildcardBelt header{font-size:8px;margin-bottom:4px}.touch-enabled.in-game .wildcard-active{font-size:9px;max-width:190px}
 .cinematic-open #wildcardBelt{display:none}
 .touch-enabled.in-game .has-wildcards .wave-banner,.touch-enabled.in-game .has-wildcards .boss-hud{left:calc(max(12px,env(safe-area-inset-left)) + 244px);right:max(12px,env(safe-area-inset-right));width:auto;max-width:none;transform:none}
 .touch-enabled.in-game .has-wildcards .wave-banner{font-size:12px}
+
+#wildcardBelt .spear-wildcard{background:#182719}#wildcardBelt .spear-wildcard.active{box-shadow:inset 0 0 12px #c4e7a94d}

@@ -187,6 +187,7 @@
   function drawJoe(t) {
     const p = game.player, firing = input.shooting && game.mode === 'playing', walking = p.walking && p.dashTime <= 0;
     const evolvedDrum = p.weapon === 'drum' && game.drumEvolved;
+    const spearStyle = p.weapon === 'spear' ? game.spearStyle?.() : null;
     const direction = firing || !walking ? p.angle : p.moveAngle ?? Math.atan2(input.dy,input.dx);
     const frame = ArenaArt.nativeJoeFrame(direction, walking, (p.walkDistance || 0) / 216), native = ARENA_SPRITES.joe;
     const rect = native.frames[frame], scale = joeHeight / rect[3], anchor = (native.anchors[frame] - rect[0]) * scale;
@@ -202,12 +203,13 @@
         ctx.filter = 'sepia(1) hue-rotate(95deg) saturate(3) brightness(.78) contrast(1.35)';
         ctx.shadowColor = '#39ffad'; ctx.shadowBlur = game.transformRemaining > 0 ? 24 : 12;
       }
-      if (!firing || walking || evolvedDrum) {
+      if (!firing || walking || evolvedDrum || spearStyle) {
         body();
         const [hx,hy,rx,ry,rw,rh] = ArenaArt.carryHands[frame], weapon = ARENA_READY.weapons[p.weapon], grip = ArenaArt.carryGrips[p.weapon];
         const size = evolvedDrum ? 60 : ['spear','staff','crystal'].includes(p.weapon) ? 68 : p.weapon === 'claw' ? 34 : 48;
         const carryAngle = evolvedDrum ? game.drumFinale && !reducedMotion ? Math.sin(t * 20) * .07 : 0 : firing ? p.angle : ['spear','staff','crystal','cacao','feather','obsidian'].includes(p.weapon) ? -Math.PI / 2 : row === 2 ? 2 : 1.14;
         ctx.save(); ctx.translate((hx-rect[0])*scale-anchor,(hy-rect[1])*scale-joeHeight); ctx.rotate(carryAngle-weapon.heldAngle);
+        if (spearStyle) { ctx.filter = spearStyle.filter; ctx.shadowColor = spearStyle.color; ctx.shadowBlur = 5; }
         ctx.drawImage(images[evolvedDrum ? SurvivalCore.DRUM_ICON : weapon.held],-grip[0]*size/64,-grip[1]*size/64,size,size); ctx.restore();
         // The original moving fist occludes the handle at its measured grip keyframe.
         ctx.drawImage(images[native.file],rx,ry,rw,rh,(rx-rect[0])*scale-anchor,(ry-rect[1])*scale-joeHeight,rw*scale,rh*scale);
@@ -318,6 +320,7 @@
       if (!b.hostile && readyArt && images[readyArt.projectile]) {
         const width = b.explosive ? 38 : 32, height = width * .75;
         ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(Math.atan2(b.vy, b.vx) - readyArt.projectileAngle);
+        if (b.spearFilter) { ctx.filter = b.spearFilter; ctx.shadowColor = b.color; ctx.shadowBlur = 5; }
         ctx.drawImage(images[readyArt.projectile], -width / 2, -height / 2, width, height); ctx.restore();
       }
     }
@@ -475,6 +478,7 @@
     if (extended && key === 'e' && !event.repeat) { event.preventDefault(); game.pickup(); return; }
     if (extended && key === 'r' && !event.repeat) { event.preventDefault(); game.evolveDrum(); return; }
     if (extended && key === 'g' && !event.repeat) { event.preventDefault(); game.activateJade(); return; }
+    if (extended && !event.repeat) { const card = Object.entries(SurvivalCore.SPEAR_CARDS).find(([, value]) => value.key === key); if (card) { event.preventDefault(); game.activateSpearCard(card[0]); return; } }
     if (extended && key === 'q' && !event.repeat) { event.preventDefault(); game.special(input); return; }
     keys.add(key); movement(); if (key === ' ' && !event.repeat) game.dash(input);
   });

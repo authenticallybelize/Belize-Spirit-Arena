@@ -37,7 +37,7 @@ makeRare(rare,foe(rare)); assert.equal(rare.drops.filter(d=>d.id==='jadeSkull').
 makeRare(rare,foe(rare)); assert.equal(rare.drops.filter(d=>d.id==='jadeSkull').length,1);
 rare.wave++; makeRare(rare,foe(rare,'alphaCrab')); assert.equal(rare.drops.filter(d=>d.id==='jadeSkull').length,2);
 const mini=game(), child=foe(mini); child.summoned=true; child.summonXP=1; mini.random=()=>0; mini.defeat(child); assert.equal(mini.drops.length,0);
-const bossDrop=game(); bossDrop.random=()=>0; bossDrop.defeat(foe(bossDrop,'duende')); assert(!bossDrop.drops.some(d=>d.kind==='relic'));
+const bossDrop=game(); bossDrop.random=()=>0; bossDrop.defeat(foe(bossDrop,'duende')); assert(!bossDrop.drops.some(d=>d.id==='jadeSkull'));
 // Floor pickup stores one charge; touching it does not automatically transform.
 const g=game(); g.addDrop('jadeSkull',g.player.x,g.player.y,'relic'); advance(g,.01); assert.equal(g.jadeCharges,1); assert.equal(g.corruptedRemaining,0);
 assert(!g.collectJade()); const e=foe(g,'alphaCrab',1300), eggParent=foe(g,'jabiruReaper',1500); assert(g.summon(eggParent));

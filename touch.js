@@ -39,6 +39,15 @@
       const evolve = event => { event.preventDefault(); if (!dialog.hidden) return; game.evolveDrum(); update(); };
       drum.addEventListener('pointerdown', evolve); drum.addEventListener('click', event => { if (event.detail === 0) evolve(event); });
     }
+    const spearButtons = {};
+    if (game.activateSpearCard) for (const [id, card] of Object.entries(root.SurvivalCore.SPEAR_CARDS)) {
+      const button = document.createElement('button'); button.id = id + 'Button'; button.className = 'spear-wildcard'; button.hidden = true;
+      button.setAttribute('aria-label', card.name + ': activate for 60 seconds (' + card.key.toUpperCase() + ')'); button.title = card.name + ' · ' + card.key.toUpperCase() + ' / tap · Replaces the active element';
+      button.style.borderColor = card.color; button.innerHTML = '<img src="assets/' + ARENA_READY.weapons.spear.pickup + '" alt=""><span>' + card.label + '</span>';
+      button.querySelector('img').style.filter = card.filter;
+      const activate = event => { event.preventDefault(); if (!dialog.hidden) return; game.activateSpearCard(id); update(); };
+      button.addEventListener('pointerdown', activate); button.addEventListener('click', event => { if (event.detail === 0) activate(event); }); spearButtons[id] = button;
+    }
     const drumHud = document.createElement('div'); drumHud.id = 'drumChargeHud'; drumHud.hidden = true; drumHud.setAttribute('aria-label', 'Awakened Drum charge');
     drumHud.innerHTML = '<strong>AWAKENED DRUM</strong><b>0 / 8s</b><div class="drum-charge-track" role="progressbar" aria-label="Ultimate drum charge" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0"><i></i></div><small>Hold fire to charge</small>'; frame.append(drumHud);
     const rotate = document.createElement('div'); rotate.className = 'rotate-prompt'; rotate.setAttribute('role', 'status');
@@ -139,18 +148,25 @@
         drum.classList.toggle('active', game.drumEvolved);
         drum.querySelector('span').textContent = game.drumEvolved ? 'DRUM SAVED' : game.player.weapon !== 'drum' ? 'EQUIP DRUM' : mobile ? 'TAP · EVOLVE' : 'R · EVOLVE';
       }
+      for (const [id, button] of Object.entries(spearButtons)) {
+        const card = root.SurvivalCore.SPEAR_CARDS[id]; button.hidden = !game.wildcards.includes(id);
+        button.disabled = game.mode !== 'playing' || game.player.weapon !== 'spear' || game.transformRemaining > 0 || !!game.drumFinale;
+        button.classList.toggle('active', game.spearElement === id);
+        button.querySelector('span').textContent = game.player.weapon !== 'spear' ? 'EQUIP SPEAR' : (mobile ? '' : card.key.toUpperCase() + ' · ') + card.label;
+      }
       if (game.setWildcard) {
         belt.hidden = !['playing', 'paused'].includes(game.mode);
         const signature = game.wildcards.join('|');
         if (signature !== beltSignature || !belt.querySelector('.wildcard-slots').children.length) {
           beltSignature = signature; const slots = belt.querySelector('.wildcard-slots'); slots.replaceChildren();
-          for (const id of game.wildcards) { const button = id === 'jadeSkull' ? jade : id === 'ultimateDrum' ? drum : null; if (button) slots.append(button); }
+          for (const id of game.wildcards) { const button = id === 'jadeSkull' ? jade : id === 'ultimateDrum' ? drum : spearButtons[id] || null; if (button) slots.append(button); }
           for (let i = game.wildcards.length; i < root.SurvivalCore.WILDCARD_CAPACITY; i++) { const empty = document.createElement('div'); empty.className = 'wildcard-empty'; empty.setAttribute('aria-label', 'Empty wildcard slot'); empty.innerHTML = '<b>+</b><span>EMPTY</span>'; slots.append(empty); }
         }
         belt.querySelector('header span').textContent = game.wildcards.length + ' / ' + root.SurvivalCore.WILDCARD_CAPACITY;
-        belt.querySelector('.wildcard-active').textContent = [game.transformRemaining > 0 ? 'Joe transforming' : game.corruptedRemaining > 0 ? 'Corrupted Joe ' + Math.ceil(game.corruptedRemaining) + 's' : '', game.drumEvolved ? 'Drum active · this wave' : ''].filter(Boolean).join(' · ');
+        belt.querySelector('.wildcard-active').textContent = [game.transformRemaining > 0 ? 'Joe transforming' : game.corruptedRemaining > 0 ? 'Corrupted Joe ' + Math.ceil(game.corruptedRemaining) + 's' : '', game.drumEvolved ? 'Drum active · this wave' : '', game.spearElement ? root.SurvivalCore.SPEAR_CARDS[game.spearElement].name + ' ' + Math.ceil(game.spearElementRemaining) + 's' : ''].filter(Boolean).join(' · ');
       }
       if (shownWeapon !== game.player.weapon) { shownWeapon = game.player.weapon; weapon.src = 'assets/' + ARENA_READY.weapons[shownWeapon].pickup; weapon.alt = 'Equipped: ' + (root.SurvivalCore ? SurvivalCore.weapon(shownWeapon).name : shownWeapon === 'staff' ? 'Duende Staff' : 'Joe’s Sling'); }
+      weapon.style.filter = game.player.weapon === 'spear' ? game.spearStyle?.()?.filter || 'none' : 'none';
       const dash = panel.querySelector('#touchDash'), cooldown = game.player.dashCooldown;
       const dashName = 'DASH' + (game.player.dashRank > 1 ? ' ' + root.SurvivalCore.WEAPON_RANKS[game.player.dashRank - 1] : '');
       dash.textContent = cooldown > 0 ? dashName + ' ' + cooldown.toFixed(1) + 's' : dashName; dash.disabled = cooldown > 0 || game.mode !== 'playing'; dash.style.setProperty('--dash-ready', (1 - Math.min(1, cooldown / (game.dashCooldownMax?.() || 1.65))) * 100 + '%');

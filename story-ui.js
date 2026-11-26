@@ -57,10 +57,10 @@
       button('storyMenu', 'STORY MODE', true) + button('survivalMenu', StoryCore.SURVIVAL_TEST_OPEN ? 'SURVIVAL · OPEN TEST' : 'SURVIVAL MODE', false, !StoryCore.SURVIVAL_TEST_OPEN && !store.data.survivalUnlocked) +
       button('leaderboardMenu', 'LEADERBOARD') + button('howMenu', 'HOW TO PLAY') + button('optionsMenu', 'OPTIONS') +
       '</div><p class="menu-footnote">' + (store.data.survivalUnlocked ? 'Chapter I complete · Survival earned.' : 'Survival is open for testing. Full release: complete Chapter I to unlock it.') +
-      '</p><a href="survival.html?build=0.20.0" class="test-link">Open Survival test · open field + four arenas</a><br><a href="index.html" class="test-link">Original ten-wave prototype</a>' +
+      '</p><a href="survival.html?build=0.21.0" class="test-link">Open Survival test · open field + four arenas</a><br><a href="index.html" class="test-link">Original ten-wave prototype</a>' +
       (store.warning ? '<p class="save-warning" role="status">' + esc(store.warning) + '</p>' : ''));
     $('storyMenu').onclick = storyMenu;
-    $('survivalMenu').onclick = () => { if (StoryCore.SURVIVAL_TEST_OPEN || store.data.survivalUnlocked) location.href = 'survival.html?build=0.20.0'; };
+    $('survivalMenu').onclick = () => { if (StoryCore.SURVIVAL_TEST_OPEN || store.data.survivalUnlocked) location.href = 'survival.html?build=0.21.0'; };
     $('leaderboardMenu').onclick = () => { view = 'info'; show('<h2 id="overlayTitle">Leaderboard</h2><p>Online rankings are not connected in this local prototype.<br>Story progress is saved on this device.</p>' + button('backMenu', 'Back')); $('backMenu').onclick = home; };
     $('howMenu').onclick = () => $('helpButton').click();
     $('optionsMenu').onclick = () => {
@@ -184,7 +184,7 @@
       show('<h2 id="overlayTitle">CHAPTER I COMPLETE</h2><p>FOUR OF TWELVE DOORS RESTORED</p><p>The Arena still remembers you.</p>' +
         button('playSurvival', 'SURVIVAL MODE UNLOCKED', true) + button('backMenu', 'Story menu') + '<span class="small-note">The Duende Staff, Obsidian Spirit Shard and Jaguar Spirit Claw are permanently unlocked on this device.</span>' +
         (store.warning ? '<p class="save-warning">' + esc(store.warning) + '</p>' : ''));
-      $('playSurvival').onclick = () => { location.href = 'survival.html?build=0.20.0'; }; $('backMenu').onclick = storyMenu; return true;
+      $('playSurvival').onclick = () => { location.href = 'survival.html?build=0.21.0'; }; $('backMenu').onclick = storyMenu; return true;
     },
     menu: home,
     restart() { begin(false); },

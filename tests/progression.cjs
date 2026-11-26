@@ -106,7 +106,7 @@ for (const w of WEAPONS) {
   const g = game(); g.player.weapon = w.id; g.refreshStats(); const base = g.player.damage;
   for (let rank = 2; rank <= maxWeaponRank(w.id); rank++) {
     g.addDrop(w.id, g.player.x, g.player.y); assert(g.pickup()); assert.equal(g.weaponLevels[w.id], rank);
-    near(g.player.damage, base * (1 + .15 * (rank - 1)));
+    near(g.player.damage, w.id === 'spear' && rank === 7 ? 250 : base * (1 + .15 * (rank - 1)));
     g.bullets = []; g.fire(); assert(g.bullets.every(b => Number.isFinite(b.homing + b.damage)));
   }
   g.player.hp = 50; g.addDrop(w.id, g.player.x, g.player.y); assert(g.pickup()); assert.equal(g.weaponLevels[w.id], maxWeaponRank(w.id)); assert.equal(g.player.hp, 60);
