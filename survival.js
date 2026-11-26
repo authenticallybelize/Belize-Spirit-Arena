@@ -42,7 +42,7 @@
   const COMMONS = ['spiderling', 'worker', 'bees', 'rootling', 'owlShade', 'grasshopper', 'corruptedHen', 'corruptedGrackle', 'corruptedMonkey', 'corruptedToad'];
   const ALPHAS = ['alphaCrab', 'alphaJaguar', 'shadowBrute', 'chiwoj', 'tigerSpider', 'soldierAnt', 'bulletAnt', 'giantCentipede', 'hiveGuardian', 'giantTommy', 'rotTapir', 'jabiruReaper'];
   for (const [id, spec] of Object.entries(TYPES)) TYPES[id] = { ...spec, hp: spec.hp * 1.15 * (spec.alpha ? 1.5 : 1) };
-  TYPES.duende.hp *= 5; TYPES.duende.damage *= 5;
+  TYPES.duende.hp *= 5; TYPES.duende.damage = 35;
   const BOSSES = ['lloronaBoss', 'jaguarBoss', 'cadejoBoss', 'duende', 'maleSisimite', 'femaleSisimite', 'anansiBoss', 'sochBoss', 'xtabaiBoss'];
   const BOSS_SKILLS = {
     lloronaBoss: [{ kind: 'fan', count: 5, spread: .18, speed: 180, warning: .8, color: '#9cdeec' }, { kind: 'area', count: 2, radius: 85, warning: 1.1, life: .4, color: '#73cde0' }],
@@ -53,7 +53,8 @@
     sochBoss: [{ kind: 'rush', speed: 440, duration: .5, warning: .85 }, { kind: 'fan', count: 5, spread: .16, speed: 265, warning: .75, color: '#e5d5f3' }],
     xtabaiBoss: [{ kind: 'area', count: 3, radius: 92, warning: 1.25, life: 2, color: '#80d5b0' }, { kind: 'fan', count: 7, spread: .22, speed: 190, warning: .9, color: '#9fddb3' }]
   };
-  const MOB_WEAPON_CHANCE = .06;
+  const MOB_WEAPON_CHANCE = .06, RARE_XP_CHANCE = .02, FLOOR_POWER_SECONDS = 90, TRIPLE_XP_ICON = 'ready/powers/tripleXP/pickup.png';
+  const XP_FAMILIES = { alphaCrab: 'crab', alphaJaguar: 'jaguar', shadowBrute: 'shadow', chiwoj: 'spiderling', tigerSpider: 'spiderling', soldierAnt: 'worker', bulletAnt: 'worker', hiveGuardian: 'bees', giantTommy: 'tommy', jabiruReaper: 'corruptedGrackle', jaguarBoss: 'jaguar', lloronaBoss: 'miniLlorona', anansiBoss: 'spiderling', sochBoss: 'owlShade' };
   const WILDCARD_CAPACITY = 4, BOOT_ICON = 'ready/relics/duende-boot.png';
   const HEALTH_BUDGETS = [[1,.45],[2,.75],[3,.85],[4,.90],[5,.94],[6,.96],[7,.975],[8,.985],[9,.995],[10,1]];
   const DRUM_DROP_CHANCE = .001, DRUM_ICON = 'ready/relics/ultimate-drum.png', DRUM_CHARGE_SECONDS = 8, DRUM_AURA_RADIUS = 110;
@@ -115,8 +116,8 @@
     ['health', 'Cohune Heart', '+25 max HP · heal 25', 5, 'Common'],
     ['harpy', 'Harpy Eye', '+20% shot speed · +10% range', 4, 'Common', 'projectile'],
     ['magnet', 'Spirit Magnet', '+45 gem attraction radius', 4, 'Common'],
-    ['xp', 'Memory Seeker', '+20% gem XP', 5, 'Common'],
-    ['armor', 'Mahogany Skin', '-8% incoming damage', 4, 'Common'],
+    ['xp', 'Memory Seeker', '+20% through V · 2.5× XP at VI · 3× at VII', 5, 'Common'],
+    ['armor', 'Mahogany Skin', '-10% incoming damage per rank · 60% at VI', 4, 'Common'],
     ['dodge', 'Jaguar Reflex', '+6% chance to avoid damage', 4, 'Common'],
     ['crit', 'Jaguar Fang', '+8% critical chance · 2× damage', 4, 'Uncommon'],
     ['regen', 'Bush Medicine', 'Heal 1 HP / 4 seconds per rank', 4, 'Uncommon'],
@@ -149,7 +150,7 @@
     nuke: { name: 'Nuke', duration: 0, color: '#ff965f' },
     badman: { name: 'Badman', duration: 8, color: '#ff799a' },
     evolution: { name: 'Weapon Power Up', duration: 10, color: '#eebcff' },
-    doubleXP: { name: 'Double Experience', duration: 10, color: '#8cffb5' },
+    doubleXP: { name: 'Triple Experience', duration: 10, color: '#c492ff' },
     bonusXP: { name: 'Experience Bonus', duration: 0, color: '#d1ff83' },
     reflex: { name: 'Reflex Boost', duration: 7, color: '#80e0e2' }
   };
@@ -418,12 +419,21 @@
       this.nukeBossCapWave = this.wave; this.pendingSummons = [];
       this.enemies = this.enemies.filter(e => !e.dead); this.hazards = []; this.bullets = this.bullets.filter(b => !b.hostile);
     }
+    regularDamageScale() {
+      // Grow gently through XP 5, hold through 19, then compound 5% at 20/25/30…
+      return (1 + .012 * (Math.min(5, this.level) - 1)) * 1.05 ** Math.max(0, Math.floor((this.level - 15) / 5));
+    }
+    projectileDamage(e) { return e.damage * (!e.boss && !e.alpha ? 1.5 : 1.1); }
+    jaguarShotDamage(e) { return this.projectileDamage(e); }
+    duendeShotDamage(e) { return 45 * (e.shotScale || 1); }
     difficultyTier() { return Math.min(4, Math.floor(this.level / 10)); }
     applyDifficulty(e) {
       const tier = this.difficultyTier(), previousTier = e.difficultyTier || 0, ratio = 2 ** (tier - previousTier);
       e.hp *= ratio; e.maxHp *= ratio;
       if (!e.boss && !e.alpha) {
-        e.damage *= ratio; e.speed *= 1.2 ** (tier - previousTier);
+        const damageScale = this.regularDamageScale();
+        if (damageScale != null) { e.damage *= damageScale / (e.damageLevelScale || 1); e.damageLevelScale = damageScale; }
+        e.speed *= 1.2 ** (tier - previousTier);
         e.attackScale = Math.min(2, (e.attackScale || 1) * ratio);
         if (e.windup) e.windup = Math.max(e.windup, .25 * e.attackScale);
       }
@@ -526,7 +536,7 @@
         const late = this.totalWaves > 10 ? Math.max(0, this.wave - 40) : 0, early = this.wave - late;
         const scale = spec.boss ? 1 + .035 * (early - 5) + .025 * late : 1 + .065 * (early - 1) + .03 * late;
         const damageScale = 1 + .012 * (early - 1) + .006 * late;
-        this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * damageScale,
+        this.enemies.push({ ...spec, ...point, hp: spec.hp * scale, maxHp: spec.hp * scale, speed: spec.speed * Math.min(1.4, 1 + .012 * (this.wave - 1)), damage: spec.damage * (!spec.boss && !spec.alpha && this.regularDamageScale() != null ? 1 : damageScale),
           shotScale: spec.boss && this.totalWaves > 10 && this.wave > 10 ? damageScale / 1.108 : 1,
           type, id: this.nextId++, warmup: origin && type === 'voidEgg' ? 0 : spec.boss || spec.alpha ? 1.7 : .85, shotTimer: 2, hit: 0, routeTimer: 0, rushTimer: 3.2, rushTime: 0, rushWindup: 0, statuses: {}, movementLeft: null, action: 'move', actionTime: 0, attackTimer: 1, summonTimer: spec.summonStart });
         const spawned = this.enemies.at(-1);
@@ -598,7 +608,7 @@
       if (this.mode !== 'playing' || this.drumFinale || this.transformRemaining > 0 || this.corruptedRemaining > 0 || this.player.invincible > 0 || this.active('shield')) return;
       if (this.rank('ward') && this.wardCooldown <= 0) { this.wardCooldown = 30 - 5 * this.rank('ward'); this.flashes.push({ x: this.player.x, y: this.player.y, r: 40, life: .25, color: '#a5f2ff' }); return; }
       if (this.random() < .06 * this.rank('dodge')) return;
-      super.hurt(amount * (1 - .08 * this.rank('armor')));
+      super.hurt(amount * (1 - Math.min(6, this.rank('armor')) / 10));
     }
     damageEnemy(e, amount, statuses = null, reducedXP = false) {
       if (e.dead || e.warmup > 0) return;
@@ -611,7 +621,7 @@
       if (this.drops.length >= 24) { let old = this.drops.findIndex(d => !d.boss && !['health', 'relic'].includes(d.kind)); if (old < 0) old = this.drops.findIndex(d => !d.boss); if (old < 0 && !boss && kind !== 'health') return; this.drops.splice(Math.max(0, old), 1); }
       const bounds = this.arena.bounds;
       x = clamp(x, bounds.x + 12, bounds.x + bounds.w - 12); y = clamp(y, bounds.y + 12, bounds.y + bounds.h - 12);
-      const drop = { id, x, y, kind, boss, life: kind === 'weapon' ? 5 : boss ? Infinity : 45 };
+      const drop = { id, x, y, kind, boss, life: kind === 'weapon' ? 5 : boss ? Infinity : FLOOR_POWER_SECONDS };
       this.drops.push(drop); return drop;
     }
     defeat(e, reducedXP = false, noSummons = false) {
@@ -628,7 +638,10 @@
       const mini = e.summoned || e.summonedForm;
       if (mini && !(e.summonXP > 0 && e.xp > 0)) return;
       this.kills++;
-      this.gems.push({ x: e.x, y: e.y, value: e.xp * (reducedXP ? .45 : 1), age: 0 });
+      const xpTier = mini ? .5 : e.boss ? 3 : e.alpha ? 2 : 1;
+      const minimumXP = (TYPES[XP_FAMILIES[e.type]]?.xp || 5) * xpTier;
+      const reward = mini ? .5 : e.boss || e.alpha ? Math.max(e.xp, minimumXP) : e.xp;
+      this.gems.push({ x: e.x, y: e.y, value: reward * (reducedXP ? .45 : 1), tier: xpTier, age: 0 });
       const rhythm = this.rank('rhythm');
       if (rhythm && this.kills % (30 - 5 * rhythm) === 0) this.pendingRhythm = true;
       if (mini) return;
@@ -652,6 +665,7 @@
         if (this.addDrop('ultimateDrum', e.x + 25, e.y + 20, 'relic')) this.drumDropWave = this.wave;
       }
       this.rollHealthDrop(e);
+      if ((e.alpha || e.boss) && this.random() < RARE_XP_CHANCE) this.gems.push({ x: e.x + 18, y: e.y - 12, value: reward / xpTier * 5 * (reducedXP ? .45 : 1), tier: 5, age: 0 });
     }
     pickup() {
       if (this.mode !== 'playing' || this.drumFinale) return false;
@@ -673,7 +687,7 @@
     collectStaff() { return false; }
     collectPower(id) {
       if (!POWERS[id]) return;
-      if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5), false);
+      if (id === 'bonusXP') this.gainXP(Math.round(this.xpNeeded * .5));
       else if (id === 'nuke') {
         this.clearWaveMobs();
         this.flashes.push({ x: this.player.x, y: this.player.y, r: Math.hypot(this.arena.width, this.arena.height), kind: 'nuke', color: '#ffcf8f', life: .7 });
@@ -681,8 +695,18 @@
       if (id === 'shock') this.shockClock = 0;
       this.banner = POWERS[id].name + ' collected'; this.bannerTime = 2; this.refreshStats();
     }
-    gainXP(value, gem = true) {
-      this.xpFraction += value * (gem ? 1 + .2 * this.rank('xp') : 1) * (this.active('doubleXP') ? 2 : 1);
+    memoryXpMultiplier() {
+      const rank = Math.min(7, this.rank('xp'));
+      return 1 + .2 * Math.min(5, rank) + .5 * Math.max(0, rank - 5);
+    }
+    gemAppearance(gem) {
+      if (gem.tier === .5) return { color: '#64c9ff', shape: 'circle', label: '0.5 XP' };
+      if (gem.tier === 5) return { color: '#77d8ff', shape: 'shard', label: '5× XP' };
+      const effective = (gem.tier || 1) * this.memoryXpMultiplier() * (this.active('doubleXP') ? 3 : 1);
+      return effective >= 3 ? { color: '#bd8bff', shape: 'gem', label: '3×+ XP' } : effective >= 2 ? { color: '#78f2a3', shape: 'gem', label: '2×+ XP' } : { color: '#64c9ff', shape: 'gem', label: 'XP' };
+    }
+    gainXP(value) {
+      this.xpFraction += value * this.memoryXpMultiplier() * (this.active('doubleXP') ? 3 : 1);
       const whole = Math.floor(this.xpFraction); this.xp += whole; this.xpFraction -= whole;
     }
     shot(x, y, angle, hostile, damage, speed = 735, extra = {}) {
@@ -782,7 +806,7 @@
         e.hatchTime = (e.hatchTime || 0) + dt;
         if (e.hatchTime >= 5) {
           const hp = TYPES.nightHatchling.hp * e.maxHp / TYPES.voidEgg.hp / 2 ** (e.difficultyTier || 0);
-          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, difficultyTier: 0, attackScale: 1, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
+          Object.assign(e, TYPES.nightHatchling, { type: 'nightHatchling', hp, maxHp: hp, difficultyTier: 0, attackScale: 1, damageLevelScale: 1, xp: e.summonXP || 0, statuses: {}, warmup: .5, action: 'move', actionTime: 0, attackTimer: 1 });
           if (e.owner != null) Object.assign(e, { sprite: 'jabiruReaper', name: 'Mini Jabiru-Reaper', height: 52, r: 14, attackRow: 2, deathFrames: [23] });
           this.applyDifficulty(e);
         }
@@ -808,18 +832,18 @@
       e.shotTimer -= dt * (e.attackScale || 1); e.casting = e.rushWindup > 0 || e.shotTimer < .45 && (['shadow', 'miniLlorona'].includes(e.type) || e.boss);
       if (e.shotTimer > 0) return;
       const aim = Math.atan2(this.player.y - e.y, this.player.x - e.x);
-      if (e.type === 'shadow' && visible(this, e, this.player, 6)) { this.shot(e.x, e.y, aim, true, e.damage, 205 * (e.attackScale || 1)); e.shotTimer = 2.35; }
+      if (e.type === 'shadow' && visible(this, e, this.player, 6)) { this.shot(e.x, e.y, aim, true, this.projectileDamage(e), 205 * (e.attackScale || 1)); e.shotTimer = 2.35; }
       if (e.type === 'miniLlorona' && visible(this, e, this.player, 6)) {
-        for (const offset of [-.13, 0, .13]) this.shot(e.x, e.y, aim + offset, true, e.damage * .7, 190 * (e.attackScale || 1));
+        for (const offset of [-.13, 0, .13]) this.shot(e.x, e.y, aim + offset, true, this.projectileDamage(e) * .7, 190 * (e.attackScale || 1));
         e.shotTimer = 3.1;
       }
       if (e.type === 'duende') {
         const count = e.hp < e.maxHp / 2 ? 12 : 9;
-        for (let i = 0; i < count; i++) this.shot(e.x, e.y, this.time * .23 + i * Math.PI * 2 / count, true, 65 * (e.shotScale || 1), 170);
-        for (const a of [-.14, 0, .14]) this.shot(e.x, e.y, aim + a, true, 65 * (e.shotScale || 1), 225);
+        for (let i = 0; i < count; i++) this.shot(e.x, e.y, this.time * .23 + i * Math.PI * 2 / count, true, this.duendeShotDamage(e), 170);
+        for (const a of [-.14, 0, .14]) this.shot(e.x, e.y, aim + a, true, this.duendeShotDamage(e), 225);
         e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.55;
       }
-      if (e.type === 'jaguarBoss') { for (const a of (e.hp < e.maxHp / 2 ? [-.3, -.15, 0, .15, .3] : [-.2, 0, .2])) this.shot(e.x, e.y, aim + a, true, 14 * (e.shotScale || 1), 245); e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.8; }
+      if (e.type === 'jaguarBoss') { for (const a of (e.hp < e.maxHp / 2 ? [-.3, -.15, 0, .15, .3] : [-.2, 0, .2])) this.shot(e.x, e.y, aim + a, true, this.jaguarShotDamage(e), 245); e.shotTimer = e.hp < e.maxHp / 2 ? 1.8 : 2.8; }
     }
     strike(e) {
       const p = this.player, hp = p.hp; this.hurt(e.damage);
@@ -851,7 +875,7 @@
     }
     summon(e) {
       if ((e.summonsMade || 0) >= e.summonLimit || !this.spawn(e.summonType, e)) return false;
-      const child = this.enemies.at(-1); child.owner = e.id; child.summoned = true; child.summonXP = e.xp / 4;
+      const child = this.enemies.at(-1); child.owner = e.id; child.summoned = true; child.summonXP = .5;
       if (child.type === 'voidEgg') {
         const duration = Math.max(.25, dist(e, child) / (220 * HOSTILE_SPEED_FACTOR));
         child.eggFlight = { x: e.x, y: e.y, targetX: child.x, targetY: child.y, time: 0, duration };
@@ -860,7 +884,7 @@
         const hp = child.maxHp * .12;
         Object.assign(child, { alpha: false, name: 'Mini ' + e.name, hp, maxHp: hp, damage: child.damage * .35,
           speed: child.speed * 1.3, r: Math.max(10, child.r * .5), height: child.height * .5, warmup: .5,
-          reach: child.reach * .6, windup: Math.max(.25, child.windup * .65), attackScale: 1,
+          reach: child.reach * .6, windup: Math.max(.25, child.windup * .65), attackScale: 1, damageLevelScale: this.regularDamageScale() || 1,
           summonType: null, summonLimit: 0, hairs: false, acid: false, venom: false, attach: 0, sidestep: false });
       }
       child.xp = child.type === 'voidEgg' ? 0 : child.summonXP; e.summonsMade = (e.summonsMade || 0) + 1; return true;
@@ -890,7 +914,7 @@
         else {
           e.action = 'recover';
           if (e.attack === 'shot') {
-            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, e.damage, (e.shotSpeed || 200) * (e.attackScale || 1), { color: e.shotColor || (e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9'), r: 5 });
+            if (visible(this, e, p)) for (let i = 0; i < (e.shotCount || 1); i++) this.shot(e.x, e.y, e.attackAngle + (i - ((e.shotCount || 1) - 1) / 2) * .2, true, this.projectileDamage(e), (e.shotSpeed || 200) * (e.attackScale || 1), { color: e.shotColor || (e.acid ? '#b6d545' : e.alpha ? '#ee817c' : '#bda5d9'), r: 5 });
           } else {
             if (e.attack === 'slam') this.addArea(e, e.x, e.y, e.reach, 0, .35, '#f5a06c');
             if (d <= e.reach + p.r && visible(this, e, p)) this.strike(e);
@@ -964,7 +988,7 @@
         if (e.skill.kind === 'rush') { e.action = 'active'; return; }
         if (e.skill.kind === 'fan') {
           const count = e.skill.count + (e.form === 'harpy' ? 2 : 0);
-          for (let i = 0; i < count; i++) this.shot(e.x, e.y, e.attackAngle + (i - (count - 1) / 2) * e.skill.spread, true, e.damage * .65, e.skill.speed, { color: e.skill.color, r: e.type === 'maleSisimite' ? 9 : 5 });
+          for (let i = 0; i < count; i++) this.shot(e.x, e.y, e.attackAngle + (i - (count - 1) / 2) * e.skill.spread, true, this.projectileDamage(e), e.skill.speed, { color: e.skill.color, r: e.type === 'maleSisimite' ? 9 : 5 });
         }
         e.action = 'recover'; return;
       }
@@ -1150,7 +1174,7 @@
       while (this.pendingSummons.length && this.enemies.length < this.enemyLimit) {
         const pending = this.pendingSummons[0];
         if (!this.spawn(pending.type, pending.origin)) break;
-        const child = this.enemies.at(-1); child.summoned = true; child.summonXP = child.xp = pending.origin.xp / 4;
+        const child = this.enemies.at(-1); child.summoned = true; child.summonXP = child.xp = .5;
         this.pendingSummons.shift();
       }
       for (const gem of this.gems) {
@@ -1180,6 +1204,6 @@
       }
     }
   }
-  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, WILDCARD_CAPACITY, BOOT_ICON, HEALTH_BUDGETS, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
+  const api = { Game, W, H, SURVIVAL_WAVES, ARENAS, TYPES, COMMONS, ALPHAS, BOSSES, MOB_WEAPON_CHANCE, RARE_XP_CHANCE, FLOOR_POWER_SECONDS, TRIPLE_XP_ICON, POWER_DROP_CHANCE, RANDOM_BOSS_CHANCE, JADE_DROP_CHANCE, JADE_ICON, JADE_TRANSFORM_SECONDS, CORRUPTED_SECONDS, WEAPONS, WEAPON_RANKS, MAX_WEAPON_RANK, maxWeaponRank, WILDCARD_CAPACITY, BOOT_ICON, HEALTH_BUDGETS, DRUM_DROP_CHANCE, DRUM_ICON, DRUM_CHARGE_SECONDS, DRUM_AURA_RADIUS, PERKS, POWERS, weapon, xpForLevel, move, visible };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SurvivalCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

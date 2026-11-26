@@ -20,12 +20,12 @@ for (let wave = 1; wave <= SURVIVAL_WAVES; wave++) {
   if (wave % 5 === 0) assert.equal(bosses, wave >= 40 ? 2 : 1);
   else assert(wave > 50 ? bosses <= 1 : bosses === 0);
   assert(g.spawn('crab')); const e = g.enemies[0];
-  assert(e.hp > lastHP && e.damage > lastDamage, 'Enemy strength did not increase at wave ' + wave);
+  assert(e.hp > lastHP, 'Enemy HP did not increase at wave ' + wave); assert.equal(e.damage, TYPES.crab.damage, 'Wave growth bypassed the XP-level damage rules');
   if (wave <= 10) {
     const run = atWave(wave, 'run'); assert.deepEqual(g.queue, run.queue); assert.equal(g.queue.length, earlyCounts[wave - 1]);
     assert.equal(g.spawnInterval, run.spawnInterval); assert.equal(run.enemyLimit, 32); assert.equal(run.enduranceBonus, 0);
     assert(Math.abs(e.hp - TYPES.crab.hp * (1 + .065 * (wave - 1))) < 1e-8);
-    assert(Math.abs(e.damage - TYPES.crab.damage * (1 + .012 * (wave - 1))) < 1e-8);
+    assert(Math.abs(e.damage - TYPES.crab.damage) < 1e-8);
   }
   if ([1, 10, 40, 100, 140, 150, 199, 200].includes(wave)) table.push({ wave, enemies: g.queue.length, interval: Number(g.spawnInterval.toFixed(3)), cap: g.enemyLimit, crabHP: Number(e.hp.toFixed(1)), hit: Number(e.damage.toFixed(2)), bonus: Math.round(g.enduranceBonus * 100) });
   [lastMobs, lastTotal, lastHP, lastDamage, lastInterval, lastLimit] = [mobs, g.queue.length, e.hp, e.damage, g.spawnInterval, g.enemyLimit];

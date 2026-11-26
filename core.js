@@ -157,7 +157,7 @@
       const p = this.player;
       if (p.invincible > 0 || this.mode !== 'playing') return;
       p.hp = Math.max(0, p.hp - damage); p.invincible = .72;
-      this.effects.push({ x: p.x, y: p.y - 42, text: `−${damage}`, color: '#ff8e89', life: .7 }); this.events.push({ type: 'hurt' });
+      this.effects.push({ x: p.x, y: p.y - 42, text: `−${Math.round(damage * 10) / 10}`, color: '#ff8e89', life: .7 }); this.events.push({ type: 'hurt' });
       if (p.hp <= 0) { this.mode = 'gameover'; this.events.push({ type: 'end' }); }
     }
     defeat(enemy) {

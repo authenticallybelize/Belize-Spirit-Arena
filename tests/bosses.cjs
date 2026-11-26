@@ -44,8 +44,8 @@ const noDrop = game(), ordinary = boss(noDrop, 'crab'), rolls = [.99, MOB_WEAPON
 const fullDrops = game(), guaranteed = boss(fullDrops, 'duende');
 for (let i = 0; i < 24; i++) fullDrops.addDrop('shield', 1000, 1000, 'power', true);
 fullDrops.defeat(guaranteed); assert.equal(fullDrops.drops.length, 24); assert(fullDrops.drops.some(d => d.kind === 'weapon' && d.boss));
-assert(Math.abs(TYPES.duende.hp - 1050 * 1.15 * 5) < 1e-8); assert.equal(TYPES.duende.damage, 100); assert.equal(Base.TYPES.duende.hp, 1050); assert.equal(Base.TYPES.duende.damage, 20);
-const duende = game(20), d = boss(duende, 'duende'); duende.enemyTick(d, .01); assert(duende.bullets.length >= 12); assert(duende.bullets.every(b => b.damage === 65 * d.shotScale));
+assert(Math.abs(TYPES.duende.hp - 1050 * 1.15 * 5) < 1e-8); assert.equal(TYPES.duende.damage, 35); assert.equal(Base.TYPES.duende.hp, 1050); assert.equal(Base.TYPES.duende.damage, 20);
+const duende = game(20), d = boss(duende, 'duende'); duende.enemyTick(d, .01); assert(duende.bullets.length >= 12); assert(duende.bullets.every(b => b.damage === 45 * d.shotScale));
 for (const type of BOSSES.filter(id => TYPES[id].bossAI)) {
   const g = game(20), e = boss(g, type); g.player.maxHp = g.player.hp = 10000;
   for (let i = 0; i < 1800; i++) {
@@ -99,4 +99,4 @@ for (const type of ['spiderling', 'worker', 'bees', 'rootling', 'owlShade']) {
 }
 circles.length = 0; drawing.draw({ ...TYPES.alphaCrab, type: 'alphaCrab', id: 1, x: 1200, y: 1200, warmup: 0, action: 'windup', actionTime: .1, hp: 100, maxHp: 100 }, 0);
 assert(circles.some(args => args[2] === TYPES.alphaCrab.reach), 'Alpha warning radius did not match its actual hit radius');
-console.log('PASS: nine-boss rotation, wave-20 5x Duende, forced Sling start, all random weapon/drop boundaries, no free wave weapons, boss damage/AI/spawning, real warned areas/cover/pause/freeze/caps/cleanup, Soch 25% transformation and eight verified atlases.');
+console.log('PASS: nine-boss rotation, wave-20 5x-HP Duende, forced Sling start, all random weapon/drop boundaries, no free wave weapons, boss damage/AI/spawning, real warned areas/cover/pause/freeze/caps/cleanup, Soch 25% transformation and eight verified atlases.');

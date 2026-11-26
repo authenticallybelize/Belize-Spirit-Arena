@@ -1,5 +1,20 @@
 # Belize: Spirit Arena
 
+## Damage, XP and floor pickup balance — 0.20.0
+
+**Ordinary damage is based on Joe’s XP level.** It grows 1.2% per level from I through V, freezes at that level-V value through XIX, then compounds +5% at XX, XXV, XXX and every five levels thereafter. Ordinary hits no longer multiply by the old 2×/4×/8×/16× XP-decade factors or by wave damage growth. Existing enemies update once at each boundary. HP, movement caps, warning floors and spawn pressure retain their previous progression. Ordinary projectiles deal 1.5× contact damage (Mini Llorona’s three-shot fan retains its 0.7× factor, so each shot still exceeds contact). Elite ranged shots also exceed contact. Mahogany Skin improves from 8% to **10% reduction per rank**, with its existing six-rank cap giving **60%**.
+
+Duende retains 5× HP; its base contact damage is now **35 instead of 100** and its radial/fan shot base **45 instead of 65**. At wave 20 these are about **43 melee / 50 projectile damage**, so an unarmored Joe at full starting 100 HP survives either hit. Other bosses/alphas also stay below 100 contact damage in that encounter. Floating hit numbers display at most one decimal while combat retains full precision. Story keeps its authored damage scaling and original Duende/Jaguar shot values.
+
+**Memory Seeker caps at VII**: I–V preserve +20% XP per rank, VI grants 2.5× and VII grants **3× every XP pickup**, including Experience Bonus. The existing Double Experience pickup ID/art now grants **Triple Experience** (3× for its usual ten active seconds, extended by Resonance). Its multiplier stacks with Memory Seeker; together at VII they grant 9× the source reward. Fractional XP is retained.
+
+Normal gem colors identify reward tiers: **blue regular, green alpha (2×), purple boss/boosted (3×+)**. Alpha rewards are at least twice their regular family XP and bosses at least three times; larger existing rewards are preserved. **Minions give 0.5 XP** before bonuses, drawn as little blue circles. Destroying an unhatched egg still grants no XP. Eligible alphas/bosses have an independent **2% chance** to drop an additional **5× XP long blue shard**, worth five times the base unit of their regular tier reward. Minis cannot drop rare shards. The 5× silhouette and mini circles stay identifiable while boosts are active; ordinary gems change color when XP bonuses reach 2× or 3×. Map-clearing powers retain their reduced-defeat XP policy.
+
+Floor powers and uncollected wildcards now last **90 active seconds instead of 45**. Pause/upgrade choices freeze their timers. Timed powers still use Guardian Resonance’s up-to-3× active duration; boss-guaranteed rewards keep their infinite floor lifetime. Weapon pickup timers remain five seconds.
+
+
+Validation: all 19 automated suites pass. Desktop (1440×1000) and touch (844×390) browser fixtures use real perk-selection and pickup controls to verify Memory VII, stacked Triple Experience, surviving wave-20 contact/projectile hits, every XP silhouette, and 90-second floor pickups. Existing wildcard/drum/boots/Obsidian/pellet controls, pause, Classic and Story are also checked with no application or asset errors. The new transparent ×3 power icon is an unmodified ImageGen edit, with source/hash metadata. These fixtures verify mechanics and rendering; prolonged human balance remains player feedback.
+
 ## Wildcard belt, Duende boots and Obsidian VII — 0.19.0
 
 Jade Skull and Golden Drum are held wildcards in a **four-slot belt**, one of each type. A duplicate may drop while its card is stored or its effect is active, but stays on the board until that stored card is used. Stored cards survive waves. G / tap activates Jade; R / tap activates Golden Drum while equipped. An active effect cannot stack; a spare can be held for later. Golden evolution still ends with its wave. Only these two wildcard types exist currently.

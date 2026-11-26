@@ -19,7 +19,7 @@ for (const [level, factor, movement, rate] of [[1,1,1,1], [9,1,1,1], [10,2,1.2,1
     const a = game(level), b = game(); assert(a.spawn(type)); assert(b.spawn(type));
     const scaled = a.enemies[0], original = b.enemies[0], normal = !scaled.boss && !scaled.alpha;
     near(scaled.maxHp, original.maxHp * factor, type + ' HP');
-    near(scaled.damage, original.damage * (normal ? factor : 1), type + ' damage');
+    near(scaled.damage, original.damage * (normal ? (1 + .012 * (Math.min(5,level)-1)) * 1.05 ** Math.max(0,Math.floor((level-15)/5)) : 1), type + ' damage');
     near(scaled.speed, original.speed * (normal ? movement : 1), type + ' intended speed');
     near(scaled.attackScale || 1, normal ? Math.min(2, factor) : 1);
     if (normal && scaled.windup) assert(scaled.windup / scaled.attackScale >= .25);
@@ -29,7 +29,7 @@ for (const [level, factor, movement, rate] of [[1,1,1,1], [9,1,1,1], [10,2,1.2,1
 const active = game(9); assert(active.spawn('corruptedHen')); assert(active.spawn('alphaCrab')); assert(active.spawn('duende'));
 const before = active.enemies.map(e => { e.hp = e.maxHp * .35; return { hp: e.hp, maxHp: e.maxHp, speed: e.speed, damage: e.damage }; });
 active.xpNeeded = xpForLevel(9); active.xp = active.xpNeeded; assert(active.levelUp()); assert.equal(active.level, 10);
-active.enemies.forEach((e, i) => { near(e.hp, before[i].hp * 2); near(e.hp / e.maxHp, .35); near(e.speed, before[i].speed * (i ? 1 : 1.2)); near(e.damage, before[i].damage * (i ? 1 : 2)); });
+active.enemies.forEach((e, i) => { near(e.hp, before[i].hp * 2); near(e.hp / e.maxHp, .35); near(e.speed, before[i].speed * (i ? 1 : 1.2)); near(e.damage, before[i].damage); });
 const hp = active.enemies[0].hp; active.syncDifficulty(); assert.equal(active.enemies[0].hp, hp, 'Sync compounded the same tier twice');
 assert.equal(active.waveMobMultiplier, 1, 'A level-up changed an already scheduled wave population');
 active.enemies = []; active.beginWave(); assert.equal(active.waveMobMultiplier, 2);
@@ -49,14 +49,14 @@ for (const type of ['corruptedHen', 'corruptedMonkey', 'grasshopper', 'corrupted
   if (e.attack === 'shot') { assert.equal(g.bullets.length, 1); near(Math.hypot(g.bullets[0].vx, g.bullets[0].vy), TYPES[type].shotSpeed * 2 * .85); }
 }
 const eggs = game(20); assert(eggs.spawn('voidEgg')); const egg = eggs.enemies[0]; egg.warmup = 0; egg.summonXP = 9;
-eggs.enemyTick(egg, 5); assert.equal(egg.type, 'nightHatchling'); near(egg.speed, TYPES.nightHatchling.speed * 1.44); near(egg.damage, TYPES.nightHatchling.damage * 4); assert.equal(egg.xp, 9); assert.equal(egg.attackScale, 2);
+eggs.enemyTick(egg, 5); assert.equal(egg.type, 'nightHatchling'); near(egg.speed, TYPES.nightHatchling.speed * 1.44); near(egg.damage, TYPES.nightHatchling.damage * 1.048 * 1.05); assert.equal(egg.xp, 9); assert.equal(egg.attackScale, 2);
 // High XP levels retain bounded pressure without allocating exponential arrays.
 const large = game(200, 100); assert(large.queue.length < 250); assert.equal(large.queuedEnemies(), 1314); assert.equal(large.enemyLimit, 96);
 assert.equal(large.difficultyTier(), 4); assert.equal(large.waveMobMultiplier, 8);
 const capped = game(40, 100); near(large.spawnInterval, capped.spawnInterval);
 for (const type of ['jaguar', 'corruptedMonkey', 'nightHatchling', 'alphaCrab', 'duende']) {
   large.enemies = []; capped.enemies = []; assert(large.spawn(type)); assert(capped.spawn(type));
-  for (const field of ['hp', 'maxHp', 'damage', 'speed']) near(large.enemies[0][field], capped.enemies[0][field]);
+  for (const field of ['hp', 'maxHp', 'speed']) near(large.enemies[0][field], capped.enemies[0][field]);
 }
 // Measure real displacement: ordinary movement, charges, sidesteps and latching
 // must respect Joe's speed at every tier, including slows and speed upgrades.

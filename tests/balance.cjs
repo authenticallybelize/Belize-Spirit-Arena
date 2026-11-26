@@ -15,7 +15,7 @@ for (let level = 1; level <= 200; level++) {
   if (level > 1) assert(xpForLevel(level + 1) - xpForLevel(level) >= xpForLevel(level) - xpForLevel(level - 1));
 }
 const g = playing(); g.level = 39; g.xpNeeded = xpForLevel(g.level);
-g.collectPower('doubleXP'); g.gainXP(3); assert.equal(g.xp, 6);
+g.collectPower('doubleXP'); g.gainXP(3); assert.equal(g.xp, 9);
 g.xp = g.xpNeeded + xpForLevel(40) + xpForLevel(41) + 17;
 assert(g.levelUp()); assert.equal(g.level, 40); assert(g.active('doubleXP'));
 assert(g.choose(0)); assert.equal(g.level, 41); assert(g.choose(0)); assert.equal(g.level, 42);

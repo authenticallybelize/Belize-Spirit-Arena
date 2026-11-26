@@ -18,7 +18,7 @@ for (const type of ALPHAS.filter(id => !['rotTapir', 'jabiruReaper'].includes(id
   const children = g.enemies.filter(e => e.owner === parent.id); assert.equal(children.length, 3);
   for (const child of children) {
     assert.equal(child.type, type); assert(!child.alpha && child.summoned); assert(child.height < parent.height && child.r < parent.r);
-    assert.equal(child.xp, parent.xp / 4); assert(!child.summonType); assert(!g.summon(child));
+    assert.equal(child.xp, .5); assert(!child.summonType); assert(!g.summon(child));
   }
   g.defeat(parent); assert(children.every(e => !e.dead));
   const drops = g.drops.length; g.random = () => 0;
@@ -79,7 +79,7 @@ bile.damageEnemy(tapir, 1e6); bile.damageEnemy(tapir, 1e6); assert.equal(bile.ki
 bile.queue = []; advance(bile, .05); assert.equal(bile.enemies.length, 3); assert(!bile.finishedWave); assert(bile.enemies.every(e => e.type === 'parasiteTapir'));
 const gems = bile.gems.length, drops = bile.drops.length;
 for (const e of bile.enemies) { e.warmup = 0; bile.damageEnemy(e, 1e6); }
-assert.equal(bile.kills, 4); assert.equal(bile.gems.length, gems + 3); assert(bile.gems.slice(-3).every(gem => gem.value === TYPES.rotTapir.xp / 4)); assert.equal(bile.drops.length, drops); advance(bile, .01); assert(bile.finishedWave);
+assert.equal(bile.kills, 4); assert.equal(bile.gems.length, gems + 3); assert(bile.gems.slice(-3).every(gem => gem.value === .5)); assert.equal(bile.drops.length, drops); advance(bile, .01); assert(bile.finishedWave);
 for (const arena of Object.keys(ARENAS)) {
   const g = game(); g.start({ mode: 'survival', arena }); g.queue = ['crab']; g.spawnTimer = 999;
   const e = foe(g, 'rotTapir', 300); g.defeat(e); advance(g, .1);
@@ -108,7 +108,7 @@ full.defeat(split); advance(full, .05); assert.equal(full.enemies.length, 4); as
 full.collectPower('nuke'); assert.equal(full.enemies.length, 0); assert.equal(full.pendingSummons.length, 0);
 full.start(); assert.equal(full.player.venomTime, undefined); assert.equal(full.pendingSummons.length, 0);
 for (const type of ['hiveGuardian', 'jabiruReaper']) {
-  const g = game(), parent = foe(g, type, 350), childXP = TYPES[type].xp / 4;
+  const g = game(), parent = foe(g, type, 350), childXP = .5;
   for (let i = 0; i < 3; i++) {
     assert(g.summon(parent)); const child = g.enemies.at(-1); child.warmup = 0;
     if (child.type === 'voidEgg') { g.enemyTick(child, child.eggFlight.duration); g.enemyTick(child, 5.01); }
@@ -122,13 +122,13 @@ for (const type of ['hiveGuardian', 'jabiruReaper']) {
 }
 const fraction = game(), hive = foe(fraction, 'hiveGuardian');
 for (let i = 0; i < 2; i++) { assert(fraction.summon(hive)); const bee = fraction.enemies.at(-1); bee.warmup = 0; fraction.defeat(bee); }
-for (const gem of fraction.gems) fraction.gainXP(gem.value); assert.equal(fraction.xp, 15); assert.equal(fraction.xpFraction, 0);
-const boosted = game(); boosted.ranks.xp = 1; boosted.collectPower('doubleXP'); boosted.gainXP(7.5); assert.equal(boosted.xp, 18);
+for (const gem of fraction.gems) fraction.gainXP(gem.value); assert.equal(fraction.xp, 1); assert.equal(fraction.xpFraction, 0);
+const boosted = game(); boosted.ranks.xp = 1; boosted.collectPower('doubleXP'); boosted.gainXP(7.5); assert.equal(boosted.xp, 27);
 const rhythm = game(), brood = foe(rhythm, 'hiveGuardian'); assert(rhythm.summon(brood)); const bee = rhythm.enemies.at(-1); bee.warmup = 0;
 rhythm.ranks.rhythm = 1; rhythm.kills = 24; rhythm.defeat(bee); assert.equal(rhythm.kills, 25); assert(rhythm.pendingRhythm);
 const purge = game(), bird = foe(purge, 'jabiruReaper'); assert(purge.summon(bird)); const egg = purge.enemies.at(-1); purge.enemyTick(egg, egg.eggFlight.duration); purge.enemyTick(egg, 5.01);
 purge.collectPower('nuke'); assert.equal(purge.enemies.length, 0); assert.equal(purge.kills, 2);
-assert(bird.dead); assert.equal(purge.gems.length, 2); assert(purge.gems.some(g => g.value === TYPES.jabiruReaper.xp / 4 * .45));
+assert(bird.dead); assert.equal(purge.gems.filter(g=>g.tier!==5).length, 2); assert(purge.gems.some(g => g.value === .5 * .45));
 const legacySummon = game(), storyAdd = foe(legacySummon, 'owlShade'); storyAdd.summoned = true; legacySummon.defeat(storyAdd);
 assert.equal(legacySummon.gems.length, 0); assert.equal(legacySummon.kills, 0, 'Story cave summons changed reward policy');
 const clearBrood = game(), mother = foe(clearBrood, 'jabiruReaper', 350); assert(clearBrood.summon(mother));
@@ -139,4 +139,4 @@ for (const e of JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/ready
   const bytes = fs.readFileSync(path.join(__dirname, '../assets', e.file)); assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), e.runtimeSHA256);
   assert.equal(bytes[25], 6); assert(artSandbox.window.ARENA_ROSTER[e.id]);
 }
-console.log('PASS: twelve reachable alphas; HP boosts; sideways dash, latch/dash escape, shield, slow, venom, warned hairs/bile; timed destructible eggs/hatching; bounded persistent broods; exact three-Tapir replacement/cap retry; quarter-parent-XP minis; Nuke/restart and atlas hashes.');
+console.log('PASS: twelve reachable alphas; HP boosts; sideways dash, latch/dash escape, shield, slow, venom, warned hairs/bile; timed destructible eggs/hatching; bounded persistent broods; exact three-Tapir replacement/cap retry; 0.5-XP minis; Nuke/restart and atlas hashes.');

@@ -1,5 +1,10 @@
 # Spirit Arena artwork and references
 
+## Triple Experience icon — 2026-11-26
+
+`ready/powers/tripleXP/pickup.png` is an unmodified transparent ImageGen edit of `ready/powers/doubleXP/pickup.png`. It preserves the purple crystal, gold outline and pixel-art style while changing the multiplier label to ×3. The source manifest records dimensions and SHA-256. The original icon remains intact. Blue, green and purple XP gems, the small blue minion orb and the long blue rare shard are drawn with Canvas paths.
+
+
 ## Duende boots — 2026-11-25
 
 `ready/relics/duende-boot.png` is an original transparent ImageGen output, using the existing Duende art as a style reference. The worn brown leather boot has green leaf wraps, gold eyelets and jade stitching. The generated PNG is used unmodified as the world pickup; its manifest records dimensions and SHA-256. The wildcard belt reuses the existing Jade Skull and Golden Drum icons. Healing pellets, sharpness outlines, attachment countdown and explosion fragments are Canvas effects.

@@ -270,10 +270,18 @@
     }
     for (const gem of game.gems) {
       const y = gem.y + Math.sin(t * 3 + gem.x) * 2;
-      shadow(gem.x, gem.y + 7, 6, .15);
-      ctx.fillStyle = '#123f30'; ctx.beginPath(); ctx.moveTo(gem.x, y - 11); ctx.lineTo(gem.x + 8, y); ctx.lineTo(gem.x, y + 11); ctx.lineTo(gem.x - 8, y); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#65efc0'; ctx.beginPath(); ctx.moveTo(gem.x, y - 9); ctx.lineTo(gem.x + 6, y); ctx.lineTo(gem.x, y + 9); ctx.lineTo(gem.x - 6, y); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#d4ffdf'; ctx.beginPath(); ctx.moveTo(gem.x, y - 8); ctx.lineTo(gem.x, y); ctx.lineTo(gem.x - 5, y); ctx.fill();
+      const appearance = extended ? game.gemAppearance(gem) : { color: '#65efc0', shape: 'gem' };
+      shadow(gem.x, gem.y + 7, appearance.shape === 'circle' ? 3 : 6, .15);
+      ctx.save(); ctx.translate(gem.x, y); ctx.fillStyle = appearance.color; ctx.strokeStyle = '#102e46'; ctx.lineWidth = 2;
+      ctx.beginPath();
+      if (appearance.shape === 'circle') ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      else if (appearance.shape === 'shard') { ctx.moveTo(0,-20); ctx.lineTo(6,-7); ctx.lineTo(3,16); ctx.lineTo(-4,20); ctx.lineTo(-6,-8); ctx.closePath(); }
+      else { ctx.moveTo(0,-11); ctx.lineTo(8,0); ctx.lineTo(0,11); ctx.lineTo(-8,0); ctx.closePath(); }
+      ctx.fill(); ctx.stroke(); ctx.fillStyle = '#e8f8ff'; ctx.globalAlpha = .75;
+      ctx.beginPath();
+      if (appearance.shape === 'circle') ctx.arc(-1,-1,1.3,0,Math.PI*2);
+      else { ctx.moveTo(0,appearance.shape === 'shard' ? -17 : -8); ctx.lineTo(0,4); ctx.lineTo(-4,0); }
+      ctx.fill(); ctx.restore();
     }
     const enemies = game.mode === 'menu' ? [
       { ...ArenaCore.TYPES.crab, type: 'crab', x: 220, y: 485, maxHp: 42 },
@@ -498,7 +506,7 @@
   function arenaFiles(arena) { return [...new Set([arena.image, ...arena.obstacles.map(o => o.image), ...(arena.decor || []).map(d => d.image)].filter(Boolean))]; }
   const files = [...new Set([...rosterFiles, ...spriteFiles, ...holdingFiles, 'teenage-joe.png', ...(extended ? arenaFiles(game.arena) : ['jungle-arena.png']), 'limestone-ruins.png', ...weaponFiles,
     ...(story ? StoryCore.TRIALS.map(t => StoryCore.arenaFor(t.id).image) : []),
-    ...(extended ? [SurvivalCore.BOOT_ICON, SurvivalCore.JADE_ICON, SurvivalCore.DRUM_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
+    ...(extended ? [SurvivalCore.TRIPLE_XP_ICON, SurvivalCore.BOOT_ICON, SurvivalCore.JADE_ICON, SurvivalCore.DRUM_ICON, ...Object.values(ARENA_READY.powers).map(a => a.pickup), ...ARENA_READY.powers.shield.bubbleFrames] : [])])];
   const loads = new Map();
   function loadImage(file) {
     if (!loads.has(file)) loads.set(file, new Promise((resolve, reject) => {

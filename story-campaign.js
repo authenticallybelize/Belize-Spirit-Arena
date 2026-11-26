@@ -113,6 +113,10 @@
   }
   class Game extends Run.Game {
     drumRelicAllowed() { return false; }
+    regularDamageScale() { return null; }
+    projectileDamage(e) { return e.damage; }
+    jaguarShotDamage(e) { return 14 * (e.shotScale || 1); }
+    duendeShotDamage(e) { return 65 * (e.shotScale || 1); }
     difficultyTier() { return 0; }
     syncDifficulty() {}
     constructor(random) { super(random); this.totalWaves = 20; this.selectArena('jungle'); }

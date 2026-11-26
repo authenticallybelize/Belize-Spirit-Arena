@@ -36,7 +36,7 @@ for (const [alpha, normal] of [['alphaCrab', 'crab'], ['alphaJaguar', 'jaguar'],
   for (const wave of [13, 23, 33, 100, 140, 200]) {
     const g = game(wave); assert(g.spawn(alpha)); assert(g.spawn(normal));
     const [a, n] = g.enemies;
-    assert(Math.abs(a.hp - n.hp * 6) < 1e-8); assert(Math.abs(a.damage - n.damage * 1.5) < 1e-8);
+    assert(Math.abs(a.hp - n.hp * 6) < 1e-8); assert(Math.abs(a.damage - TYPES[alpha].damage * (1 + .012 * (Math.min(wave,40) - 1) + .006 * Math.max(0,wave-40))) < 1e-8); assert.equal(n.damage,TYPES[normal].damage);
     assert(!a.boss && a.alpha && a.warmup === 1.7); assert(a.r > n.r);
   }
 }
